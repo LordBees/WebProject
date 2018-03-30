@@ -6,14 +6,16 @@
 	<meta name="description" content="Grand Travel">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
-	<link rel="stylesheet" href="css/master.css">
-	<link rel="stylesheet" type="text/css" href="css/custom.css">
-	<script   src="js/jquery-3.1.1.js"></script>
-			<script type="text/javascript">
+	<!-- adjustements to make directory structures more freindly with flask/jinja -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+	<script   src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
+	<script type="text/javascript">
+	<!-- where we want to put jquery code that runs when the pages is loaded -->
 	$('document').ready(function(){
 
-		plane();
-	// modal jquery
+		initPage();
+		// modal jquery
 		$('.enlarge').mouseenter(function(){
 				$('.text',this).removeClass('hide');
 			});
@@ -21,32 +23,52 @@
 		$('.enlarge').mouseleave(function(){
 				$('.text',this).removeClass('hide');
 			});	
+			
+				$('#departLocation').on('change', function() {	
+
+		// we need to fix this so that it doesnt keep appending..
+		var departName = $('#departLocation').find(":selected").text();				
+		var data=window.location+"Departure="+departName;
+		window.location.replace(data);
+		// location.reload();
+	});
 	//
 	});  // End Doc ready
-	
+
+		// space for our javascript functions below, we will prob move this to its own file when it gets bigger
+			function initPage(){
+			
+						// we need to removed the disabled attribute from input fields once we have a depart location
+						// that way we can then calculate times/dates
+						// having these fields open will just make more work for us / make it confusing to the customer
+						var location = window.location.href;
+						if(location.indexOf("Departure") > -1) {
+									document.getElementById("departDate").removeAttribute("disabled");
+						}
+					}	
 			function plane(){
-						document.getElementById("slideshow").setAttribute("src", "assets/grandTravellogo.png");
-						//document.getElementById("calandar").innerHTML = "<input type='date' id='party' name='party' min='2019-05-01' max='2019-06-30'>";
+						window.location.replace("../plane");
 					}
 					
 			function train(){
-						//var minDate = ;
-						//var maxDate =;
-						document.getElementById("slideshow").setAttribute("src", "assets/grandTravellogo.png");
-						//document.getElementById("calandar").innerHTML = "<input type='date' id='party' name='party' min=" + minDate + "max=" + maxDate + ">";
+						window.location.replace("../train");
 
 					}
 					
 			function bus(){
-						document.getElementById("slideshow").setAttribute("src", "assets/grandTravellogo.png");
+						window.location.replace("../bus");
+
 					}
+					
 			function taxi(){
-						document.getElementById("slideshow").setAttribute("src", "");
+
+						window.location.replace("../taxi");
 					}
+					
 			function ferry(){
-						document.getElementById("slideshow").setAttribute("src", "assets/grandTravellogo.png");
+						window.location.replace("../ferry");
 					}
-			
+				
 </script>
 
 </head>
@@ -58,7 +80,7 @@
 		<!--<div class="col w24 h1 socBar"></div> <!-- social links -->
 		<div class="col w24 h6"> <!-- banner logo space -->
 			<!-- banner logo -->
-			<div class="col w6 h24 grey"><img class="bannerLogo" src="assets/grandTravellogo.png" height="100%" width="300%"></div>
+			<div class="col w6 h24 grey"><img class="bannerLogo" src="{{ url_for('static', filename='assets/grandTravellogo.png') }}" height="100%" width="300%"></div>
 			<!-- banner text -->
 			<div class="col w18 h24 banner invert white">
 				<!--<img class="bannerLogo" style="float:left;">-->
@@ -85,7 +107,7 @@
 				<div style=" height: 100%">
 					<!-- slideshow 1st image placeholder -->
 					<div style="width: 100%; height: 100%; position: relative; border: 1px solid #000;">
-					        <Form method="POST" name="MyForm" onsubmit="return formValidation()" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 2; color:white; background-color:black; opacity: 0.8;  border: 1px solid #0ff;">
+					       <!-- <Form action= "demo.py" method="POST" name="MyForm" onsubmit="return formValidation()" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 2; color:white; background-color:black; opacity: 0.8;  border: 1px solid #0ff;">
 									  <div id="calandar">
 										<label for="party">Choose your Departure location:</label>
 										 <select>
@@ -112,11 +134,28 @@
 										  <option value=3>3</option>
 										  <option value=4>4</option>
 										</select>
-										<button action="test.py">load python</button>
+											<form action="demo.py" method="POST">
+											<p>Click here: <button type="submit">Submit</button>
+											</form>
+											
+
 										</div>
-							</Form>   
-						<img id="slideshow" src="" width="100%" height="100%" style="position: absolute; z-index: 1; border: 1px solid #f00;">
+							</Form>   -->
+							
+							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
+							<form method=post style="position: absolute; padding:10%; width:100%; height:100%; z-index: 2; color:white; background-color:black; opacity: 0.8;  border: 1px solid #0ff;">
+							<label for="party">Choose your Departure location:</label>	
+								{{ form.departLocation.__call__(**{'class': 'form-control'}) }}<br>
+							<label for="party">Choose your Departure Date:</label>
+							<input type="date" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} disabled=false><br><br>
+							<label for="party">Choose your Departure time:</label>
+								{{ form.departTime.__call__(**{'class': 'form-control'}) }}
+							  <p><input type=submit value=Register>
+							</form>
+						<!-- dynamically change slideImage passed in as a variable to render our page -->												
+						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index: 1; border: 1px solid #f00;">
 					</div>
+
 					<!--<img id="slideshow" src="" />-->
 				</div>
 			</div> 					
