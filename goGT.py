@@ -27,10 +27,13 @@ class planeForm(Form): # rename for webair database form
     #    validators.DataRequired(),
 	departDateMin = date.today(); # we can pull this from database
 	departDateMax = date.today(); # we can pull this from database
-	choices2=[(0, 'Newcastle'), (1, 'Bristol'), (2, 'Cardiff'),(3, 'Manchester')]
+	
+	#some bs that soon will be populated dynamically from the database
+	choices2=[(None, '--'),(0, 'Newcastle'), (1, 'Bristol'), (2, 'Cardiff'),(3, 'Manchester')]
 	##disabled = "true"
-	departTime = SelectField(choices=choices2)
+	departTime = SelectField(choices=choices2,default=None)
 	departLocation = SelectField(choices=choices2)
+	arriveLocation = SelectField(choices=choices2)
 	#departDate = """<input type="date" id="departDate" name="party" min={{form.departDateMin}} max={{form.departDateMax}} disabled= true"""  + "><br><br>"
 	#departDate = departDateString + "><br><br>"
     #    validators.EqualTo('confirm', message='Passwords must match')
@@ -54,9 +57,9 @@ def formatToTravMeth(travel_method=""):
 	#request.form['testLabel'] = "LOL"
 	if travel_method == "plane":
 		slideImage = "grandTravellogo.png"
-		#disabled="true"
 		form = planeForm(request.form)
-		
+		form.departLocation(default=None)
+		form.arriveLocation(default=None)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "train": # needs changing
@@ -82,12 +85,10 @@ def formatToTravMeth(travel_method=""):
 
 @app.route('/<travel_method>/Departure=<depart_location>')
 def formatToDepartLoc(travel_method="",depart_location=""):
-	#request.form['testLabel'] = "LOL"
 	if travel_method == "plane":
 		slideImage = "grandTravellogo.png"
 		form = planeForm(request.form)
-		departOptState = True
-		if depart_location == "Cardiff":
+		if depart_location == "Cardiff": # just a test * remove later
 			slideImage = ""
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
@@ -111,11 +112,39 @@ def formatToDepartLoc(travel_method="",depart_location=""):
 		form = planeForm(request.form)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
+		
 # a bit further ahead atm, i need to get data being pulled from the database to accurately 
 # start evaluating travel routes
+# *atm this is just as the previous example so it will look nothing like this in the end
+@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>')
+def formatToArrivalLoc(travel_method="", depart_location="",arrive_location=""):
+	if travel_method == "plane":
+		slideImage = "grandTravellogo.png"
+		form = planeForm(request.form)
+		if depart_location == "Cardiff": # just a test * remove later
+			slideImage = ""
+		return render_template("index.html",form=form,slideImage=slideImage)
+		
+	elif travel_method == "train": # needs changing
+		slideImage = "grandTravellogo.png"
+		form = planeForm(request.form)
+		return render_template("index.html",form=form,slideImage=slideImage)
 
-#@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>')
+	elif travel_method == "bus": # needs changing
+		slideImage = "grandTravellogo.png"
+		form = planeForm(request.form)
+		return render_template("index.html",form=form,slideImage=slideImage)
+		
+	elif travel_method == "taxi": # needs changing
+		slideImage = ".png"
+		form = planeForm(request.form)
+		return render_template("index.html",form=form,slideImage=slideImage)
 	
+	elif travel_method == "ferry": # needs changing
+		slideImage = "grandTravellogo.png"
+		form = planeForm(request.form)
+		return render_template("index.html",form=form,slideImage=slideImage)
+		
 # run the flask app (aka. host our website)
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)

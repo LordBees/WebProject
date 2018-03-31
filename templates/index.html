@@ -9,12 +9,18 @@
 	<!-- adjustements to make directory structures more freindly with flask/jinja -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
-	<script   src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
 	<script type="text/javascript">
 	<!-- where we want to put jquery code that runs when the pages is loaded -->
-	$('document').ready(function(){
+	
+	$(window).on('load', function(){
 
-		initPage();
+		// departure/arrival strings to check later on
+		var departName = $('#departLocation').find(":selected").text();	
+		var arriveName = $('#arriveLocation').find(":selected").text();	
+		
+		initPage(); // important that we run this every time the pages is loaded so we initialize things
+		
 		// modal jquery
 		$('.enlarge').mouseenter(function(){
 				$('.text',this).removeClass('hide');
@@ -23,29 +29,175 @@
 		$('.enlarge').mouseleave(function(){
 				$('.text',this).removeClass('hide');
 			});	
-			
-				$('#departLocation').on('change', function() {	
 
-		// we need to fix this so that it doesnt keep appending..
-		var departName = $('#departLocation').find(":selected").text();				
-		var data=window.location+"Departure="+departName;
-		window.location.replace(data);
-		// location.reload();
-	});
+	
+		// checks if departure options has changed and we then parse that information into the url for flask to deal with form rendering
+		$("#departLocation").change(function(e) {
+
+					var departName = $('#departLocation').find(":selected").text();	
+
+					// if we already have an departure in the url but we have changed our mind we still need to process it		
+					if(window.location.href.indexOf("Departure=") > -1)
+					{
+						var departNameNew = $('#departLocation').find(":selected").text();				
+						if(departName != "--")
+						{			
+					
+							var data=window.location+"Departure="+departName;
+							window.location.replace("Departure="+departNameNew, "Departure="+departName);
+							console.log("url:"+ data);
+
+							//window.location.replace(data);
+						}
+					}
+					
+					// pages is fresh with no departures previously selected so lets process that	
+					else
+					{
+						var departNameNew = $('#departLocation').find(":selected").text();			
+						if(departNameNew != "--")
+						{			
+
+							var data=window.location+"Departure="+departNameNew;
+							window.location.replace(data);
+							console.log("url:"+ data);
+
+							//window.location.assign(data);	
+							//location.reload(false);
+
+						}
+					}
+					
+			// important so that this function doesn't just run once
+			if(e.originalEvent) {
+				window.location.reload();
+			}
+		}).change();
+
+		// checks if arrival options has changed and we then parse that information into the url for flask to deal with form rendering
+		$("#arriveLocation").change(function(e) {
+
+			// if we already have an arrival in the url but we have changed our mind we still need to process it		
+			if(window.location.href.indexOf("&Arrival=") > -1)
+			{
+				var arriveNameNew = $('#arriveLocation').find(":selected").text();				
+				if(arriveName != "--")
+				{				
+					var data=window.location.href+"&Arrival="+arriveName;
+					console.log("if url:" +window.location);
+					var url = window.location.toString();
+					var prevUrl = url.split("&Arrival");
+					window.location.replace(prevUrl[0]+"&Arrival="+arriveNameNew, "&Arrival="+arriveName);
+				}
+
+			}
+			// pages is fresh with no arrivals previously selected so lets process that
+			else
+			{
+				var arriveNameNew = $('#arriveLocation').find(":selected").text();			
+				if(arriveNameNew != "--")
+				{			
+					var data=window.location+"&Arrival="+arriveNameNew;
+					console.log("else url:" +window.location);
+
+					window.location.replace(data);
+				}
+			}
+			// important so that this function doesn't just run once
+			if(e.originalEvent) {
+				window.location.reload();
+			}
+		}).change();
+			
 	//
 	});  // End Doc ready
+	
 
 		// space for our javascript functions below, we will prob move this to its own file when it gets bigger
 			function initPage(){
-			
+
+						// turn off depart time and arrivals until we check if we need to re-enable them
+						document.getElementById("departTime").setAttribute("disabled",true);
+						document.getElementById("arriveLocation").setAttribute("disabled",true);
+						
+						var departName = $('#departLocation').find(":selected").text();
+						var arriveName = $('#arriveLocation').find(":selected").text();
+						
+					// basically the goal here was to keep our selections in arrival/departure after the page
+					// currently broken after fixing url changing issues, need to rework this, but its an style thing really so later
+						
+					/*	if(window.location.href.indexOf("Departure=") > -1)
+						{
+							var departDropList = document.getElementById("departLocation")
+							departDropList.remove(0); 
+							for(var x=0;x < departDropList.length -1 ; x++)
+							{
+							   //if(departName == departDropList.options[x].text)
+							   var url1 = window.location.toString();
+							   var url = url1.split('Departure='); 
+							   if (url[1].search(departDropList.options[x].text) != -1)
+							   {
+									departDropList.selectedIndex = x;
+							   }
+							}
+							
+								if(window.location.href.indexOf("&Arrival=") > -1)
+								{
+								
+									var departDropList = document.getElementById("departLocation")
+									//departDropList.remove(0); 
+									for(var x=0;x < departDropList.length -1 ; x++)
+									{
+									   //if(departName == departDropList.options[x].text)
+									   var url1 = window.location.toString();
+									   var url = url1.split('Departure='); 
+									   if (url[1].search(departDropList.options[x].text) != -1)
+									   {
+											departDropList.selectedIndex = x;
+									   }
+									}
+								
+									var arriveDropList = document.getElementById("arriveLocation")
+									arriveDropList.remove(0); 
+									for(var x=0;x < arriveDropList.length -1 ; x++)
+									{
+									   //if(departName == arriveDropList.options[x].text)
+									  var url2 = window.location.toString();
+									  var url = url2.split('&Arrival='); 
+									  if (url[1].search(arriveDropList.options[x].text) != -1)
+									  {
+											arriveDropList.selectedIndex = x;
+									  }
+									}
+								}
+						}*/
+						
+	
+
 						// we need to removed the disabled attribute from input fields once we have a depart location
 						// that way we can then calculate times/dates
 						// having these fields open will just make more work for us / make it confusing to the customer
-						var location = window.location.href;
+						
+						var location = window.location.href; // pull url into a string to check with
+
+						// ok now that we have selected a departure which shows in the url we can enable arrival selection
+
 						if(location.indexOf("Departure") > -1) {
-									document.getElementById("departDate").removeAttribute("disabled");
+						
+							document.getElementById("arriveLocation").removeAttribute("disabled");
+
+						}
+						
+						// now that we have both an arrival and departure(arrival will only be in url if departure is)
+						// we can enabled depart data/time now loaded with data from the database(in good time)
+						
+						if(location.indexOf("Arrival") > -1) {
+							document.getElementById("departDate").removeAttribute("disabled");
+							document.getElementById("departTime").removeAttribute("disabled");
 						}
 					}	
+					
+			// our ui handlers to trigger flask app routing
 			function plane(){
 						window.location.replace("../plane");
 					}
@@ -68,7 +220,6 @@
 			function ferry(){
 						window.location.replace("../ferry");
 					}
-				
 </script>
 
 </head>
@@ -144,13 +295,21 @@
 							
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
 							<form method=post style="position: absolute; padding:10%; width:100%; height:100%; z-index: 2; color:white; background-color:black; opacity: 0.8;  border: 1px solid #0ff;">
-							<label for="party">Choose your Departure location:</label>	
+							<label for="party">Choose your Departure location:</label><br>	
 								{{ form.departLocation.__call__(**{'class': 'form-control'}) }}<br>
-							<label for="party">Choose your Departure Date:</label>
-							<input type="date" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} disabled=false><br><br>
-							<label for="party">Choose your Departure time:</label>
-								{{ form.departTime.__call__(**{'class': 'form-control'}) }}
-							  <p><input type=submit value=Register>
+							
+							<!-- greyed out until a departure is selected, too much irrelevant information to process -->
+							<label for="party">Choose your Arrival location:</label><br>	
+								{{ form.arriveLocation.__call__(**{'class': 'form-control'}) }}<br>
+		
+							<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
+							<label for="party">Choose your Departure Date:</label><br>
+							<input type="date" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} disabled=false><br>
+							<label for="party">Choose your Departure time:</label><br>
+								{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br><br>
+								
+							<!-- our booking confirm button for later that will trigger a model to process payment -->
+							<!--<p><input type=submit value=Register>-->
 							</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index: 1; border: 1px solid #f00;">
