@@ -9,8 +9,6 @@ from wtforms_components import DateRange, SelectField
 from wtforms.validators import Length, NumberRange, DataRequired, InputRequired
 from wtforms.fields.html5 import DateField
 
-import numpy as np
-
 #from wtforms_components import DateTimeField
 
 # mysql functions
