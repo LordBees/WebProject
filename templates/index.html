@@ -2,15 +2,19 @@
 <html lang="en-gb">
 <head>
 	<title>Grand Travel</title>
-	<meta name="authors" content="Andrew Belcher, Luke Clayton, Robert Painter">
-	<meta name="description" content="Grand Travel">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
-	<!-- adjustements to make directory structures more freindly with flask/jinja -->
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
-	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
-	<script src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
-	<script type="text/javascript">
+    <meta name="authors" content="Andrew Belcher, Luke Clayton, Robert Painter">
+    <meta name="description" content="Grand Travel">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+    <!-- adjustements to make directory structures more freindly with flask/jinja -->
+    <link rel="stylesheet" href="/static/css/master.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
+	<!--<link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">-->
+    <script src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
+    <script type="text/javascript">
+	
+
 	<!-- where we want to put jquery code that runs when the pages is loaded -->
 	
 	$(window).on('load', function(){
@@ -152,6 +156,8 @@
 				window.location.assign();
 			}
 		}).change();
+		
+		
 
 			
 	//
@@ -161,6 +167,43 @@
 		// space for our javascript functions below, we will prob move this to its own file when it gets bigger
 			function initPage(){
 
+
+			
+var CssDebug = true // turn off and on as you please
+
+if(CssDebug){    
+            //Cache Buster
+(function (){
+  var rep = /.*\?.*/,
+      links = document.getElementsByTagName('link'),
+      scripts = document.getElementsByTagName('script'),
+      process_scripts = false;
+  for (var i=0;i<links.length;i++){
+    var link = links[i],
+        href = link.href;
+    if(rep.test(href)){
+      link.href = href+'&'+Date.now();
+    }
+    else{
+      link.href = href+'?'+Date.now();
+    }
+
+  }
+  if(process_scripts){
+    for (var i=0;i<scripts.length;i++){
+      var script = scripts[i],
+          src = script.src;
+      if(rep.test(src)){
+        script.src = src+'&'+Date.now();
+      }
+      else{
+        script.src = src+'?'+Date.now();
+      }
+
+    }
+  }
+})();
+}
 						// turn off depart time and arrivals until we check if we need to re-enable them
 						document.getElementById("departTime").setAttribute("disabled",true);
 						document.getElementById("arriveLocation").setAttribute("disabled",true);
