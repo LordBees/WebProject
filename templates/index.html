@@ -319,20 +319,21 @@ if(CssDebug){
 <body>
 
 
-<div class="wrapper w24 h23"> <!-- wrapper -->
+<div class=" wrapper w24 h23"> <!-- wrapper -->
 	<div class="wrapperCont w16 h24">
 		<!--<div class="col w24 h1 socBar"></div> <!-- social links -->
 		<div class="col w24 h6"> <!-- banner logo space -->
 			<!-- banner logo -->
-			<div class="col w6 h24 grey"><img class="bannerLogo" src="{{ url_for('static', filename='assets/grandTravellogo.png') }}" height="100%" width="300%"></div>
+			<div class="col w8 h24 grey"><img class="bannerLogo" src="{{ url_for('static', filename='assets/grandTravellogo.png') }}" height="100%" width="300%"></div>
 			<!-- banner text -->
-			<div class="col w18 h24 banner invert white">
+			<div class=" col w18 h24 banner invert white">
 				<!--<img class="bannerLogo" style="float:left;">-->
 				Grand Travel
 			</div>
 		</div> 
 		
-		<div class="col w24 h1 nav pointer"><!-- navbar --> 
+		<div class="center">
+		<div class="  col w24 h1 nav pointer"><!-- navbar --> 
 			<ul>
 				<li class="col w3 h24 dark invert" onclick="plane()">PLANE</a></li>
 				<li class="col w3 h24 dark invert" onclick="train()">TRAIN</a></li>
@@ -342,8 +343,9 @@ if(CssDebug){
 
 			</ul>			
 		</div>
+		</div>
 		
-		<div class="col w24 h18 black"><!-- slidshow --> 
+		<div class="center col w24 h18 black"><!-- slidshow --> 
 			<!-- div holding left slideshow arrow -->
 			<!--<div class="col w4 h24 black arrow" onclick="backImage()"></div>-->
 			<!-- main slideshow window -->
@@ -351,7 +353,7 @@ if(CssDebug){
 				<div style=" height: 600px">
 				
 					<!-- slideshow 1st image placeholder -->
-					
+					<div class="center">
 					<div style="width: 1000px; height: 360px; position: relative; border: 0px solid #000;">
 					
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
@@ -380,7 +382,8 @@ if(CssDebug){
 
 					<!--<img id="slideshow" src="" />-->
 				</div>
-			</div> 					
+			</div>
+			</div>
 			<!-- div holding right slideshow arrow -->
 			<!--<div id="right" class="col w4 h24 black arrow" onclick="slideImage()" style="float:right;"></div> -->	
 		</div><!-- end of slideshow window -->

@@ -112,7 +112,9 @@ a{
 
 
 	.center {
-
+	margin: auto;
+    width: 70%;
+    padding: 0px;
 	}
 
 
