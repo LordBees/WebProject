@@ -12,7 +12,7 @@ body{
 	padding:0;
 	color:white;
 
-	background-image: url(../assets/background.jpg);
+	background-image: url(../assets/);
 	background-repeat: repeat-x;
 	background-attachment: fixed;
 	background-size:cover;
@@ -39,7 +39,7 @@ a{
 		background-color:#ff0000;
 	}
 	.black{
-		background-color:#000000;
+		background-color:#FFFFFF;
 	}
 	.blue{
 		background-color:#0000ff;
@@ -278,9 +278,9 @@ a{
 	/* navigation styles */
 
 	.nav{
-		margin:0;
-		padding:0;
-		font-size:200%;
+		margin:5;
+		padding:5;
+		font-size:150%;
 		text-align:center;
 		line-height: 100%;
 		list-style-type:none;
@@ -309,15 +309,15 @@ a{
 		padding:0;
 		font-size:75%;
 		text-align:center;	
-		height:100%;
-		background-color:#333;
+		height:75%;
+		background-color:#;
 		list-style-type: none;
 
 	}
 
 	ul.nav div{
-		float:left;
-		padding: 0;
+		float:middle;
+		padding:0;
 		margin:0;
 		line-height:2.5em;
 		height:100%;

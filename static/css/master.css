@@ -16,8 +16,8 @@ body{
 }
 
 *{
-	position:relative;
-	box-sizing:border-box; /* Includes border and padding in set width */
+	position:center;
+	/*box-sizing:border-box; /* Includes border and padding in set width */
 }
 
 
