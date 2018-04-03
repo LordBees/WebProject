@@ -24,29 +24,29 @@ def formatToTravMeth(travel_method=""):
 	passenger_count=0
 	
 	if travel_method == "plane":
-		slideImage = "grandTravellogo.png"
+		slideImage = "GTplane.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		#form.departLocation(default=None)
 		#form.arriveLocation(default=None)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "train": # needs changing
-		slideImage = "grandTravellogo.png"
+		slideImage = "GTtrain.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 	elif travel_method == "bus": # needs changing
-		slideImage = "grandTravellogo.png"
+		slideImage = "GTbus.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "taxi": # needs changing
-		slideImage = ".png"
+		slideImage = "GTtaxi.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 	
 	elif travel_method == "ferry": # needs changing
-		slideImage = "grandTravellogo.png"
+		slideImage = "GTferry.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 	
