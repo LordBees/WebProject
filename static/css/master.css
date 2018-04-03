@@ -9,7 +9,7 @@ html{
 body{
 	height:100%;
 	width:100%;
-	font-family:arial;
+	font-family:Helvetica;
 	font-size:12px;
 	font-size:1vmin; /* 1 vmin is 1% of the window height or width (whichever is smallest) */
 	color:#404040; /* Charcoal */
@@ -96,6 +96,7 @@ ul.nav a:hover{
 .col{
 	float:left;
 	height:100%;
+	
 }
 
 .block{
@@ -281,6 +282,7 @@ ul.nav a:hover{
 .h24{
 	height:100% !important;
 	min-height:100% !important;
+	
 }
 
 /* For colums in 1/5th increments */

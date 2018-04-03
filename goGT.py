@@ -5,11 +5,9 @@ from flask import Flask, render_template, request, redirect
 from datetime import datetime, date, timedelta
 
 from wtforms import Form, validators
-from wtforms_components import DateRange, SelectField
+from wtforms_components import DateRange, SelectField, IntegerField
 from wtforms.validators import Length, NumberRange, DataRequired, InputRequired
 from wtforms.fields.html5 import DateField
-
-import numpy as np
 
 #from wtforms_components import DateTimeField
 
@@ -64,6 +62,35 @@ def getListOfDepartureTimes(departure, arrival):
 	conn.close()
 	return departTimes	
 
+# returns list of arrivals with matched departure
+def getPresetPrice(departure,arrival):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT Price FROM webairtt WHERE Departure = %s AND Arrival = %s'
+	args = (departure,arrival)
+	cursor.execute(query,args)
+	price = cursor.fetchone()
+	#price = "%.2f" %(price)
+	conn.close()
+	return price[0]		
+
+# returns number of seats left to book for this route
+def getNumOfSeatsLeftAir(departure,arrival):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT *,%s FROM webairtt WHERE Departure = %s AND Arrival = %s'
+	args = ("Passenger Count",departure,arrival)
+	cursor.execute(query,args)
+	passCnt = cursor.fetchone()
+	print("passcnt "+ str(passCnt[7]))
+	maxPass = 80 # max number of seats for a gt plane
+	
+	seatsLeft =  maxPass - int(passCnt[7])
+
+	conn.close()
+	return seatsLeft
+	
+# regular functions	
 # builds arrival select field for departure location
 def buildArrivalsField(departure):
 	arrivals = getListOfArrivalsFromDeparture(departure)
@@ -145,17 +172,26 @@ def buildDepartTimesField(departure,arrival):
 
 # where we can put our template classes for booking forms, will end up populating it based on the current
 # data within the database
-def createPlaneForm(depart_location,arrive_location):
+def createPlaneForm(depart_location,arrive_location,passenger_count):
 	class planeForm(Form):
 		# restricting html5 embedded calendar field
 		# here we are restricting bookable dates to 3 months at a time(months displayed * days in year/ months in year)		
 		departDateMax = date.today() + timedelta(3*365/12) 
 		departDateMin = date.today()
 		
+		passCnt = passenger_count
+		passCntMin = 1
+		
+		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
+		if(depart_location != "--" and arrive_location != "--"): 
+			passCntMax = getNumOfSeatsLeftAir(depart_location,arrive_location)
+		else:
+			passCntMax = 1 # when the field is grayed out we still need to assign it something
+		
 		# loading our form fields
 		departLocation = buildDeparturesField()
 		arriveLocation = buildArrivalsField(depart_location)
-		departTime = buildDepartTimesField(depart_location,arrive_location)	
+		departTime = buildDepartTimesField(depart_location,arrive_location)
 
 	return planeForm()
 	
@@ -172,43 +208,48 @@ def root():
 	
 @app.route('/<travel_method>/')
 def formatToTravMeth(travel_method=""):
-	#request.form['testLabel'] = "LOL"
+	#default our variables
 	depart_location="--"
 	arrive_location="--"
+	passenger_count=0
+	
 	if travel_method == "plane":
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		#form.departLocation(default=None)
 		#form.arriveLocation(default=None)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "train": # needs changing
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 	elif travel_method == "bus": # needs changing
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "taxi": # needs changing
 		slideImage = ".png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 	
 	elif travel_method == "ferry": # needs changing
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 	
 
 @app.route('/<travel_method>/Departure=<depart_location>')
-def formatToDepartLoc(travel_method="",depart_location=""):
+def formatToDepartLoc(travel_method="",depart_location="--"):
+	#default our variables
 	arrive_location="--"
+	passenger_count=0
+	
 	if travel_method == "plane":
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		#form.arriveLocation = buildArrivalsField(depart_location)
 		#form.arriveLocation = buildArrivalsFeild(depart_location)
 		if depart_location == "Cardiff": # just a test * remove later
@@ -217,55 +258,61 @@ def formatToDepartLoc(travel_method="",depart_location=""):
 		
 	elif travel_method == "train": # needs changing
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 	elif travel_method == "bus": # needs changing
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "taxi": # needs changing
 		slideImage = ".png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 	
 	elif travel_method == "ferry": # needs changing
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
-		
+
 # a bit further ahead atm, i need to get data being pulled from the database to accurately 
 # start evaluating travel routes
 # *atm this is just as the previous example so it will look nothing like this in the end
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>')
-def formatToArrivalLoc(travel_method="", depart_location="",arrive_location=""):
+# here we can map multiple url routes to the same condition! =)
+@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>') 
+def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="--", passenger_count=1):
 	if travel_method == "plane":
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
+		if(int(passenger_count) <= form.passCntMax):
+			printedPrice = "£" + str(int(getPresetPrice(depart_location,arrive_location)) * int(passenger_count))
+		else:
+			printedPrice = "not enough seats"
 		if depart_location == "Cardiff": # just a test * remove later
 			slideImage = ""
-		return render_template("index.html",form=form,slideImage=slideImage)
+		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice)
 		
 	elif travel_method == "train": # needs changing
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 	elif travel_method == "bus": # needs changing
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "taxi": # needs changing
 		slideImage = ".png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 	
 	elif travel_method == "ferry": # needs changing
 		slideImage = "grandTravellogo.png"
-		form = createPlaneForm(depart_location,arrive_location)
+		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 # run the flask app (aka. host our website)

@@ -18,6 +18,8 @@
 		// departure/arrival strings to check later on
 		var departName = $('#departLocation').find(":selected").text();	
 		var arriveName = $('#arriveLocation').find(":selected").text();	
+		var passCnt = $('#passengerCnt').val();
+
 		
 		initPage(); // important that we run this every time the pages is loaded so we initialize things
 		
@@ -45,7 +47,9 @@
 					
 							var data=window.location+"Departure="+departName;
 							window.location.replace("Departure="+departNameNew, "Departure="+departName);
-							console.log("url:"+ data);
+							//4console.log("url:"+ data);
+							
+
 
 							//window.location.replace(data);
 						}
@@ -57,10 +61,12 @@
 						var departNameNew = $('#departLocation').find(":selected").text();			
 						if(departNameNew != "--")
 						{			
+						
 
 							var data=window.location+"Departure="+departNameNew;
 							window.location.replace(data);
-							console.log("url:"+ data);
+							//window.location.assign(data);
+							//console.log("url:"+ data);
 
 							//window.location.assign(data);	
 							//location.reload(false);
@@ -70,9 +76,9 @@
 					
 			// important so that this function doesn't just run once
 			if(e.originalEvent) {
-				window.location.reload();
+				window.location.assign();
 			}
-		}).change();
+			}).change();
 
 		// checks if arrival options has changed and we then parse that information into the url for flask to deal with form rendering
 		$("#arriveLocation").change(function(e) {
@@ -84,7 +90,7 @@
 				if(arriveName != "--")
 				{				
 					var data=window.location.href+"&Arrival="+arriveName;
-					console.log("if url:" +window.location);
+					//console.log("if url:" +window.location);
 					var url = window.location.toString();
 					var prevUrl = url.split("&Arrival");
 					window.location.replace(prevUrl[0]+"&Arrival="+arriveNameNew, "&Arrival="+arriveName);
@@ -98,16 +104,55 @@
 				if(arriveNameNew != "--")
 				{			
 					var data=window.location+"&Arrival="+arriveNameNew;
-					console.log("else url:" +window.location);
+					//console.log("else url:" +window.location);
 
 					window.location.replace(data);
 				}
 			}
 			// important so that this function doesn't just run once
 			if(e.originalEvent) {
-				window.location.reload();
+				window.location.assign();
+			}
+				}).change();
+		
+		$("#passengerCnt").change(function(e) {
+		
+						// if we already have an arrival in the url but we have changed our mind we still need to process it		
+			if(window.location.href.indexOf("&passCnt=") > -1)
+			{
+				var passCntNew = $('#passengerCnt').val();
+				
+				if(passCntNew != passCnt)
+				{				
+					var data=window.location.href+"&passCnt="+passCnt;
+					//console.log("if url:" +window.location);
+					var url = window.location.toString();
+					var prevUrl = url.split("&passCnt");
+					window.location.replace(prevUrl[0]+"&passCnt="+passCntNew, "&passCnt="+passCnt);
+				}
+
+			}
+			// pages is fresh with no arrivals previously selected so lets process that
+			else
+			{
+				var passCntNew = $('#passengerCnt').val();
+				console.log(passCntNew);
+				if(passCntNew != passCnt)
+				{			
+					var data=window.location+"&passCnt="+passCntNew;
+					//console.log("else url:" +window.location);
+
+					window.location.replace(data);
+				}
+			}
+		
+			// important so that this function doesn't just run once
+			if(e.originalEvent) {
+			
+				window.location.assign();
 			}
 		}).change();
+
 			
 	//
 	});  // End Doc ready
@@ -129,7 +174,7 @@
 					/*	if(window.location.href.indexOf("Departure=") > -1)
 						{
 							var departDropList = document.getElementById("departLocation")
-							departDropList.remove(0); 
+							//departDropList.remove(0); 
 							for(var x=0;x < departDropList.length -1 ; x++)
 							{
 							   //if(departName == departDropList.options[x].text)
@@ -158,7 +203,7 @@
 									}
 								
 									var arriveDropList = document.getElementById("arriveLocation")
-									arriveDropList.remove(0); 
+									//arriveDropList.remove(0); 
 									for(var x=0;x < arriveDropList.length -1 ; x++)
 									{
 									   //if(departName == arriveDropList.options[x].text)
@@ -170,8 +215,8 @@
 									  }
 									}
 								}
-						}*/
-						
+						}
+				*/		
 	
 
 						// we need to removed the disabled attribute from input fields once we have a depart location
@@ -194,7 +239,12 @@
 						if(location.indexOf("Arrival") > -1) {
 							document.getElementById("departDate").removeAttribute("disabled");
 							document.getElementById("departTime").removeAttribute("disabled");
+							document.getElementById("bookPrice").removeAttribute("hidden");
+							document.getElementById("submitBookingBtn").removeAttribute("disabled");
+							document.getElementById("passengerCnt").removeAttribute("disabled");
+
 						}
+
 					}	
 					
 			// our ui handlers to trigger flask app routing
@@ -271,10 +321,12 @@
 							<label for="party">Choose your Departure time:</label><br>
 								{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br>
 							<label for="party">Choose your Departure Date:</label><br>
-							<input type="date" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} disabled=false><br>
-								
+							<input type="date" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} disabled><br>
+							<label for="party">How many are traveling:</label><br>
+							<input type="number" id="passengerCnt" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled><br><br>
 							<!-- our booking confirm button for later that will trigger a model to process payment -->
-							<!--<p><input type=submit value=Register>-->
+							<button id="submitBookingBtn" disabled type=submit>Book!</button>
+							<p id="bookPrice" hidden>Booking Price: {{ bookingPrice }}</p>
 							</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index: 1; border: 1px solid #f00;">
