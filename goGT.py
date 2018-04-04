@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect
 
 #import everything from webAir.py
 from webAir import *
-
+from webTrain import *
 
 app = Flask(__name__)
 
