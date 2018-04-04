@@ -48,14 +48,8 @@
 						var departNameNew = $('#departLocation').find(":selected").text();				
 						if(departName != "--")
 						{			
-					
 							var data=window.location+"Departure="+departName;
 							window.location.replace("Departure="+departNameNew, "Departure="+departName);
-							//4console.log("url:"+ data);
-							
-
-
-							//window.location.replace(data);
 						}
 					}
 					
@@ -65,16 +59,8 @@
 						var departNameNew = $('#departLocation').find(":selected").text();			
 						if(departNameNew != "--")
 						{			
-						
-
 							var data=window.location+"Departure="+departNameNew;
 							window.location.replace(data);
-							//window.location.assign(data);
-							//console.log("url:"+ data);
-
-							//window.location.assign(data);	
-							//location.reload(false);
-
 						}
 					}
 					
@@ -84,44 +70,47 @@
 			}
 			}).change();
 
-		// checks if arrival options has changed and we then parse that information into the url for flask to deal with form rendering
+		
+		// checks if departure options has changed and we then parse that information into the url for flask to deal with form rendering
 		$("#arriveLocation").change(function(e) {
 
-			// if we already have an arrival in the url but we have changed our mind we still need to process it		
-			if(window.location.href.indexOf("&Arrival=") > -1)
-			{
-				var arriveNameNew = $('#arriveLocation').find(":selected").text();				
-				if(arriveName != "--")
-				{				
-					var data=window.location.href+"&Arrival="+arriveName;
-					//console.log("if url:" +window.location);
-					var url = window.location.toString();
-					var prevUrl = url.split("&Arrival");
-					window.location.replace(prevUrl[0]+"&Arrival="+arriveNameNew, "&Arrival="+arriveName);
-				}
+					var arriveName = $('#arriveLocation').find(":selected").text();	
 
-			}
-			// pages is fresh with no arrivals previously selected so lets process that
-			else
-			{
-				var arriveNameNew = $('#arriveLocation').find(":selected").text();			
-				if(arriveNameNew != "--")
-				{			
-					var data=window.location+"&Arrival="+arriveNameNew;
-					//console.log("else url:" +window.location);
-
-					window.location.replace(data);
-				}
-			}
+					// if we already have an departure in the url but we have changed our mind we still need to process it		
+					if(window.location.href.indexOf("&Arrival=") > -1)
+					{
+						var arriveNameNew = $('#arriveLocation').find(":selected").text();				
+						if(arriveName != "--")
+						{			
+							var data=window.location.href+"&Arrival="+arriveName;
+							console.log("if url:" +window.location);
+							var url = window.location.toString();
+							var prevUrl = url.split("&Arrival");
+							window.location.replace(prevUrl[0]+"&Arrival="+arriveNameNew, "&Arrival="+arriveName);
+						}
+					}
+					
+					// pages is fresh with no departures previously selected so lets process that	
+					else
+					{
+						var arriveNameNew = $('#arriveLocation').find(":selected").text();			
+						if(arriveNameNew != "--")
+						{			
+							var data=window.location+"&Arrival="+arriveNameNew;
+							window.location.replace(data);
+						}
+					}
+					
 			// important so that this function doesn't just run once
 			if(e.originalEvent) {
 				window.location.assign();
 			}
-				}).change();
+			}).change();
+		
 		
 		$("#passengerCnt").change(function(e) {
 		
-						// if we already have an arrival in the url but we have changed our mind we still need to process it		
+			// if we already have an arrival in the url but we have changed our mind we still need to process it		
 			if(window.location.href.indexOf("&passCnt=") > -1)
 			{
 				var passCntNew = $('#passengerCnt').val();
@@ -144,8 +133,6 @@
 				if(passCntNew != passCnt)
 				{			
 					var data=window.location+"&passCnt="+passCntNew;
-					//console.log("else url:" +window.location);
-
 					window.location.replace(data);
 				}
 			}
@@ -158,8 +145,6 @@
 		}).change();
 		
 		
-
-			
 	//
 	});  // End Doc ready
 	
@@ -168,42 +153,45 @@
 			function initPage(){
 
 
-			
-var CssDebug = true // turn off and on as you please
+									
+					var CssDebug = false // turn off and on as you please
 
-if(CssDebug){    
-            //Cache Buster
-(function (){
-  var rep = /.*\?.*/,
-      links = document.getElementsByTagName('link'),
-      scripts = document.getElementsByTagName('script'),
-      process_scripts = false;
-  for (var i=0;i<links.length;i++){
-    var link = links[i],
-        href = link.href;
-    if(rep.test(href)){
-      link.href = href+'&'+Date.now();
-    }
-    else{
-      link.href = href+'?'+Date.now();
-    }
+					if(CssDebug){    
+									//Cache Buster
+						(function (){
+						  var rep = /.*\?.*/,
+							  links = document.getElementsByTagName('link'),
+							  scripts = document.getElementsByTagName('script'),
+							  process_scripts = false;
+						  for (var i=0;i<links.length;i++){
+							var link = links[i],
+								href = link.href;
+							if(rep.test(href)){
+							  link.href = href+'&'+Date.now();
+							}
+							else{
+							  link.href = href+'?'+Date.now();
+							}
 
-  }
-  if(process_scripts){
-    for (var i=0;i<scripts.length;i++){
-      var script = scripts[i],
-          src = script.src;
-      if(rep.test(src)){
-        script.src = src+'&'+Date.now();
-      }
-      else{
-        script.src = src+'?'+Date.now();
-      }
+						  }
+						  if(process_scripts){
+							for (var i=0;i<scripts.length;i++){
+							  var script = scripts[i],
+								  src = script.src;
+							  if(rep.test(src)){
+								script.src = src+'&'+Date.now();
+							  }
+							  else{
+								script.src = src+'?'+Date.now();
+							  }
 
-    }
-  }
-})();
-}
+							}
+						  }
+						})();
+					}
+					
+					
+					
 						// turn off depart time and arrivals until we check if we need to re-enable them
 						document.getElementById("departTime").setAttribute("disabled",true);
 						document.getElementById("arriveLocation").setAttribute("disabled",true);
@@ -283,6 +271,7 @@ if(CssDebug){
 							document.getElementById("departDate").removeAttribute("disabled");
 							document.getElementById("departTime").removeAttribute("disabled");
 							document.getElementById("bookPrice").removeAttribute("hidden");
+							document.getElementById("journeyTime").removeAttribute("hidden");
 							document.getElementById("submitBookingBtn").removeAttribute("disabled");
 							document.getElementById("passengerCnt").removeAttribute("disabled");
 
@@ -370,6 +359,7 @@ if(CssDebug){
 							<!-- our booking confirm button for later that will trigger a model to process payment -->
 							<button id="submitBookingBtn" disabled type=submit>Book!</button>
 							<p id="bookPrice" hidden>Booking Price: {{ bookingPrice }}</p>
+							<p id="journeyTime" hidden>Estimated Journey Time: {{ form.journeyTime }}</p>
 							</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index: 1; border: 1px solid #f00;">
