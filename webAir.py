@@ -58,6 +58,17 @@ def getListOfDepartureTimes(departure, arrival):
 	conn.close()
 	return departTimes	
 
+# returns a list of depart times based on matching departure/arrival
+def getListOfArrivalTimes(departure, arrival):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT *, Arrival Time FROM webairtt WHERE Departure = %s AND Arrival = %s'
+	args = (departure, arrival)
+	cursor.execute(query,args)
+	arriveTimes = cursor.fetchall()
+	conn.close()
+	return arriveTimes	
+
 # returns list of arrivals with matched departure
 def getPresetPrice(departure,arrival):
 	conn = getConnection()
@@ -176,11 +187,43 @@ def createPlaneForm(depart_location,arrive_location,passenger_count):
 		departDateMin = date.today()
 		
 		passCnt = passenger_count
-		passCntMin = 1
+		passCntMin= 1
 		
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--"): 
 			passCntMax = getNumOfSeatsLeftAir(depart_location,arrive_location)
+			
+			# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
+			arrivalTime = getListOfArrivalTimes(depart_location,arrive_location)
+			departureTime = getListOfDepartureTimes(depart_location,arrive_location)
+
+			#first one we get from list
+			atime = arrivalTime[0]
+			dtime = departureTime[0]
+			
+			# calculate the difference
+			calcTime = atime[4] - dtime[2]
+			# find out how many hours it is and store the remainder
+			hours, remainder = divmod(calcTime.seconds, 3600)			
+			# divide the remainder into seconds/minutes left
+			minutes, seconds = divmod(remainder, 60)
+			
+			#just some general output formatting, when will minutes ever be 1? prob never
+			if(minutes == 0):
+				if(hours > 1):
+					journeyTime = "%d hours" % (hours)
+				else:
+					journeyTime = "%d hour" % (hours)					
+			else:
+				if(hours > 1):
+					journeyTime = "%d hours and %d minutes" % (hours,minutes)
+				else:
+					if(hours == 0):
+						journeyTime = "%d minutes" % (minutes)
+					else:
+						journeyTime = "%d hour and %d minutes" % (hours,minutes)
+						
+			
 		else:
 			passCntMax = 1 # when the field is grayed out we still need to assign it something
 		
@@ -188,6 +231,8 @@ def createPlaneForm(depart_location,arrive_location,passenger_count):
 		departLocation = buildDeparturesField()
 		arriveLocation = buildArrivalsField(depart_location)
 		departTime = buildDepartTimesField(depart_location,arrive_location)
+		
+
 
 	return planeForm()
 	
