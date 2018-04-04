@@ -1,10 +1,12 @@
-#! C:/Users/wildcard/AppData/Local/Programs/Python35/python.exe
+#! C:/Users/User/AppData/Local/Programs/Python35/python.exe
 
 from flask import Flask, render_template, request, redirect
 
 #import everything from webAir.py
 from webAir import *
+#import everything from webTrain.py
 from webTrain import *
+
 
 app = Flask(__name__)
 
@@ -58,30 +60,31 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 	passenger_count=0
 	
 	if travel_method == "plane":
-		slideImage = "GTplane.jpg"
+		slideImage = "grandTravellogo.png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		#form.arriveLocation = buildArrivalsField(depart_location)
 		#form.arriveLocation = buildArrivalsFeild(depart_location)
-
+		if depart_location == "Cardiff": # just a test * remove later
+			slideImage = ""
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "train": # needs changing
-		slideImage = "GTtrain.jpg"
+		slideImage = "grandTravellogo.png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 	elif travel_method == "bus": # needs changing
-		slideImage = "GTbus.jpg"
+		slideImage = "grandTravellogo.png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "taxi": # needs changing
-		slideImage = "GTtaxi.jpg"
+		slideImage = ".png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 	
 	elif travel_method == "ferry": # needs changing
-		slideImage = "GTferry.jpg"
+		slideImage = "grandTravellogo.png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
@@ -94,7 +97,7 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>') 
 def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="--", passenger_count=1):
 	if travel_method == "plane":
-		slideImage = "GTplane.jpg"
+		slideImage = "grandTravellogo.png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		if(int(passenger_count) <= form.passCntMax):
 			printedPrice = "£" + str(int(getPresetPrice(depart_location,arrive_location)) * int(passenger_count))
@@ -105,22 +108,22 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice)
 		
 	elif travel_method == "train": # needs changing
-		slideImage = "GTtrain.jpg"
+		slideImage = "grandTravellogo.png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 	elif travel_method == "bus": # needs changing
-		slideImage = "GTbus.jpg"
+		slideImage = "grandTravellogo.png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 	elif travel_method == "taxi": # needs changing
-		slideImage = "GTtaxi.jpg"
+		slideImage = ".png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 	
 	elif travel_method == "ferry": # needs changing
-		slideImage = "GTferry.jpg"
+		slideImage = "grandTravellogo.png"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
