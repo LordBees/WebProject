@@ -211,14 +211,18 @@ def createPlaneForm(depart_location,arrive_location,passenger_count):
 			#just some general output formatting, when will minutes ever be 1? prob never
 			if(minutes == 0):
 				if(hours > 1):
-					journeyTime = "%d hour" % (hours)
+					journeyTime = "%d hours" % (hours)
 				else:
-					journeyTime = "%d hours" % (hours)					
+					journeyTime = "%d hour" % (hours)					
 			else:
 				if(hours > 1):
 					journeyTime = "%d hours and %d minutes" % (hours,minutes)
 				else:
-					journeyTime = "%d hour and %d minutes" % (hours,minutes)
+					if(hours == 0):
+						journeyTime = "%d minutes" % (minutes)
+					else:
+						journeyTime = "%d hour and %d minutes" % (hours,minutes)
+						
 			
 		else:
 			passCntMax = 1 # when the field is grayed out we still need to assign it something
