@@ -1,4 +1,4 @@
-#! C:/Users/User/AppData/Local/Programs/Python35/python.exe
+#! C:/Users/wildcard/AppData/Local/Programs/Python35/python.exe
 
 from flask import Flask, render_template, request, redirect
 

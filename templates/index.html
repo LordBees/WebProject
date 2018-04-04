@@ -308,21 +308,20 @@
 <body>
 
 
-<div class=" wrapper w24 h23"> <!-- wrapper -->
+<div class="wrapper w24 h23"> <!-- wrapper -->
 	<div class="wrapperCont w16 h24">
 		<!--<div class="col w24 h1 socBar"></div> <!-- social links -->
 		<div class="col w24 h6"> <!-- banner logo space -->
 			<!-- banner logo -->
-			<div class="col w8 h24 grey"><img class="bannerLogo";" src="{{ url_for('static', filename='assets/grandTravellogo.png') }}" height="100%" width="100%"></div>
+			<div class="col w6 h24 grey"><img class="bannerLogo" src="{{ url_for('static', filename='assets/grandTravellogo.png') }}" height="100%" width="300%"></div>
 			<!-- banner text -->
-			<div class=" col w18 h24 banner invert white">
+			<div class="col w18 h24 banner invert white">
 				<!--<img class="bannerLogo" style="float:left;">-->
 				Grand Travel
 			</div>
 		</div> 
 		
-		<div class="navright">
-		<div class="  col w24 h1 nav pointer"><!-- navbar --> 
+		<div class="col w24 h1 nav pointer"><!-- navbar --> 
 			<ul>
 				<li class="col w3 h24 dark invert" onclick="plane()">PLANE</a></li>
 				<li class="col w3 h24 dark invert" onclick="train()">TRAIN</a></li>
@@ -332,51 +331,43 @@
 
 			</ul>			
 		</div>
-		</div>
 		
-		<div class="center col w24 h18 black"><!-- slidshow --> 
+		<div class="col w24 h18 black"><!-- slidshow --> 
 			<!-- div holding left slideshow arrow -->
 			<!--<div class="col w4 h24 black arrow" onclick="backImage()"></div>-->
 			<!-- main slideshow window -->
 			<div class="col w24 h24 slideshowContainer fade">					
 				<div style=" height: 100%">
-				
 					<!-- slideshow 1st image placeholder -->
-					<div class="center textup">
-					<div style="width: 1000px; height: 360px; position: relative; border: 0px solid #000;">
-					
+					<div style="width: 100%; height: 100%; position: relative; border: 1px solid #000;">
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
-							<form method=post style="position: absolute; padding:0%; width:75%; height:100%; z-index: 2; color:white; background-color:black; opacity: 0.6;  border: 1px solid #;">
-							
-							<label for="party">Choose your Departure location:</label><br> <br>
-								{{ form.departLocation.__call__(**{'class': 'form-control'}) }}<br> <br>
+							<form method=post style="position: absolute; padding:10%; width:100%; height:100%; z-index: 2; color:white; background-color:black; opacity: 0.8;  border: 1px solid #0ff;">
+							<label for="party">Choose your Departure location:</label><br>	
+								{{ form.departLocation.__call__(**{'class': 'form-control'}) }}<br>
 							
 							<!-- greyed out until a departure is selected, too much irrelevant information to process -->
-							<label  for="party">Choose your Arrival location:</label><br> <br>	
-								{{ form.arriveLocation.__call__(**{'class': 'form-control'}) }} <br> <br>
+							<label for="party">Choose your Arrival location:</label><br>	
+								{{ form.arriveLocation.__call__(**{'class': 'form-control'}) }}<br>
 		
 							<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
-							<label for="party">Choose your Departure time:</label><br> <br>
-								{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br> <br>
-								
-							<label for="party">Choose your Departure Date:</label><br> <br>
-							<input type="date" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} disabled><br> <br>
-							
-							<label for="party">How many are traveling:</label><br> <br>
+							<label for="party">Choose your Departure time:</label><br>
+								{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br>
+							<label for="party">Choose your Departure Date:</label><br>
+							<input type="date" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} disabled><br>
+							<label for="party">How many are traveling:</label><br>
 							<input type="number" id="passengerCnt" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled><br><br>
 							<!-- our booking confirm button for later that will trigger a model to process payment -->
-							<button id="submitBookingBtn" disabled type=submit>Book!</button>	
+							<button id="submitBookingBtn" disabled type=submit>Book!</button>
 							<p id="bookPrice" hidden>Booking Price: {{ bookingPrice }}</p>
 							<p id="journeyTime" hidden>Estimated Journey Time: {{ form.journeyTime }}</p>
 							</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
-						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="75%" height="100%" style="position: absolute; z-index: 1; border: 0px solid #f00;">
+						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index: 1; border: 1px solid #f00;">
 					</div>
 
 					<!--<img id="slideshow" src="" />-->
 				</div>
-			</div>
-			</div>
+			</div> 					
 			<!-- div holding right slideshow arrow -->
 			<!--<div id="right" class="col w4 h24 black arrow" onclick="slideImage()" style="float:right;"></div> -->	
 		</div><!-- end of slideshow window -->

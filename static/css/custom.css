@@ -12,7 +12,7 @@ body{
 	padding:0;
 	color:white;
 
-	background-image: url(../assets/);
+	background-image: url(../assets/background.jpg);
 	background-repeat: repeat-x;
 	background-attachment: fixed;
 	background-size:cover;
@@ -39,7 +39,7 @@ a{
 		background-color:#ff0000;
 	}
 	.black{
-		background-color:#FFFFFF;
+		background-color:#000000;
 	}
 	.blue{
 		background-color:#0000ff;
@@ -112,26 +112,18 @@ a{
 
 
 	.center {
-	margin: auto;
-    width: 70%;
-    padding: 1%;
+
 	}
 
 
 	.grey{
 		background-color:#333;
-		
 	}
 
 	.invert a{
 		color:#fff;
 	}
-	
-	
-	.navright {
-		position:relative;
-		left:20%;
-	
+
 	.text{
 		position:absolute;
 		top:0;
@@ -146,15 +138,6 @@ a{
 		font-size:70%;
 	}
 
-	.textup{
-		position:absolute;
-		bottom: 20%;
-		background-color:rgba(0,0,0,0.6);
-		color:#fff;
-		text-align:left;
-		letter-spacing:0.2em;
-		font-size:90%;
-	}
 
 	.logo{
 		padding:1%;
@@ -182,7 +165,6 @@ a{
 	.bannerLogo{
 		max-height:100%;
 		max-width:100%;
-		
 
 	}
 
@@ -298,7 +280,7 @@ a{
 	.nav{
 		margin:0;
 		padding:0;
-		font-size:150%;
+		font-size:200%;
 		text-align:center;
 		line-height: 100%;
 		list-style-type:none;
@@ -327,15 +309,15 @@ a{
 		padding:0;
 		font-size:75%;
 		text-align:center;	
-		height:75%;
-		background-color:#;
+		height:100%;
+		background-color:#333;
 		list-style-type: none;
 
 	}
 
 	ul.nav div{
-		float:middle;
-		padding:0;
+		float:left;
+		padding: 0;
 		margin:0;
 		line-height:2.5em;
 		height:100%;
