@@ -16,8 +16,8 @@ body{
 }
 
 *{
-	position:relative;
-	box-sizing:border-box; /* Includes border and padding in set width */
+	position:center;
+	/*box-sizing:border-box; /* Includes border and padding in set width */
 }
 
 
@@ -282,6 +282,7 @@ ul.nav a:hover{
 .h24{
 	height:100% !important;
 	min-height:100% !important;
+	
 	
 }
 
