@@ -185,9 +185,9 @@ def createTrainForm(depart_location,arrive_location,passenger_count):
 			passCntMax = 1 # when the field is grayed out we still need to assign it something
 		
 		# loading our form fields
-		departLocation = buildDeparturesField()
-		arriveLocation = buildArrivalsField(depart_location)
-		departTime = buildDepartTimesField(depart_location,arrive_location)
+		departLocation = buildDeparturesFieldTrain()
+		arriveLocation = buildArrivalsFieldTrain(depart_location)
+		departTime = buildDepartTimesFieldTrain(depart_location,arrive_location)
 
 	return TrainForm()
 	
