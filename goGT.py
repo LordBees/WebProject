@@ -60,7 +60,7 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 	passenger_count=0
 	
 	if travel_method == "plane":
-		slideImage = "grandTravellogo.png"
+		slideImage = "grandTravellogo.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count)
 		#form.arriveLocation = buildArrivalsField(depart_location)
 		#form.arriveLocation = buildArrivalsFeild(depart_location)

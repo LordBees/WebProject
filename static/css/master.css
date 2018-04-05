@@ -134,10 +134,12 @@ ul.nav a:hover{
 	width:calc(99.98% * 7 / 24) !important; 
 }
 .w8{
-	width:calc(99.98% * 8 / 24) !important; 
+	width:calc(99.98% * 8 / 24) !important;
+	margin-top: 5%;
 }
 .w9{
 	width:calc(99.98% * 9 / 24) !important; 
+	
 }
 .w10{
 	width:calc(99.98% * 10 / 24) !important; 
@@ -483,8 +485,8 @@ ul.nav a:hover{
 /* MASTER BACKGROUND COLOUR*/
 
 .invert{
-	background-color:#333333;
-	color:#fff;
+	background-color:#;
+	color:#black;
 }
 .white{
 	background-color:#ffffff;
