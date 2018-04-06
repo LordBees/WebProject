@@ -22,7 +22,8 @@
 		// departure/arrival strings to check later on
 		var departName = $('#departLocation').find(":selected").text();	
 		var arriveName = $('#arriveLocation').find(":selected").text();	
-		var passCnt = $('#passengerCnt').val();
+		var passCntA = $('#passengerCntAdult').val();
+		var passCntC = $('#passengerCntChild').val();
 		var dtime = $('#departTime').find(":selected").text()
 
 		
@@ -133,31 +134,93 @@
 			}).change();
 		
 		
-		$("#passengerCnt").change(function(e) {
+		$("#passengerCntAdult").change(function(e) {
 		
 			// if we already have an arrival in the url but we have changed our mind we still need to process it		
-			if(window.location.href.indexOf("&passCnt=") > -1)
+			if(window.location.href.indexOf("&passCntA=") > -1)
 			{
-				var passCntNew = $('#passengerCnt').val();
+			
+			
+	
+	
+			
+			
+			
+				var passCntANew = $('#passengerCntAdult').val();
 				
-				if(passCntNew != passCnt)
+				if(passCntANew != passCntA)
 				{				
-					var data=window.location.href+"&passCnt="+passCnt;
+				
+						/*	var originalURL = window.location.href;
+				var replaceWord = '&passCntA='+passCntA;
+							
+				var re = /&passCntA=\d+/g; 
+				var subst = replaceWord;
+				var newURL = originalURL.replace(re, subst);
+			
+
+				console.log("new url:" + newURL);
+
+				window.location.replace(newURL);
+				*/
+					var data=window.location.href+"&passCntA="+passCntA;
 					//console.log("if url:" +window.location);
 					var url = window.location.toString();
-					var prevUrl = url.split("&passCnt");
-					window.location.replace(prevUrl[0]+"&passCnt="+passCntNew, "&passCnt="+passCnt);
+					var prevUrl = url.split("&passCntA");
+					window.location.replace(prevUrl[0]+"&passCntA="+passCntANew+"&passCntC="+passCntC, "&passCntA="+passCntANew+"&passCntC="+passCntC);
 				}
 
 			}
 			// pages is fresh with no arrivals previously selected so lets process that
 			else
 			{
-				var passCntNew = $('#passengerCnt').val();
-				console.log(passCntNew);
-				if(passCntNew != passCnt)
+				var passCntANew = $('#passengerCntAdult').val();
+
+				console.log(passCntANew);
+				if(passCntANew != passCntA)
+				{
+				console.log("child count is:"+passCntC);
+					
+						var data=window.location+"&passCntA="+passCntANew+"&passCntC="+passCntC;
+						window.location.replace(data);
+					
+					
+				}
+			}
+		
+			// important so that this function doesn't just run once
+			if(e.originalEvent) {
+			
+				window.location.assign();
+			}
+		}).change();
+		
+		
+				$("#passengerCntChild").change(function(e) {
+		
+			// if we already have an arrival in the url but we have changed our mind we still need to process it		
+			if(window.location.href.indexOf("&passCntC=") > -1)
+			{
+				var passCntCNew = $('#passengerCntChild').val();
+				
+				if(passCntCNew != passCntC)
+				{				
+					var data=window.location.href+"&passCntC="+passCntC;
+					//console.log("if url:" +window.location);
+					var url = window.location.toString();
+					var prevUrl = url.split("&passCntC");
+					window.location.replace(prevUrl[0]+"&passCntC="+passCntCNew, "&passCntC="+passCntC);
+				}
+
+			}
+			// pages is fresh with no arrivals previously selected so lets process that
+			else
+			{
+				var passCntCNew = $('#passengerCntChild').val();
+				console.log(passCntCNew);
+				if(passCntCNew != passCntC)
 				{			
-					var data=window.location+"&passCnt="+passCntNew;
+					var data=window.location+"&passCntA="+passCntCNew;
 					window.location.replace(data);
 				}
 			}
@@ -169,11 +232,15 @@
 			}
 		}).change();
 		
+		
 		$("#departTime").change(function(e) {
 					
 								console.log("detected change in time");
 
 			var dtimeNew = $('#departTime').val();
+			var passCntANew = $('#passengerCntAdult').val();
+			var passCntCNew = $('#passengerCntChild').val();
+
 
 			if(window.location.href.indexOf("&Time=") > -1)
 			{
@@ -184,7 +251,7 @@
 						//console.log("if url:" +window.location);
 						var url = window.location.toString();
 						var prevUrl = url.split("&Time=");
-						window.location.replace(prevUrl[0]+"&Time="+dtimeNew, "&Time="+dtime);
+					window.location.replace(prevUrl[0]+"&passCntA="+passCntANew+"&passCntC="+passCntCNew+"&Time="+dtimeNew, "&passCntA="+passCntA+"&passCntC="+passCntC+"&Time="+dtime);
 								
 					
 					}
@@ -195,8 +262,13 @@
 					
 
 						var departTimeNew = $('#departTime').find(":selected").text();
-			
-						var data=window.location+"&Time="+departTimeNew;
+						
+						var url = window.location.toString();
+
+						var prevUrl = url.split("&passCntA=");
+
+						var data=prevUrl[0]+"&passCntA="+passCntANew+"&passCntC="+passCntCNew+"&Time="+dtimeNew;
+
 						window.location.replace(data);					
 				
 			}
@@ -387,7 +459,8 @@
 						if(location.indexOf("Arrival") > -1) {
 							document.getElementById("departDate").removeAttribute("disabled");
 							document.getElementById("departTime").removeAttribute("disabled");
-							document.getElementById("passengerCnt").removeAttribute("disabled");
+							document.getElementById("passengerCntChild").removeAttribute("disabled");
+							document.getElementById("passengerCntAdult").removeAttribute("disabled");
 							
 							var arrivalsList = document.getElementById("arriveLocation");
 							arrivalsList.remove(0); 
@@ -402,8 +475,8 @@
 							departTimeList.remove(0); 	
 						}
 						
-						var passengerCount = document.getElementById("passengerCnt").value
-						if((location.indexOf("passCnt") > -1) && passengerCount > 0){
+						var passengerCount = document.getElementById("passengerCntAdult").value
+						if((location.indexOf("passCntA") > -1) && passengerCount > 0){
 							document.getElementById("bookPrice").removeAttribute("hidden");
 
 							var departDateValue = document.getElementById ("departDate");
@@ -418,7 +491,8 @@
 							console.log("new time: " + departTimeValue);
 
 							if(
-							( window.location.href.indexOf("&passCnt=") > -1)&&
+							( window.location.href.indexOf("&passCntA=") > -1)||
+							( window.location.href.indexOf("&passCntC=") > -1)&&
 							( window.location.href.indexOf("&Date=") > -1)&&
 							( window.location.href.indexOf("&Time=") > -1))
 							{
@@ -490,7 +564,7 @@
 					<li class="col w3 h24 gtblue invert navButton" onclick="taxi()">TAXI</a></li>
 					<li class="col w3 h24 gtblue invert navButton" onclick="ferry()">FERRY</a></li>
 					<li class="col w5 h24 white nohover"></a></li>
-				</ul>			
+				</ul>				
 			</div>
 		</div> 
 		<div class="col w24 h17 black "><!-- slidshow --> 
@@ -502,24 +576,25 @@
 					<!-- slideshow 1st image placeholder -->
 					<div style="width: 100%; height: 100%; position: relative; color:white; background-color:black;  border-top: 1px solid #fff;">
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
-							<form method=post style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
+							<form class="form" action={{ url_for('submit_form') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
+							<input name="travelMethod" type="text" value={{slideImage}} hidden>
 							<label for="party">Choose your Departure location:</label><br>	
 								{{ form.departLocation.__call__(**{'class': 'form-control'}) }}<br>
 							
 							<!-- greyed out until a departure is selected, too much irrelevant information to process -->
 							<label for="party">Choose your Arrival location:</label><br>	
 								{{ form.arriveLocation.__call__(**{'class': 'form-control'}) }}<br>
-		
+							
 							<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
 							<label for="party">How many are traveling:</label><br>
 							<label for="party">Adult:</label>							
-							<input type="number" id="passengerCnt" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled>
+							<input type="number" name="passengerCntAdult" id="passengerCntAdult" min={{form.passCntAdultMin}} max={{ form.passCntAdultMax }} value={{ form.passCntAdult}} disabled>
 							<label for="party">Child:</label>							
-							<input type="number" id="passengerCntChild" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled><br>
+							<input type="number" id="passengerCntChild" min={{form.passCntChildMin}} max={{ form.passCntChildMax }} value={{ form.passCntChild}} disabled><br>
 							<label for="party">Choose your Departure time:</label><br>
 								{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br>
 							<label for="party">Choose your Departure Date:</label><br>
-							<input type="date" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>
+							<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>
 							<!-- our booking confirm button for later that will trigger a model to process payment -->
 							<button id="submitBookingBtn" disabled type=submit>Book!</button>
 							<p id="bookPrice" hidden>Booking Price: {{ bookingPrice }}</p>
