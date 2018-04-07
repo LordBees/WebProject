@@ -576,29 +576,30 @@
 					<!-- slideshow 1st image placeholder -->
 					<div style="width: 100%; height: 100%; position: relative; color:white; background-color:black;  border-top: 1px solid #fff;">
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
-							<form class="form" action={{ url_for('submit_form') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
-							<input name="travelMethod" type="text" value={{slideImage}} hidden>
-							<label for="party">Choose your Departure location:</label><br>	
-								{{ form.departLocation.__call__(**{'class': 'form-control'}) }}<br>
-							
-							<!-- greyed out until a departure is selected, too much irrelevant information to process -->
-							<label for="party">Choose your Arrival location:</label><br>	
-								{{ form.arriveLocation.__call__(**{'class': 'form-control'}) }}<br>
-							
-							<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
-							<label for="party">How many are traveling:</label><br>
-							<label for="party">Adult:</label>							
-							<input type="number" name="passengerCntAdult" id="passengerCntAdult" min={{form.passCntAdultMin}} max={{ form.passCntAdultMax }} value={{ form.passCntAdult}} disabled>
-							<label for="party">Child:</label>							
-							<input type="number" id="passengerCntChild" min={{form.passCntChildMin}} max={{ form.passCntChildMax }} value={{ form.passCntChild}} disabled><br>
-							<label for="party">Choose your Departure time:</label><br>
-								{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br>
-							<label for="party">Choose your Departure Date:</label><br>
-							<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>
-							<!-- our booking confirm button for later that will trigger a model to process payment -->
-							<button id="submitBookingBtn" disabled type=submit>Book!</button>
-							<p id="bookPrice" hidden>Booking Price: {{ bookingPrice }}</p>
-							<p id="journeyTime" hidden>Estimated Journey Time: {{ form.journeyTime }}</p>
+							<form class="form" action={{ url_for('passenger_form') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
+								<input name="travelMethod" type="text" value={{slideImage}} hidden>
+								<label for="party">Choose your Departure location:</label><br>	
+									{{ form.departLocation.__call__(**{'class': 'form-control'}) }}<br>
+								
+								<!-- greyed out until a departure is selected, too much irrelevant information to process -->
+								<label for="party">Choose your Arrival location:</label><br>	
+									{{ form.arriveLocation.__call__(**{'class': 'form-control'}) }}<br>
+								
+								<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
+								<label for="party">How many are traveling:</label><br>
+								<label for="party">Adult:</label>							
+								<input type="number" name="passengerCntAdult" id="passengerCntAdult" min={{form.passCntAdultMin}} max={{ form.passCntAdultMax }} value={{ form.passCntAdult}} disabled>
+								<label for="party">Child:</label>							
+								<input type="number" id="passengerCntChild" min={{form.passCntChildMin}} max={{ form.passCntChildMax }} value={{ form.passCntChild}} disabled><br>
+								<label for="party">Choose your Departure time:</label><br>
+									{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br>
+								<label for="party">Choose your Departure Date:</label><br>
+								<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>
+								<!-- our booking confirm button for later that will trigger a model to process payment -->
+								<button id="submitBookingBtn" disabled type=submit>Book!</button>
+								<p id="bookPrice" name="bookPrice" hidden>Booking Price:  £ {{ bookingPrice }}</p>
+								<input id="bookingPrice" name="bookingPrice" value={{bookingPrice}} hidden>
+								<p id="journeyTime" hidden>Estimated Journey Time: {{ form.journeyTime }}</p>
 							</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.5; ">

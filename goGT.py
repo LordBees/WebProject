@@ -2,12 +2,32 @@
 
 from flask import Flask, render_template, request, redirect
 
+from wtforms import Form, validators, TextField
+from wtforms_components import DateRange, SelectField, IntegerField
+from wtforms.validators import Length, NumberRange, DataRequired, InputRequired
+from wtforms.fields.html5 import DateField
+
 #import everything from our travel method implementation files
 from webAir import *
 from webTrain import *
 
 
 app = Flask(__name__)
+
+
+
+def createPassengerForm(passenger_count):
+	class passengerForm(Form):
+		
+		testlist = [5]
+		passengerFirstNameFields = []
+		passengerLastNameFields = []
+		passengerAgeFields = []
+		for passenger in passenger_count:
+			passengerFirstNameFields.append(TextField('First Name'))
+			passengerLastNameFields.append(TextField('Last Name'))
+			passengerAgeFields.append(TextField('Age'))
+	return passengerForm()
 
 # basically makes plane travel form the default form that pops up 
 @app.route("/")
@@ -117,7 +137,7 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 		slideImage = "GTplane.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count_adult,passenger_count_child,dtime,depart_date)
 		if(int(passenger_count_adult) <= form.passCntAdultMax):
-			printedPrice = "£" + str(int(getPresetPricePlain(depart_location,arrive_location)) * int(passenger_count_adult))
+			printedPrice = str(int(getPresetPricePlain(depart_location,arrive_location)) * int(passenger_count_adult))
 		else:
 			printedPrice = "not enough seats"
 
@@ -144,8 +164,8 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 		
-@app.route('/submit_form', methods=['POST'])
-def submit_form():
+@app.route('/passenger_form', methods=['POST'])
+def passenger_form():
 	print("in submitted form")
 	#if request.method =='POST':
 	travel_method=request.form['travelMethod']
@@ -162,9 +182,15 @@ def submit_form():
 		
 	departure_location=request.form['departLocation']
 	arrival_location=request.form.get('arriveLocation')
-	passengerCount = request.form['passengerCntAdult']
+	passengerCount = int(request.form['passengerCntAdult'])
 	departTime=request.form['departTime']
 	departDate=request.form['departDate']
+	bookingPrice = str(request.form.get('bookingPrice'))
+
+	
+	form = createPassengerForm(str(passengerCount))
+
+	
 	print("travel: "+ travel_method)
 	#print("depart: "+ departure_location)
 	#print("arrive: "+ arrival_location)
@@ -173,15 +199,75 @@ def submit_form():
     # your code
     # return a response
 	
-	return render_template("process_form.html",
+	return render_template("passenger_form.html",
+							form=form,
 							slideImage="GTplane.jpg",
 							travel_method=travel_method,
 							departure_location=departure_location,
 							arrival_location=arrival_location,
 							departTime=departTime,
 							departDate=departDate,
-							passengerCount=passengerCount)
+							passengerCount=passengerCount,
+							bookingPrice=bookingPrice)
 		
+		
+@app.route('/purchase_form', methods=['POST'])
+def purchase_form():
+	print("in purchase form")
+	travel_method = request.form.get('travel_method')
+	departure_location = request.form.get('departure_location')
+	arrival_location = request.form.get('arrival_location')
+	departTime = request.form.get('departTime')
+	departDate = request.form.get('departDate')
+	passengerCount = int(request.form.get('passengerCount'))
+	bookingPrice = str(request.form.get('bookingPrice'))
+
+	print("travel_method = " + travel_method)
+	print("departure_location = " + departure_location)
+	print("arrival_location = " + arrival_location)
+	print("departTime = " + departTime)
+	print("departDate = " + departDate)
+	print("passengerCount = " + str(passengerCount))
+	print("bookingPrice = " + bookingPrice)
+	
+	i = 1
+	bookPricePerPassenger = float(bookingPrice) / passengerCount
+	print("bookPricePerPassenger = "+ str(bookPricePerPassenger))
+	finalBookingPrice = 0
+	
+	while i <= passengerCount:
+		print("i = "+ str(i))
+	
+		passengerAge = int(request.form.get('passengerAge'+str(i)))
+		print("passenger "+str(i)+" :"+str(passengerAge))
+		#if there is a child, but only discount on children not traveling alone
+		if (passengerAge < 10 and passengerCount > 1 ):
+			finalBookingPrice += (float(bookPricePerPassenger * 0.75))
+		else:
+			finalBookingPrice += bookPricePerPassenger
+		i=i+1
+		
+	print("after")
+	
+	#if(
+	#float(bookingPrice) 
+
+	form = createPassengerForm(str(passengerCount))
+
+	return render_template("purchase_form.html",
+							form=form,
+							slideImage="GTplane.jpg",
+							travel_method=travel_method,
+							departure_location=departure_location,
+							arrival_location=arrival_location,
+							departTime=departTime,
+							departDate=departDate,
+							passengerCount=passengerCount,
+							bookingPrice=bookingPrice,
+							discountedPrice=finalBookingPrice)
+
+	
+	
 # run the flask app (aka. host our website)
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
