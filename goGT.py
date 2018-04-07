@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, redirect
 #import everything from our travel method implementation files
 from webAir import *
 from webTrain import *
+from webFerry import *
 
 
 app = Flask(__name__)
@@ -52,7 +53,7 @@ def formatToTravMeth(travel_method=""):
 	
 	elif travel_method == "ferry": # needs changing
 		slideImage = "GTferry.jpg"
-		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
+		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
 	
 
@@ -90,7 +91,7 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 	
 	elif travel_method == "ferry": # needs changing
 		slideImage = "GTferry.jpg"
-		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
+		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 
@@ -153,7 +154,7 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 	
 	elif travel_method == "ferry": # needs changing
 		slideImage = "GTferry.jpg"
-		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
+		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
 		
 # run the flask app (aka. host our website)
