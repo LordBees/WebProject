@@ -20,3 +20,7 @@ def executequerywithargs(qry,args):
         result = cursor.fetchall()
         conn.close()
         return result
+
+def executequerywithoutargs(qry):
+        args = ()
+        executequerywithargs(qry,args)

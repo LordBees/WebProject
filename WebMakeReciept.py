@@ -15,7 +15,7 @@ SQLpre = "SELECT * FROM "
 SQLpost = " WHERE ID = %s"
 
 # system path to save reciepts into
-RecieptPath = ""
+RecieptPath = "reciepts\\"
 RecieptExt =  ".txt"
 
 
@@ -26,13 +26,28 @@ RecieptExt =  ".txt"
 def readfile(name):
     pass
 
-def writefilearray(name,data,ext = RecieptExt,fpath=RecieptPath):
-    f = open(fpath+name+ext,'w')
-    f.close()
 
-def RecieptExists():
+##writes file array each entry is a new line
+
+def writefilearray(name,data,Table,ext = RecieptExt,fpath=RecieptPath):
+    f = open(fpath+Table+"\\"+str(name)+ext,'w')
+    for x in data:
+        f.write(x+'\n')
+    f.close()##add safety to this
+
+##
+def chk_RF_exists(Ttype):##checks+creates folders for transport types
+    print("dircheck: "+Ttype)
+    if(not os.path.isdir(RecieptPath+Ttype)):
+        print("making dir:"+Ttype)
+        os.mkdir(RecieptPath+Ttype)
+##
+def RecieptExists(Ttype,rid):##checks whether reciept exists for a given transport type
     ##fsexists
-    pass
+    if(os.path.isfile(RecieptPath+Ttype+"\\"+str(rid)+RecieptExt)):
+        return True
+    return False
+
 def prep_reciept(data):#format reciept for printing to file
     BookID =data[0][0]
     PFname =data[0][1]
@@ -67,9 +82,12 @@ def prep_reciept(data):#format reciept for printing to file
 ##get query
 ##open file name = Reciepts/[bookingref].txt
 ##write contents and close
+##takes the raw table name for the query and the reciept id to write
+##returns the recieptd id on completion or -1 for fail if needed
 def WriteReciept(Table,recieptid):#
-    if(RecieptExists()):
-        return recieptname
+    chk_RF_exists(Table)
+    if(RecieptExists(Table,recieptid)):
+        return recieptid
     ##process receipt
     #conn = Qman.getconn()
     #if (conn == None):
@@ -81,8 +99,12 @@ def WriteReciept(Table,recieptid):#
     print ('\n data got:\n',result,'\n')
     #return result
     rdat = prep_reciept(result)
-    for x in rdat:
-        print(x)
+    for x in rdat:##debug print result
+        print(x)##
+    writefilearray(recieptid,rdat,Table)#
+    return recieptid
+
+    
     
     
 
