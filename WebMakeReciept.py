@@ -18,9 +18,25 @@ SQLpost = " WHERE ID = %s"
 RecieptPath = "reciepts\\"
 RecieptExt =  ".txt"
 
+##debug mode
+SCRIPT_DEBUG = False
+
+
+
 
 
 ##functions/procs
+
+####
+##desc:
+#
+##inputs
+#
+##outputs
+#
+##misc
+#
+####
 
 ##file io
 def readfile(name):
@@ -28,25 +44,54 @@ def readfile(name):
 
 
 ##writes file array each entry is a new line
-
 def writefilearray(name,data,Table,ext = RecieptExt,fpath=RecieptPath):
     f = open(fpath+Table+"\\"+str(name)+ext,'w')
     for x in data:
         f.write(x+'\n')
     f.close()##add safety to this
 
-##
+##check for folder for each table
 def chk_RF_exists(Ttype):##checks+creates folders for transport types
-    print("dircheck: "+Ttype)
+    if(SCRIPT_DEBUG):
+        print("dircheck: "+Ttype)
     if(not os.path.isdir(RecieptPath+Ttype)):
-        print("making dir:"+Ttype)
+        if(SCRIPT_DEBUG):
+            print("making dir:"+Ttype)
         os.mkdir(RecieptPath+Ttype)
-##
+        
+##check for if reciept exists already as no need to reprint
 def RecieptExists(Ttype,rid):##checks whether reciept exists for a given transport type
     ##fsexists
     if(os.path.isfile(RecieptPath+Ttype+"\\"+str(rid)+RecieptExt)):
         return True
     return False
+
+####
+##desc:
+# resolves the transport type to
+# a database table
+##inputs
+# Tmode - as the mode of transport
+##outputs
+# returner - as the table name for bookings for the transport type
+##misc
+#
+####
+def resolve_tname(Tmode):
+    returner = "invalid"
+    ##
+    if  (Tmode == "train"):
+        returner = "webtrainbook"
+    elif(Tmode == "air"):
+        returner = "webairbook"
+    elif(Tmode == "ferry"):
+        returner = "webferrybook"
+    elif(Tmode == "taxi"):
+        returner = "invalid"
+    elif(Tmode == "bus"):
+        returner = "invalid"
+    ##
+    return returner
 
 def prep_reciept(data):#format reciept for printing to file
     BookID =data[0][0]
@@ -85,23 +130,30 @@ def prep_reciept(data):#format reciept for printing to file
 ##takes the raw table name for the query and the reciept id to write
 ##returns the recieptd id on completion or -1 for fail if needed
 def WriteReciept(Table,recieptid):#
+    ##check if directory exists and script alreay exists
     chk_RF_exists(Table)
     if(RecieptExists(Table,recieptid)):
         return recieptid
-    ##process receipt
-    #conn = Qman.getconn()
-    #if (conn == None):
-    #    return -1
     
+    ##process receipt
     SQLq = SQLpre+Table+SQLpost##build query for receipt
     args = (recieptid,)
+    
     result = Qman.executequerywithargs(SQLq,args)
-    print ('\n data got:\n',result,'\n')
-    #return result
-    rdat = prep_reciept(result)
-    for x in rdat:##debug print result
-        print(x)##
+    if(SCRIPT_DEBUG):
+        print ('\n data got:\n',result,'\n')
+        #return result
+        
+    rdat = prep_reciept(result) 
+    if(SCRIPT_DEBUG):
+        for x in rdat:##debug print result
+            print(x)##
+            
     writefilearray(recieptid,rdat,Table)#
+
+
+    ##
+    print("written id: ",end = '')
     return recieptid
 
     
