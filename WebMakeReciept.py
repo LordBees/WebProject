@@ -38,10 +38,6 @@ SCRIPT_DEBUG = False
 #
 ####
 
-##file io
-def readfile(name):
-    pass
-
 
 ##writes file array each entry is a new line
 def writefilearray(name,data,Table,ext = RecieptExt,fpath=RecieptPath):
@@ -93,7 +89,8 @@ def resolve_tname(Tmode):
     ##
     return returner
 
-def prep_reciept(data):#format reciept for printing to file
+#format reciept for printing to file
+def prep_reciept(data):
     BookID =data[0][0]
     PFname =data[0][1]
     PLname =data[0][2]
@@ -128,7 +125,7 @@ def prep_reciept(data):#format reciept for printing to file
 ##open file name = Reciepts/[bookingref].txt
 ##write contents and close
 ##takes the raw table name for the query and the reciept id to write
-##returns the recieptd id on completion or -1 for fail if needed
+##returns the reciept id on completion or -1 for fail if needed
 def WriteReciept(Table,recieptid):#
     ##check if directory exists and script alreay exists
     chk_RF_exists(Table)
@@ -154,7 +151,8 @@ def WriteReciept(Table,recieptid):#
 
     ##
     print("written id: ",end = '')
-    return recieptid
+    return RecieptPath+recieptid+RecieptExt
+    #return recieptid
 
     
     
