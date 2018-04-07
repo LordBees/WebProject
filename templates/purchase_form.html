@@ -190,7 +190,7 @@
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
 						
 							
-									<form class="form" action={{ url_for('purchase_form') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
+									<form class="form" action={{ url_for('reciept_page') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
 										<br>
 										<div>travel method: {{travel_method}}</div>
 										<div>departure: {{departure_location}}</div>
@@ -209,9 +209,20 @@
 										<input type="number" name="passengerCount" value={{passengerCount}} hidden>
 											
 								
-										<p>Confirm Booking and process payment?</p>
-										<button id="submitPassInfoBtn"  disabled type=submit>Submit</button>
+										<p>Choose your purchase method</p>
+										<p>PayPal</p>
+
+										<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHostedGuest">
+										<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" type=submit alt="PayPal – The safer, easier way to pay online!">
+										<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+									
+										
 									</form>
+									
+									
+									
+
+									
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.5; ">
 					</div>

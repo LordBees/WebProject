@@ -266,6 +266,9 @@ def purchase_form():
 							bookingPrice=bookingPrice,
 							discountedPrice=finalBookingPrice)
 
+@app.route('/reciept_page', methods=['POST'])
+def reciept_page():
+	return redirect("/plane")
 	
 	
 # run the flask app (aka. host our website)
