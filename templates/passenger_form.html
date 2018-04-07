@@ -206,7 +206,7 @@
 										<input type="text" name="departTime" value={{departTime}} hidden>
 										<input type="date" name="departDate" value={{departDate}} hidden>
 										<input type="number" name="passengerCount" value={{passengerCount}} hidden>
-										<input type="number" name="bookingPrice" value={{bookingPrice}} hidden>
+										<input type="number" name="bookingPrice" hidden value={{bookingPrice}} >
 												{% for passenger in range(0,passengerCount ) %}
 												    {% if loop.index < 2 %}
 														Input passenger {{passenger + 1|int}}'s age :
@@ -219,6 +219,8 @@
 								
 										<p>Confirm Booking and process payment?</p>
 										<button id="submitPassInfoBtn"  disabled type=submit>Submit</button>
+										<input name="slideImage" id="slideImage" hidden value={{slideImage}}>
+
 									</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.5; ">

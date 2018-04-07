@@ -213,7 +213,7 @@ def purchase_form():
 	departDate = request.form.get('departDate')
 	passengerCount = int(request.form.get('passengerCount'))
 	bookingPrice = str(request.form.get('bookingPrice'))
-	slideImage = request.get('slideImage')
+	slideImage=request.form['slideImage']
 
 	print("travel_method = " + travel_method)
 	print("departure_location = " + departure_location)
