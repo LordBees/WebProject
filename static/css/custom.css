@@ -52,9 +52,10 @@ a{
 	.blue{
 		background-color:#0000ff;
 	}
-	.gtblue{
+		.gtblue{
 		background-color:#003366;
 	}
+
 	.opacity{
 		background-color:rgba(0,0,0,0.4);
 	}
@@ -344,11 +345,10 @@ a{
 		height:100%;
 	}
 
+
 	.nav li:not(.nohover):hover{
 			background-color:#2ee;
 			cursor: pointer;
-
-
 	}
 
 	
