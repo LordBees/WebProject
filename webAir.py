@@ -224,7 +224,7 @@ def buildDepartTimesFieldPlain(departure,arrival,time):
 
 # where we can put our template classes for booking forms, will end up populating it based on the current
 # data within the database
-def createPlaneForm(depart_location,arrive_location,passenger_count_adult,passenger_count_child,dtime,depart_date):
+def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date):
 	class planeForm(Form):
 		# restricting html5 embedded calendar field
 		# here we are restricting bookable dates to 3 months at a time(months displayed * days in year/ months in year)		
@@ -235,16 +235,14 @@ def createPlaneForm(depart_location,arrive_location,passenger_count_adult,passen
 		else:
 			departDateDefault = 0
 		
-		passCntAdult = passenger_count_adult
-		passCntChild = passenger_count_child
-		passCntAdultMin= 1
-		passCntChildMin= 0
+		passCnt = passenger_count
+
+		passCntMin= 1
 		
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--"): 
-			passCntAdultMax = getNumOfSeatsLeftAirPlain(depart_location,arrive_location)
+			passCntMax = getNumOfSeatsLeftAirPlain(depart_location,arrive_location)
 			
-			passCntChildMax = passCntAdultMax # rework this later
 			
 			# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
 			arrivalTime = getListOfArrivalTimesPlain(depart_location,arrive_location)
@@ -278,7 +276,7 @@ def createPlaneForm(depart_location,arrive_location,passenger_count_adult,passen
 						
 			
 		else:
-			passCntAdultMax = 1 # when the field is grayed out we still need to assign it something
+			passCntMax = 1 # when the field is grayed out we still need to assign it something
 		
 		# loading our form fields
 		departLocation = buildDeparturesFieldPlain(depart_location)
