@@ -130,7 +130,8 @@ def WriteReciept(Table,recieptid):#
     ##check if directory exists and script alreay exists
     chk_RF_exists(Table)
     if(RecieptExists(Table,recieptid)):
-        return recieptid
+        return RecieptPath+recieptid+RecieptExt
+        #return recieptid
     
     ##process receipt
     SQLq = SQLpre+Table+SQLpost##build query for receipt
