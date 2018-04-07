@@ -120,13 +120,6 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>')
 # here we can map multiple url routes to the same condition! =)
 
-
-#passA
-#passA passC
-#passA passC time
-#passA passC time date
-
-# ! please fix this chaos with regex!! 
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>') 
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>&Time=<dtime>') 
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>&Time=<dtime>&Date=<depart_date>') 
@@ -167,6 +160,7 @@ def passenger_form():
 	print("in submitted form")
 	#if request.method =='POST':
 	travel_method=request.form['travelMethod']
+	slideImage=travel_method
 	if travel_method == "GTplane.jpg":
 		travel_method = "Plane"
 	if travel_method == "GTtrain.jpg":
@@ -199,7 +193,7 @@ def passenger_form():
 	
 	return render_template("passenger_form.html",
 							form=form,
-							slideImage="GTplane.jpg",
+							slideImage=slideImage,
 							travel_method=travel_method,
 							departure_location=departure_location,
 							arrival_location=arrival_location,
@@ -219,6 +213,7 @@ def purchase_form():
 	departDate = request.form.get('departDate')
 	passengerCount = int(request.form.get('passengerCount'))
 	bookingPrice = str(request.form.get('bookingPrice'))
+	slideImage = request.get('slideImage')
 
 	print("travel_method = " + travel_method)
 	print("departure_location = " + departure_location)
@@ -254,7 +249,7 @@ def purchase_form():
 
 	return render_template("purchase_form.html",
 							form=form,
-							slideImage="GTplane.jpg",
+							slideImage=slideImage,
 							travel_method=travel_method,
 							departure_location=departure_location,
 							arrival_location=arrival_location,
