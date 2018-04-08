@@ -1,11 +1,16 @@
 #! C:/Users/wildcard/AppData/Local/Programs/Python35/python.exe
 
+import random
+import sys
+ 
 from flask import Flask, render_template, request, redirect
 
 from wtforms import Form, validators, TextField
 from wtforms_components import DateRange, SelectField, IntegerField
 from wtforms.validators import Length, NumberRange, DataRequired, InputRequired
 from wtforms.fields.html5 import DateField
+
+
 
 #import everything from our travel method implementation files
 from webAir import *
@@ -15,6 +20,36 @@ from webFerry import *
 app = Flask(__name__)
 
 
+def getVessleId(departure, arrival,travel_method):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT FlightNum FROM webairtt WHERE Departure = %s AND Arrival = %s'
+	if(travel_method == "Plane"):
+		args = (departure, arrival)
+	if(travel_method == "Train"):
+		args = ("Train#","webtraintt",departure, arrival)
+	#if(travel_method == "Bus"):
+	#if(travel_method == "Taxi"):
+	if(travel_method == "Ferry"):
+		args = ("Ferry#","webferrytt",departure, arrival)
+
+	cursor.execute(query,args)
+	vessleNum = cursor.fetchone()
+	conn.close()
+	return vessleNum	
+
+def isThereAnAdult(form):
+	passengerCount = int(form.get('passengerCount'))
+	i = 1
+	
+	while i <= passengerCount:	
+		passengerAge = int(form.get('passengerAge'+str(i)))
+		#if there is a child, but only discount on children not traveling alone
+		if (passengerAge > 16):
+			return True
+		i=i+1	
+		
+	return False
 
 def createPassengerForm(passenger_count):
 	class passengerForm(Form):
@@ -178,7 +213,11 @@ def passenger_form():
 	departTime=request.form['departTime']
 	departDate=request.form['departDate']
 	bookingPrice = str(request.form.get('bookingPrice'))
-
+	
+	vessleNumber = getVessleId(departure_location,arrival_location,travel_method)
+	vessleNumber=vessleNumber[0].title()
+	vessleNumber=str(vessleNumber)
+	print("vessleNumber is: "+vessleNumber)
 	
 	form = createPassengerForm(str(passengerCount))
 
@@ -200,7 +239,8 @@ def passenger_form():
 							departTime=departTime,
 							departDate=departDate,
 							passengerCount=passengerCount,
-							bookingPrice=bookingPrice)
+							bookingPrice=bookingPrice,
+							vessleNumber=vessleNumber)
 		
 		
 @app.route('/purchase_form', methods=['POST'])
@@ -228,13 +268,14 @@ def purchase_form():
 	print("bookPricePerPassenger = "+ str(bookPricePerPassenger))
 	finalBookingPrice = 0
 	
+	
 	while i <= passengerCount:
 		print("i = "+ str(i))
 	
 		passengerAge = int(request.form.get('passengerAge'+str(i)))
 		print("passenger "+str(i)+" :"+str(passengerAge))
 		#if there is a child, but only discount on children not traveling alone
-		if (passengerAge < 10 and passengerCount > 1 ):
+		if (passengerAge < 10 and passengerCount > 1 and (isThereAnAdult(request.form) == True)):
 			finalBookingPrice += (float(bookPricePerPassenger * 0.75))
 		else:
 			finalBookingPrice += bookPricePerPassenger
@@ -261,7 +302,48 @@ def purchase_form():
 
 @app.route('/reciept_page', methods=['POST'])
 def reciept_page():
-	return redirect("/plane")
+	print("in receipt page")
+	travel_method = request.form.get('travel_method')
+	departure_location = request.form.get('departure_location')
+	arrival_location = request.form.get('arrival_location')
+	departTime = request.form.get('departTime')
+	departDate = request.form.get('departDate')
+	passengerCount = int(request.form.get('passengerCount'))
+	finalBookingPrice =	float(request.form.get('discountedPrice'))
+	slideImage=request.form['slideImage']
+
+
+	#generate a random username
+	number = '{:05d}'.format(random.randrange(1, 99999))
+	username = travel_method + number
+	#generate a random password
+	s = "abcdefghijklmnopqrstuvwxyz01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()?"
+	passlen = 8
+	password = "".join(random.sample(s,passlen ))
+	
+	print("username is: " + username)
+	print("password is: " + password)
+	
+	#generate a receipt/transaction id
+	
+	#add this info to the database
+		#update timetable to increment passenger count
+		#pull journey info etc and put into the reciept
+	
+	#create receipt and pass it into receipt page
+	
+	
+
+	return render_template("purchase_form.html",
+							slideImage=slideImage,
+							travel_method=travel_method,
+							departure_location=departure_location,
+							arrival_location=arrival_location,
+							departTime=departTime,
+							departDate=departDate,
+							passengerCount=passengerCount,
+							bookingPrice=bookingPrice,
+							discountedPrice=finalBookingPrice)
 	
 	
 # run the flask app (aka. host our website)
