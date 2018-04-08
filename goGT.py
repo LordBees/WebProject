@@ -21,22 +21,28 @@ app = Flask(__name__)
 
 
 def getVessleId(departure, arrival,travel_method):
-	conn = getConnection()
-	cursor = conn.cursor()
-	query = 'SELECT FlightNum FROM webairtt WHERE Departure = %s AND Arrival = %s'
-	if(travel_method == "Plane"):
-		args = (departure, arrival)
-	if(travel_method == "Train"):
-		args = ("Train#","webtraintt",departure, arrival)
-	#if(travel_method == "Bus"):
-	#if(travel_method == "Taxi"):
-	if(travel_method == "Ferry"):
-		args = ("Ferry#","webferrytt",departure, arrival)
-
-	cursor.execute(query,args)
-	vessleNum = cursor.fetchone()
-	conn.close()
-	return vessleNum	
+    conn = getConnection()
+    cursor = conn.cursor()
+    if(travel_method == "Plane"):
+        query = 'SELECT FlightNum FROM webairtt    WHERE Departure = %s AND Arrival = %s'
+        args = (departure, arrival)
+    if(travel_method == "Train"):
+        query = 'SELECT TrainNum FROM webtraintt    WHERE Departure = %s AND Arrival = %s'
+        args = (departure, arrival)
+    if(travel_method == "Bus"):
+        query = 'SELECT BusNum FROM webbustt    WHERE Departure = %s AND Arrival = %s'
+        args = (departure, arrival)    
+    if(travel_method == "Taxi"):
+        query = 'SELECT TaxiNum FROM webtaxitt    WHERE Departure = %s AND Arrival = %s'
+        args = (departure, arrival)        
+    if(travel_method == "Ferry"):
+        query = 'SELECT FerryNum FROM webferrytt WHERE Departure = %s AND Arrival = %s'
+        args = (departure, arrival)
+        
+    cursor.execute(query,args)
+    vessleNum = cursor.fetchone()
+    conn.close()
+    return vessleNum    	
 
 def isThereAnAdult(form):
 	passengerCount = int(form.get('passengerCount'))
