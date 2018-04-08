@@ -14,7 +14,10 @@
     <script src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
 	<!--<script type="text/javascript" src="{{ url_for('static', filename='js/datePicker.min.js') }}"></script>
 	-->
-	<script type="text/javascript" src="{{ url_for('static', filename='js/jqDatePicker.min.js') }}"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="/resources/demos/style.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 	<script type="text/javascript">
 	
@@ -240,13 +243,28 @@
 			}
 		}).change();
 
+		function getFormattedDate(date) {
+			  var year = date.getFullYear();
+
+			  var month = (1 + date.getMonth()).toString();
+			  month = month.length > 1 ? month : '0' + month;
+
+			  var day = date.getDate().toString();
+			  day = day.length > 1 ? day : '0' + day;
+			  
+			 // return month + '-' + day + '-' + year;
+			  return year + '-' + month + '-' + day;
+			  	// 2018-04-18 in url previously
+
+}
 		
-	$('input[type="date"]').change(function(e){
-        console.log("date is:" + this.value);         //Date in full format alert(new Date(this.value));
+	//$('input[type="date"]').change(function(e){
+		function changeDate(){
+		console.log("date is:" + this.value);         //Date in full format alert(new Date(this.value));
         console.log("default date is:" + {{form.departDateDefault}});         //Date in full format alert(new Date(this.value));
-        var inputDate = new Date(this.value);
 		
-		var pickedDate = this.value;
+		var pickedDate = new Date($('#departDate').val());
+		var pickedDate = getFormattedDate(pickedDate);
 		
 		if(window.location.href.indexOf("&Date=") > -1)
 			{
@@ -283,10 +301,70 @@
 			
 			//}
 		
-    });
+    }
 	
-				
+	
+	// 11/04/2018 in fields
+	// 2018-04-18 in url previously
+ 
+ var today = new Date();
+$(".selector").datepicker({ 
+	beforeShowDay: checkTravelDayFilter(today),
+	
+	minDate:0,
+	maxDate:new Date("{{form.departDateMax}}"),
+	defaultDate: new Date("{{form.departDateDefault}}"),
+	  onSelect: function() {
+		  changeDate();
+		  $(this).change();
+		}
+	  }).on("change", function() {
+		changeDate();
+	  });
+     
 
+natDays = [
+  [1, 26, 'au'], [2, 6, 'nz'], [3, 17, 'ie'],
+  [4, 27, 'za'], [5, 25, 'ar'], [6, 6, 'se'],
+  [7, 4, 'us'], [8, 17, 'id'], [9, 7, 'br'],
+  [10, 1, 'cn'], [11, 22, 'lb'], [12, 12, 'ke']
+];
+
+function nationalDays(date) {
+    for (i = 0; i < natDays.length; i++) {
+      if (date.getMonth() == natDays[i][0] - 1
+          && date.getDate() == natDays[i][1]) {
+        return [false, natDays[i][2] + '_day'];
+      }
+    }
+  return [true, ''];
+}
+
+function noWeekendsOrHolidays(date) {
+    var noWeekend = $.datepicker.noWeekends(date);
+    if (noWeekend[0]) {
+        return nationalDays(date);
+    } else {
+        return noWeekend;
+    }
+}
+
+function checkTravelDayFilter(date){
+
+	if(window.location.href.indexOf("Plane") > -1)
+	{
+		return noWeekendsOrHolidays;
+	}
+	else if(window.location.href.indexOf("train") > -1)
+	{
+		return noWeekendsOrHolidays; //!!! change
+	}
+	else
+	{
+		return noWeekendsOrHolidays; //!!! change	
+	}
+
+}
 	//
 	});  // End Doc ready
 	
@@ -551,8 +629,8 @@
 								<label for="party">Choose your Departure time:</label><br>
 									{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br><br>
 								<label for="party">Choose your Departure Date:</label><br>
-								<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>
-							
+								<!--<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>-->
+								<input type="text" name="departDate" id="departDate" class="selector" value={{form.departDateDefault}} disabled></p>
 				<!-- our booking confirm button for later that will trigger a model to process payment -->
 								<button id="submitBookingBtn" disabled type=submit>Book!</button>
 								<p id="bookPrice" name="bookPrice" hidden>Booking Price:  £ {{ bookingPrice }}</p>
