@@ -579,20 +579,21 @@ function checkTravelDayFilter(date){
 <body>
 
 
-<div class="wrapper w24 h24"> <!-- wrapper -->
+<<div class="wrapper w24 h24"> <!-- wrapper -->
 	<div class="wrapperCont w24 h24">
 		<!--<div class="col w24 h1 socBar"></div> <!-- social links -->
-		<div class="col w24 h7"> <!-- banner logo space -->
+		<div class="col w24 h2 "> <!-- banner logo space -->
+		
 			<!-- banner logo -->
-			<div class="col w12 h20 grey"><img class="bannerLogo" src="{{ url_for('static', filename='assets/grandTravellogo.jpg') }}" height="125%" width="100%" style="z-index:0; position:absolute; bottom:-25%; "></div>
+			<div class="col w2 h18 "><img class="bannerLogo" src="{{ url_for('static', filename='assets/grandTravellogo.jpg') }}" height="115%" width="100%" style="z-index:0; position:absolute; bottom:-10%; padding-left:10%; margin-left:5%; margin-right:20%; "></div>
 			<!-- banner text -->
-			<div class="col w12 h20 banner invert white">
+			<div class="col w12 h10 banner invert white">
 				<!--<img class="bannerLogo" style="float:left;">-->
 				Grand Travel
 			</div>
 		
 		
-			<div class="col w24 h4 nav" style="z-index:1; position:relative; bottom:0;"><!-- navbar --> 
+			<div class="col w18 h10 nav" style="z-index:1; position:relative; bottom:65%;"><!-- navbar --> 
 				<ul>
 					<li class="col w4 h24 clear nohover"></a></li>
 					<li class="col w3 h24 gtblue invert navButton" onclick="plane()">PLANE</a></li>
@@ -601,10 +602,11 @@ function checkTravelDayFilter(date){
 					<li class="col w3 h24 gtblue invert navButton" onclick="taxi()">TAXI</a></li>
 					<li class="col w3 h24 gtblue invert navButton" onclick="ferry()">FERRY</a></li>
 					<li class="col w5 h24 white nohover"></a></li>
-				</ul>				
+				</ul>			
 			</div>
 		</div> 
-		<div class="col w24 h17 black "><!-- slidshow --> 
+		<div class="col w24 h22 black "><!-- slideshow --> 
+		
 			<!-- div holding left slideshow arrow -->
 			<!--<div class="col w4 h24 black arrow" onclick="backImage()"></div>-->
 			<!-- main slideshow window -->
@@ -640,7 +642,7 @@ function checkTravelDayFilter(date){
 								<p id="journeyTime" hidden>Estimated Journey Time: {{ form.journeyTime }}</p>
 							</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
-						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.5; ">
+						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.3; padding-bottom: -50%; ">
 					</div>
 
 					<!--<img id="slideshow" src="" />-->
