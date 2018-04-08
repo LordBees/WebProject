@@ -19,7 +19,7 @@ RecieptPath = "reciepts\\"
 RecieptExt =  ".txt"
 
 ##debug mode
-SCRIPT_DEBUG = False
+SCRIPT_DEBUG = True
 
 
 
@@ -130,7 +130,7 @@ def WriteReciept(Table,recieptid):#
     ##check if directory exists and script alreay exists
     chk_RF_exists(Table)
     if(RecieptExists(Table,recieptid)):
-        return RecieptPath+recieptid+RecieptExt
+        return RecieptPath+Table+"\\"+str(recieptid)+RecieptExt
         #return recieptid
     
     ##process receipt
@@ -152,7 +152,7 @@ def WriteReciept(Table,recieptid):#
 
     ##
     print("written id: ",end = '')
-    return RecieptPath+recieptid+RecieptExt
+    return RecieptPath+Table+"\\"+str(recieptid)+RecieptExt
     #return recieptid
 
     

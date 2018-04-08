@@ -2,6 +2,8 @@
 
 import random
 import sys
+import os
+import uuid 
  
 from flask import Flask, render_template, request, redirect
 
@@ -16,6 +18,7 @@ from wtforms.fields.html5 import DateField
 from webAir import *
 from webTrain import *
 from webFerry import * 
+from WebMakeReciept import *
 
 app = Flask(__name__)
 
@@ -23,20 +26,74 @@ app = Flask(__name__)
 def getVessleId(departure, arrival,travel_method):
 	conn = getConnection()
 	cursor = conn.cursor()
-	query = 'SELECT FlightNum FROM webairtt WHERE Departure = %s AND Arrival = %s'
 	if(travel_method == "Plane"):
+		query = 'SELECT FlightNum FROM webairtt	WHERE Departure = %s AND Arrival = %s'
 		args = (departure, arrival)
 	if(travel_method == "Train"):
-		args = ("Train#","webtraintt",departure, arrival)
-	#if(travel_method == "Bus"):
-	#if(travel_method == "Taxi"):
+		query = 'SELECT TrainNum FROM webtraintt	WHERE Departure = %s AND Arrival = %s'
+		args = (departure, arrival)
+	if(travel_method == "Bus"):
+		query = 'SELECT BusNum FROM webbustt	WHERE Departure = %s AND Arrival = %s'
+		args = (departure, arrival)	
+	if(travel_method == "Taxi"):
+		query = 'SELECT TaxiNum FROM webtaxitt	WHERE Departure = %s AND Arrival = %s'
+		args = (departure, arrival)		
 	if(travel_method == "Ferry"):
-		args = ("Ferry#","webferrytt",departure, arrival)
-
+		query = 'SELECT FerryNum FROM webferrytt WHERE Departure = %s AND Arrival = %s'
+		args = (departure, arrival)
+		
 	cursor.execute(query,args)
 	vessleNum = cursor.fetchone()
 	conn.close()
 	return vessleNum	
+	
+def addCustomerLoginDetails(username,password,customerID):
+	conn = getConnection()
+	cursor = conn.cursor()
+	try:
+		cursor.execute("""INSERT INTO userlogin VALUES (%s,%s,%s)""",(username,password,customerID))
+		conn.commit()
+	except:
+		conn.rollback()
+	conn.close()
+
+
+	
+def getSomeRandomNumberHex(numCount):
+	random.seed(datetime.now())
+	number = uuid.uuid4().hex
+	choppedNumber = number[:numCount]
+	return choppedNumber
+	
+def getSomeRandomNumberDec(numCount):
+	random.seed(datetime.now())
+	number = str(uuid.uuid4().int)
+	choppedNumber = number[:numCount]
+	return choppedNumber 
+	
+def doesCustomerIdExist(customerID):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT customerID, COUNT(*) FROM receipts WHERE customerID = %s'
+	args = (customerID,)	
+	cursor.execute(query,args)
+	idCount = cursor.rowcount
+	conn.close()
+	if idCount > 0:
+		return True
+	else:
+		return False	
+		
+def addReceiptEntry(receiptID,customerID):
+	conn = getConnection()
+	cursor = conn.cursor()
+	try:
+		cursor.execute("""INSERT INTO receipts VALUES (%s,%s)""",(receiptID,customerID))
+		conn.commit()
+	except:
+		conn.rollback()
+	conn.close()
+
 
 def isThereAnAdult(form):
 	passengerCount = int(form.get('passengerCount'))
@@ -254,7 +311,11 @@ def purchase_form():
 	passengerCount = int(request.form.get('passengerCount'))
 	bookingPrice = str(request.form.get('bookingPrice'))
 	slideImage=request.form['slideImage']
-
+	vessleNumber = str(request.form.get('vessleNumber'))
+	bookerFirstName= request.form.get('FirstName')
+	bookerLastName= request.form.get('LastName')
+	customerID = request.form.get('customerID')
+	
 	print("travel_method = " + travel_method)
 	print("departure_location = " + departure_location)
 	print("arrival_location = " + arrival_location)
@@ -298,7 +359,12 @@ def purchase_form():
 							departDate=departDate,
 							passengerCount=passengerCount,
 							bookingPrice=bookingPrice,
-							discountedPrice=finalBookingPrice)
+							discountedPrice=finalBookingPrice,
+							vessleNumber=vessleNumber,
+							bookerFirstName=bookerFirstName,
+							bookerLastName=bookerLastName,
+							customerID=customerID)
+
 
 @app.route('/reciept_page', methods=['POST'])
 def reciept_page():
@@ -311,11 +377,15 @@ def reciept_page():
 	passengerCount = int(request.form.get('passengerCount'))
 	finalBookingPrice =	float(request.form.get('discountedPrice'))
 	slideImage=request.form['slideImage']
+	bookerFirstName= request.form.get('FirstName')
+	bookerLastName= request.form.get('LastName')
+	customerID = request.form.get('customerID')
+	paymentMethod = request.form.get('payMethod')
 
 
 	#generate a random username
 	number = '{:05d}'.format(random.randrange(1, 99999))
-	username = travel_method + number
+	username  = bookerLastName[0:len(bookerLastName)//2] + number
 	#generate a random password
 	s = "abcdefghijklmnopqrstuvwxyz01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()?"
 	passlen = 8
@@ -325,16 +395,32 @@ def reciept_page():
 	print("password is: " + password)
 	
 	#generate a receipt/transaction id
+	receiptID = str(getSomeRandomNumberDec(16))
 	
+	# if customerID exists use it - really they should be forced to login
+	if(doesCustomerIdExist(customerID)):
+		addReceiptEntry(receiptID, customerID)
+	# else create one and login details
+	else:
+		customerID = str(getSomeRandomNumberHex(8))
+		addCustomerLoginDetails(username,password,customerID)
+		addReceiptEntry(receiptID, customerID)
+
 	#add this info to the database
 		#update timetable to increment passenger count
 		#pull journey info etc and put into the reciept
 	
 	#create receipt and pass it into receipt page
-	
-	
+#	if(travel_method == "Plane"):
+#		recieptLink = WriteReciept("webairbook",receiptID)
+#	if(travel_method == "Train"):
+#		recieptLink = WriteReciept("webtrainbook",receiptID)
+#	if(travel_method == "ferry"):
+#		recieptLink = WriteReciept("webferrybook",receiptID)
 
-	return render_template("purchase_form.html",
+	
+	recieptLink=""
+	return render_template("reciept_page.html",
 							slideImage=slideImage,
 							travel_method=travel_method,
 							departure_location=departure_location,
@@ -342,8 +428,9 @@ def reciept_page():
 							departTime=departTime,
 							departDate=departDate,
 							passengerCount=passengerCount,
-							bookingPrice=bookingPrice,
-							discountedPrice=finalBookingPrice)
+							discountedPrice=finalBookingPrice,
+							recieptLink=recieptLink,
+							paymentMethod=paymentMethod)
 	
 	
 # run the flask app (aka. host our website)
