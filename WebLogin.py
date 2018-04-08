@@ -60,6 +60,16 @@ conn = getConnection()
 	return price[0]	
 */'''
 
+def User_changePass(userEmail,userNewPass):
+	conn = getConnection()   
+	cursor = conn.cursor()
+	cursor.execute('SELECT *, Departure FROM webtraintt') # we prob will need to modify to be used on diff tables
+	departures = cursor.fetchall()
+	conn.close()
+	return departures	
+
+
+
 
 ##functions to use in userlogin
 def addCustomer(UserEmail,UserPass):
@@ -68,15 +78,9 @@ def addCustomer(UserEmail,UserPass):
         return True
     return False
 
+###other
 
 
-def User_changePass():
-	conn = getConnection()   
-	cursor = conn.cursor()
-	cursor.execute('SELECT *, Departure FROM webtraintt') # we prob will need to modify to be used on diff tables
-	departures = cursor.fetchall()
-	conn.close()
-	return departures	
 
 def User_create():
 	conn = getConnection()   
