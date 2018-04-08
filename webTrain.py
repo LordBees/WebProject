@@ -58,6 +58,17 @@ def getListOfDepartureTimesTrain(departure, arrival):
 	conn.close()
 	return departTimes	
 
+# returns a list of depart times based on matching departure/arrival
+def getListOfArrivalTimesTrain(departure, arrival):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT *, Arrival Time FROM webtraintt WHERE Departure = %s AND Arrival = %s'
+	args = (departure, arrival)
+	cursor.execute(query,args)
+	arriveTimes = cursor.fetchall()
+	conn.close()
+	return arriveTimes	
+
 # returns list of arrivals with matched departure
 def getPresetPriceTrain(departure,arrival):
 	conn = getConnection()
@@ -71,7 +82,7 @@ def getPresetPriceTrain(departure,arrival):
 	return price[0]		
 
 # returns number of seats left to book for this route
-def getNumOfSeatsLeftTrain(departure,arrival):
+def getNumOfSeatsLeftAirTrain(departure,arrival):
 	conn = getConnection()
 	cursor = conn.cursor()
 	query = 'SELECT *,%s FROM webtraintt WHERE Departure = %s AND Arrival = %s'
@@ -79,7 +90,7 @@ def getNumOfSeatsLeftTrain(departure,arrival):
 	cursor.execute(query,args)
 	passCnt = cursor.fetchone()
 	print("passcnt "+ str(passCnt[7]))
-	maxPass = 250 # max number of seats for a gt train
+	maxPass = 250 # max number of seats for a gt Train
 	
 	seatsLeft =  maxPass - int(passCnt[7])
 
@@ -88,35 +99,56 @@ def getNumOfSeatsLeftTrain(departure,arrival):
 	
 # regular functions	
 # builds arrival select field for departure location
-def buildArrivalsFieldTrain(departure):
-	arrivals = getListOfArrivalsFromDeparture(departure)
+def buildArrivalsFieldTrain(departure,arrival):
+
+	arrivals = getListOfArrivalsFromDepartureTrain(departure)
 	members = []
-	arriveNames = []
+	arriveNames = []	
+	default_selection = 0
+	
+		
 	i = 0
 
 	members.append(None)
 	arriveNames.append('--')
-	i=i+1	
-			
+	i=i+1		
+	
 	for row in arrivals:
 		#print(str(row[1]))
-		if(str(row[3]) != 'None'):
+	
+		#if(str(row[1]) != 'None' and i > 0):
+		if(i > 0):
 			members.append(i)
 			arriveNames.append(str(row[3]))
 			i=i+1
-
-			
+		
 	arriveNames = sorted(set(arriveNames), key=arriveNames.index)
 	zip(members,arriveNames)
 	arrivals = [(value, value) for value in arriveNames]
 	
-	return SelectField(choices=arrivals,default=None)
+	d = 0
+	for name in arriveNames:
+		if(name == arrival):
+			default_selection = d
+		d = d+1
+		
+	if default_selection != 0:
+		defaultSelection = arriveNames[default_selection]
+	else:
+		defaultSelection = 0
+	
+	return SelectField(choices=arrivals, default = defaultSelection,id="arriveLocation")
+	
+	
 
 # builds departure select field
-def buildDeparturesFieldTrain():
-	departures = getListOfDepartures()
+def buildDeparturesFieldTrain(departure):
+	departures = getListOfDeparturesTrain()
 	members = []
 	departNames = []	
+	default_selection = 0
+	
+		
 	i = 0
 
 	members.append(None)
@@ -130,21 +162,34 @@ def buildDeparturesFieldTrain():
 		if(i > 0):
 			members.append(i)
 			departNames.append(str(row[1]))
+			print("departure="+departure+"depart from mysql="+str(row[1]))
 			i=i+1
-
-			
+		
 	#departNames = set(departNames) # this changed the order after removing duplicates
 	departNames = sorted(set(departNames), key=departNames.index)
-	
 	zip(members,departNames)
 	departs = [(value, value) for value in departNames]
-	return SelectField(choices=departs,default=0)
+	
+	d = 0
+	for name in departNames:
+		if(name == departure):
+			default_selection = d
+		d = d+1
+		
+	if default_selection != 0:
+		defaultSelection = departNames[default_selection]
+	else:
+		defaultSelection = 0
+	
+	return SelectField(choices=departs, default = defaultSelection,id="departLocation")
 
 # builds departures time field based on depart/arrive location
-def buildDepartTimesFieldTrain(departure,arrival):
-	times = getListOfDepartureTimes(departure,arrival)
+def buildDepartTimesFieldTrain(departure,arrival,time):
+	times = getListOfDepartureTimesTrain(departure,arrival)
 	members = []
 	departTimes = []
+	default_selection = 0
+	
 	i = 0
 
 	members.append(None)
@@ -163,31 +208,83 @@ def buildDepartTimesFieldTrain(departure,arrival):
 	zip(members,departTimes)
 	times = [(value, value) for value in departTimes]
 	
-	return SelectField(choices=times,default=None)
+	d = 0
+	for t in departTimes:
+		if(time == t):
+			default_selection = d
+		d=d+1
+	
+	if(time != 0):
+			defaultSelection = departTimes[default_selection] 
+	else:
+		defaultSelection = 0
+	
+	return SelectField(choices=times,default=defaultSelection,id="departTime")
 
 
 # where we can put our template classes for booking forms, will end up populating it based on the current
 # data within the database
-def createTrainForm(depart_location,arrive_location,passenger_count):
+def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date):
 	class TrainForm(Form):
 		# restricting html5 embedded calendar field
 		# here we are restricting bookable dates to 3 months at a time(months displayed * days in year/ months in year)		
 		departDateMax = date.today() + timedelta(3*365/12) 
 		departDateMin = date.today()
+		if(depart_date != 0):
+			departDateDefault = depart_date
+		else:
+			departDateDefault = 0
 		
 		passCnt = passenger_count
-		passCntMin = 1
+
+		passCntMin= 1
 		
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--"): 
-			passCntMax = getNumOfSeatsLeftTrain(depart_location,arrive_location)
+			passCntMax = getNumOfSeatsLeftAirTrain(depart_location,arrive_location)
+			
+			
+			# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
+			arrivalTime = getListOfArrivalTimesTrain(depart_location,arrive_location)
+			departureTime = getListOfDepartureTimesTrain(depart_location,arrive_location)
+
+			#first one we get from list
+			atime = arrivalTime[0]
+			dpttime = departureTime[0]
+			
+			# calculate the difference
+			calcTime = atime[4] - dpttime[2]
+			# find out how many hours it is and store the remainder
+			hours, remainder = divmod(calcTime.seconds, 3600)			
+			# divide the remainder into seconds/minutes left
+			minutes, seconds = divmod(remainder, 60)
+			
+			#just some general output formatting, when will minutes ever be 1? prob never
+			if(minutes == 0):
+				if(hours > 1):
+					journeyTime = "%d hours" % (hours)
+				else:
+					journeyTime = "%d hour" % (hours)					
+			else:
+				if(hours > 1):
+					journeyTime = "%d hours and %d minutes" % (hours,minutes)
+				else:
+					if(hours == 0):
+						journeyTime = "%d minutes" % (minutes)
+					else:
+						journeyTime = "%d hour and %d minutes" % (hours,minutes)
+						
+			
 		else:
 			passCntMax = 1 # when the field is grayed out we still need to assign it something
 		
 		# loading our form fields
-		departLocation = buildDeparturesFieldTrain()
-		arriveLocation = buildArrivalsFieldTrain(depart_location)
-		departTime = buildDepartTimesFieldTrain(depart_location,arrive_location)
+		departLocation = buildDeparturesFieldTrain(depart_location)
+		arriveLocation = buildArrivalsFieldTrain(depart_location,arrive_location)	
+		departTime = buildDepartTimesFieldTrain(depart_location,arrive_location,dtime)
+		
+		
+
 
 	return TrainForm()
 	
