@@ -28,19 +28,19 @@ def getConnection():
 	
 
 # returns a list of departures
-def getListOfDeparturesPlain():
+def getListOfDeparturesFerry():
 	conn = getConnection()   
 	cursor = conn.cursor()
-	cursor.execute('SELECT *, Departure FROM webairtt') # we prob will need to modify to be used on diff tables
+	cursor.execute('SELECT *, Departure FROM webferrytt') # we prob will need to modify to be used on diff tables
 	departures = cursor.fetchall()
 	conn.close()
 	return departures	
 
 # returns list of arrivals with matched departure
-def getListOfArrivalsFromDeparturePlain(departure):
+def getListOfArrivalsFromDepartureFerry(departure):
 	conn = getConnection()
 	cursor = conn.cursor()
-	query = 'SELECT *, Arrival FROM webairtt WHERE Departure = %s'
+	query = 'SELECT *, Arrival FROM webferrytt WHERE Departure = %s'
 	args = (departure,)
 	cursor.execute(query,args)
 	arrivals = cursor.fetchall()
@@ -48,10 +48,10 @@ def getListOfArrivalsFromDeparturePlain(departure):
 	return arrivals	
 
 # returns a list of depart times based on matching departure/arrival
-def getListOfDepartureTimesPlain(departure, arrival):
+def getListOfDepartureTimesFerry(departure, arrival):
 	conn = getConnection()
 	cursor = conn.cursor()
-	query = 'SELECT *, Departure Time FROM webairtt WHERE Departure = %s AND Arrival = %s'
+	query = 'SELECT *, Departure Time FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = (departure, arrival)
 	cursor.execute(query,args)
 	departTimes = cursor.fetchall()
@@ -59,10 +59,10 @@ def getListOfDepartureTimesPlain(departure, arrival):
 	return departTimes	
 
 # returns a list of depart times based on matching departure/arrival
-def getListOfArrivalTimesPlain(departure, arrival):
+def getListOfArrivalTimesFerry(departure, arrival):
 	conn = getConnection()
 	cursor = conn.cursor()
-	query = 'SELECT *, Arrival Time FROM webairtt WHERE Departure = %s AND Arrival = %s'
+	query = 'SELECT *, Arrival Time FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = (departure, arrival)
 	cursor.execute(query,args)
 	arriveTimes = cursor.fetchall()
@@ -70,10 +70,10 @@ def getListOfArrivalTimesPlain(departure, arrival):
 	return arriveTimes	
 
 # returns list of arrivals with matched departure
-def getPresetPricePlain(departure,arrival):
+def getPresetPriceFerry(departure,arrival):
 	conn = getConnection()
 	cursor = conn.cursor()
-	query = 'SELECT Price FROM webairtt WHERE Departure = %s AND Arrival = %s'
+	query = 'SELECT Price FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = (departure,arrival)
 	cursor.execute(query,args)
 	price = cursor.fetchone()
@@ -82,15 +82,15 @@ def getPresetPricePlain(departure,arrival):
 	return price[0]		
 
 # returns number of seats left to book for this route
-def getNumOfSeatsLeftAirPlain(departure,arrival):
+def getNumOfSeatsLeftFerry(departure,arrival):
 	conn = getConnection()
 	cursor = conn.cursor()
-	query = 'SELECT *,%s FROM webairtt WHERE Departure = %s AND Arrival = %s'
+	query = 'SELECT *,%s FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = ("Passenger Count",departure,arrival)
 	cursor.execute(query,args)
 	passCnt = cursor.fetchone()
 	print("passcnt "+ str(passCnt[7]))
-	maxPass = 80 # max number of seats for a gt plane
+	maxPass = 500 # max number of seats for a gt ferry
 	
 	seatsLeft =  maxPass - int(passCnt[7])
 
@@ -99,9 +99,9 @@ def getNumOfSeatsLeftAirPlain(departure,arrival):
 	
 # regular functions	
 # builds arrival select field for departure location
-def buildArrivalsFieldPlain(departure,arrival):
+def buildArrivalsFieldFerry(departure,arrival):
 
-	arrivals = getListOfArrivalsFromDeparturePlain(departure)
+	arrivals = getListOfArrivalsFromDepartureFerry(departure)
 	members = []
 	arriveNames = []	
 	default_selection = 0
@@ -137,13 +137,13 @@ def buildArrivalsFieldPlain(departure,arrival):
 	else:
 		defaultSelection = 0
 	
-	return SelectField(choices=arrivals, default = defaultSelection,id="arriveLocation")
+	return SelectField(choices=arrivals, default = defaultSelection)
 	
 	
 
 # builds departure select field
-def buildDeparturesFieldPlain(departure):
-	departures = getListOfDeparturesPlain()
+def buildDeparturesFieldFerry(departure):
+	departures = getListOfDeparturesFerry()
 	members = []
 	departNames = []	
 	default_selection = 0
@@ -181,11 +181,11 @@ def buildDeparturesFieldPlain(departure):
 	else:
 		defaultSelection = 0
 	
-	return SelectField(choices=departs, default = defaultSelection,id="departLocation")
+	return SelectField(choices=departs, default = defaultSelection)
 
 # builds departures time field based on depart/arrive location
-def buildDepartTimesFieldPlain(departure,arrival,time):
-	times = getListOfDepartureTimesPlain(departure,arrival)
+def buildDepartTimesFieldFerry(departure,arrival,time):
+	times = getListOfDepartureTimesFerry(departure,arrival)
 	members = []
 	departTimes = []
 	default_selection = 0
@@ -219,13 +219,13 @@ def buildDepartTimesFieldPlain(departure,arrival,time):
 	else:
 		defaultSelection = 0
 	
-	return SelectField(choices=times,default=defaultSelection,id="departTime")
+	return SelectField(choices=times,default=defaultSelection)
 
 
 # where we can put our template classes for booking forms, will end up populating it based on the current
 # data within the database
-def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date):
-	class planeForm(Form):
+def createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date):
+	class ferryForm(Form):
 		# restricting html5 embedded calendar field
 		# here we are restricting bookable dates to 3 months at a time(months displayed * days in year/ months in year)		
 		departDateMax = date.today() + timedelta(3*365/12) 
@@ -236,17 +236,15 @@ def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart
 			departDateDefault = 0
 		
 		passCnt = passenger_count
-
-		passCntMin= 0
+		passCntMin= 1
 		
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--"): 
-			passCntMax = getNumOfSeatsLeftAirPlain(depart_location,arrive_location)
-			
+			passCntMax = getNumOfSeatsLeftFerry(depart_location,arrive_location)
 			
 			# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
-			arrivalTime = getListOfArrivalTimesPlain(depart_location,arrive_location)
-			departureTime = getListOfDepartureTimesPlain(depart_location,arrive_location)
+			arrivalTime = getListOfArrivalTimesFerry(depart_location,arrive_location)
+			departureTime = getListOfDepartureTimesFerry(depart_location,arrive_location)
 
 			#first one we get from list
 			atime = arrivalTime[0]
@@ -279,13 +277,13 @@ def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart
 			passCntMax = 1 # when the field is grayed out we still need to assign it something
 		
 		# loading our form fields
-		departLocation = buildDeparturesFieldPlain(depart_location)
-		arriveLocation = buildArrivalsFieldPlain(depart_location,arrive_location)	
-		departTime = buildDepartTimesFieldPlain(depart_location,arrive_location,dtime)
+		departLocation = buildDeparturesFieldFerry(depart_location)
+		arriveLocation = buildArrivalsFieldFerry(depart_location,arrive_location)	
+		departTime = buildDepartTimesFieldFerry(depart_location,arrive_location,dtime)
 		
 		
 
 
-	return planeForm()
+	return ferryForm()
 	
 	

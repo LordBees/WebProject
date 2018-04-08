@@ -197,6 +197,19 @@
 										<div>arrival: {{arrival_location}}</div>
 										<div>depart time: {{departTime}}</div>
 										<div>depart date: {{departDate}}</div>
+										<div>{% if travel_method == "Plane" %}
+												Flight number is: {{ vessleNumber }}
+											{% elif travel_method == "Train" %}	
+												Train number is: {{ vessleNumber }}
+											{% elif travel_method == "Bus" %}
+												Bus number is: {{ vessleNumber }}
+											{% elif travel_method == "Taxi" %}
+												Taxi number is: {{ vessleNumber }}
+											{% else %}
+												Ferry number is: {{ vessleNumber }}
+											{% endif %}
+											
+												</div>
 										<div>number of passengers: {{passengerCount}}</div><br>
 										<div>Booking Price: £{{bookingPrice}}</div><br>
 
@@ -206,7 +219,7 @@
 										<input type="text" name="departTime" value={{departTime}} hidden>
 										<input type="date" name="departDate" value={{departDate}} hidden>
 										<input type="number" name="passengerCount" value={{passengerCount}} hidden>
-										<input type="number" name="bookingPrice" value={{bookingPrice}} hidden>
+										<input type="number" name="bookingPrice" hidden value={{bookingPrice}} >
 												{% for passenger in range(0,passengerCount ) %}
 												    {% if loop.index < 2 %}
 														Input passenger {{passenger + 1|int}}'s age :
@@ -219,6 +232,8 @@
 								
 										<p>Confirm Booking and process payment?</p>
 										<button id="submitPassInfoBtn"  disabled type=submit>Submit</button>
+										<input name="slideImage" id="slideImage" hidden value={{slideImage}}>
+
 									</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.5; ">
