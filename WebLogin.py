@@ -78,6 +78,10 @@ def addCustomer(UserEmail,UserPass):
         return True
     return False
 
+def updateCustomerPass():
+    if():
+        return True
+    return False
 ###other
 
 
