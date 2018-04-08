@@ -14,7 +14,7 @@ html {
 }
 
 body{
-	font-family: Ariel;
+	font-family: Helvetica;
 	font-size:2vmin;
 	margin:0; 
 	padding:0;
@@ -292,10 +292,12 @@ a{
 	.nav{
 		margin:0;
 		padding:0;
-		font-size:200%;
+		font-family: Helvetica;
+		font-size:125%;
 		text-align:center;
 		line-height: 100%;
 		list-style-type:none;
+		color:black;
 		/*border-top:white solid thin;
 		/*border-bottom:white solid thin;*/
 
@@ -353,8 +355,8 @@ a{
 
 	
 	.navButton{
-		border-radius: 25% 25% 0 0;
-		border:white solid 1px;
+		border-radius: 0% 0% 0% 0%;
+		border:white solid 5px;
 		border-bottom:none;
 
 	}
