@@ -36,54 +36,12 @@
 
 
 			
-				var in1 = document.getElementById('passengerCntAdult');
-/*
-		$("#passengerCntAdult").change(function(e) {
 
-  var in2 = document.getElementById('passengerCntAdult');
-  var out = document.getElementById('passengerCntChild');
-  var val = parseInt(in1.value, 10);
-  in2.setAttribute('max', val);
-  console.log("in listener");
-  out.value = in2.getAttribute('max');
-  if(e.originalEvent) {
-				
-					window.location.reload();
-			}
-});*/
-			
-	//$(function() {
-    /*$('#passengerCntAdult').change(function(e) {
-        //var user = $('#txtUsername').val();
-        //var pass = $('#txtPassword').val();
-        $.ajax({
-            url: '/submit_form',
-            data: {
-				slideImage: "GT"+"{{travel_method}}" +".jpg",
-				travel_method: "{{travel_method}}",
-				departure_location: "{{departure_location}}",
-				arrival_location:"{{arrival_location}}",
-				passengerCount:"{{passengerCount}}",
-				departTime:"{{departTime}}",
-				departDate:"{{departDate}}"
-			},
-            type: 'POST',
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(error) {
-                console.log("form = "+$('form'));
-				console.log(error);
-            }
-    });
-});*/
-	
 				
 
 	//
 	});  // End Doc ready
 	
-
 		// space for our javascript functions below, we will prob move this to its own file when it gets bigger
 			function initPage(){
 
@@ -112,17 +70,7 @@
 			function ferry(){
 						window.location.replace("../ferry");
 					}
-					
-			function dateHandler(event){
-				//var departDateValuej = $('#departDate').find(":selected").text();
-
-				//console.log("depart date selected: "+ departDateValuej);
-				// important so that this function doesn't just run once
-				/*if(e.originalEvent) {
-				
-					window.location.assign();
-			}*/
-		}
+	
 			function removeHidden(id)
 			{
 				var x = document.getElementById(id);
@@ -178,20 +126,9 @@
 					<li class="col w5 h24 white nohover"></a></li>
 				</ul>			
 			</div>
-			<form id="loginForm" class="col w4 h24" style="position:absolute; top:0; padding:0.5%; right:0; font-size:1.5vmin;  z-index:1; color:black;">
-				<div class="nav col w24 h3">Login</div>
-				<div class="col w24 h3"></div>
-				<div class="col w8 h4">Username:</div>
-				<input class="col w15 h4" type="text" size=25 name="username" id="username">
-				<div class="col w24 h1"></div>
-				<div class="col w8 h4">Password:</div>
-				<input class="col w15 h4" type="password" size=25 name="password" id="password">
-				<div class="col w24 h1"></div>
-				<button class="col w10 h5" style="float:right; right:4%;" type=submit >Submit</button>
-			</form>
 		
 		</div> 
-		<div class="col w24 h17 black "><!-- slidshow --> 
+		<div class="col w24 h21 black "><!-- slidshow --> 
 			<!-- div holding left slideshow arrow -->
 			<!--<div class="col w4 h24 black arrow" onclick="backImage()"></div>-->
 			<!-- main slideshow window -->
@@ -201,39 +138,75 @@
 					<div style="width: 100%; height: 100%; position: relative; color:white; background-color:black;  border-top: 1px solid #fff;">
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
 						
-							
-									<form class="form" action={{ url_for('reciept_page') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
-										<br>
-										<div>travel method: {{travel_method}}</div>
-										<div>departure: {{departure_location}}</div>
-										<div>arrival: {{arrival_location}}</div>
-										<div>depart time: {{departTime}}</div>
-										<div>depart date: {{departDate}}</div>
-										<div>number of passengers: {{passengerCount}}</div>
-										<div>Booking Price: £{{bookingPrice}}</div><br>
-										<div>Discount Price: £{{discountedPrice}}</div><br>
-										<div>Payment method: {{paymentMethod}}</div><br>
-										<div>Reciept link is: {{recieptLink}}</div><br>
+						<form class="form" action={{ url_for('process_maintenance_request') }}  id="paymentForm"  method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
+						
+							<div>Admin maintenance page</div><br>
+							<div>Travel Method you wish to change:</div>
+								<select name="travelMethod" id="travelMethod">
+								  <option value="Plane">Plane</option>
+								  <option value="Train">Train</option>
+								  <option value="Ferry">Ferry</option>
+								  <option value="Bus">Bus</option>
+								  <option value="Taxi">Taxi</option>
+								</select> 
 								
-										<input type="text" name="travel_method" value={{travel_method}} hidden>
-										<input type="text" name="departure_location" value={{departure_location}} hidden>
-										<input type="text" name="arrival_location" value={{arrival_location}} hidden>
-										<input type="text" name="departTime" value={{departTime}} hidden>
-										<input type="date" name="departDate" value={{departDate}} hidden>
-										<input type="number" name="passengerCount" value={{passengerCount}} hidden>
-										<input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
-										<input type="number" name="discountedPrice" id="discountedPrice" value={{discountedPrice}} hidden>
-											
+								<div>Depart Location you wish to change:</div>					
+								<select name="departLocation" id="departLocation">
+								  <option value="Newcastle">Newcastle</option>
+								  <option value="Bristol">Bristol</option>
+								  <option value="Cardiff">Cardiff</option>
+								  <option value="Manchester">Manchester</option>
+								  <option value="London">London</option>
+								  <option value="Glasgow">Glasgow</option>
+								  <option value="Portsmouth">Portsmouth</option>
+								  <option value="Dundee">Dundee</option>
+								  <option value="Edinburgh">Edinburgh</option>
+								  <option value="Southhampton">Southhampton</option>
+								  <option value="Birmingham">Birmingham</option>
+								</select> 
+								<div>Previous Depart time:</div>					
+								<input type="time" name="prevDepartTime" id="prevDepartTime">
+								<div>New Depart time:</div>					
+								<input type="time" name="newDepartTime" id="newDepartTime">								
+								<div>Arrive location you wish to change:</div>					
+								<select name="arriveLocation" id="arriveLocation">
+								  <option value="Newcastle">Newcastle</option>
+								  <option value="Bristol">Bristol</option>
+								  <option value="Cardiff">Cardiff</option>
+								  <option value="Manchester">Manchester</option>
+								  <option value="London">London</option>
+								  <option value="Glasgow">Glasgow</option>
+								  <option value="Portsmouth">Portsmouth</option>
+								  <option value="Dundee">Dundee</option>
+								  <option value="Edinburgh">Edinburgh</option>
+								  <option value="Southhampton">Southhampton</option>
+								  <option value="Birmingham">Birmingham</option>
+								</select> 								
+								<div>Previous arrive time:</div>					
+								<input type="time" name="prevArriveTime" id="prevArriveTime">
+								<div>new arrive time:</div>					
+								<input type="time" name="newArriveTime" id="newArriveTime">
+								<div>Previous Vessle id:</div>					
+								<input type="text" name="prevVessleNumber" id="prevVessleNumber">
+								<div>New Vessle id:</div>					
+								<input type="text" name="newVessleNumber" id="newVessleNumber">
+								<div>Status you wish to set for this route:</div>					
+								<input type="text" name="status" id="status">
+								<div>Price you wish to set for this route:</div>					
+								<input type="number" name="price" id="price">
+														
+								<input type="text" name="username" id="username" value={{userName}} hidden >
+								<input type="text" name="password" id="password" value={{passwd}} hidden>
 								
-										
-									</form>
-									
+									<!-- our booking confirm button for later that will trigger a model to process payment -->
+								<button id="submitBookingBtn" disabled type=submit>Change route</button>
+
+						</form>	
 									
 									
 
 									
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
-						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.5; ">
 					</div>
 
 					<!--<img id="slideshow" src="" />-->

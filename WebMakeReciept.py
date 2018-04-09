@@ -19,7 +19,7 @@ RecieptPath = "reciepts\\"
 RecieptExt =  ".txt"
 
 ##debug mode
-SCRIPT_DEBUG = False
+SCRIPT_DEBUG = True
 
 
 
