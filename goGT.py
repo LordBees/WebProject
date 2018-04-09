@@ -158,30 +158,6 @@ def addReceiptEntry(receiptID,customerID):
 	conn.close()
 
 
-    conn = getConnection()
-    cursor = conn.cursor()
-    if(travel_method == "Plane"):
-        query = 'SELECT FlightNum FROM webairtt    WHERE Departure = %s AND Arrival = %s'
-        args = (departure, arrival)
-    if(travel_method == "Train"):
-        query = 'SELECT TrainNum FROM webtraintt    WHERE Departure = %s AND Arrival = %s'
-        args = (departure, arrival)
-    if(travel_method == "Bus"):
-        query = 'SELECT BusNum FROM webbustt    WHERE Departure = %s AND Arrival = %s'
-        args = (departure, arrival)    
-    if(travel_method == "Taxi"):
-        query = 'SELECT TaxiNum FROM webtaxitt    WHERE Departure = %s AND Arrival = %s'
-        args = (departure, arrival)        
-    if(travel_method == "Ferry"):
-        query = 'SELECT FerryNum FROM webferrytt WHERE Departure = %s AND Arrival = %s'
-        args = (departure, arrival)
-        
-    cursor.execute(query,args)
-    vessleNum = cursor.fetchone()
-    conn.close()
-    return vessleNum    	
-
-
 def isThereAnAdult(form):
 	passengerCount = int(form.get('passengerCount'))
 	i = 1
@@ -330,13 +306,8 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 	
 	elif travel_method == "ferry": # needs changing
 		slideImage = "GTferry.jpg"
-		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
-        
-		if(int(passenger_count) <= form.passCntMax):
-			printedPrice = str(int(getPresetPricePlain(depart_location,arrive_location)) * int(passenger_count))
-		else:
-			printedPrice = "not enough seats"
-		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice)
+		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date) 
+		return render_template("index.html",form=form,slideImage=slideImage)
 		
 		
 @app.route('/passenger_form', methods=['POST'])
