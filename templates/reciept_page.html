@@ -178,11 +178,11 @@
 					<li class="col w5 h24 white nohover"></a></li>
 				</ul>			
 			</div>
-			<form id="loginForm" class="col w4 h24" style="position:absolute; top:0; padding:0.5%; right:0; font-size:1.5vmin;  z-index:1; color:black;">
+			<form id="loginForm" action="{{ url_for('login_check') }}" method="POST" class="col w4 h24" style="position:absolute; top:0; padding:0.5%; right:0; font-size:1.5vmin;  z-index:1; color:black;">
 				<div class="nav col w24 h3">Login</div>
 				<div class="col w24 h3"></div>
 				<div class="col w8 h4">Username:</div>
-				<input class="col w15 h4" type="text" size=25 name="username" id="username">
+				<input class="col w15 h4" type="text" size=25 name="username" id="username" >
 				<div class="col w24 h1"></div>
 				<div class="col w8 h4">Password:</div>
 				<input class="col w15 h4" type="password" size=25 name="password" id="password">
