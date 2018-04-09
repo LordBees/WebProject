@@ -248,6 +248,48 @@ def buildDepartTimesFieldPlain(departure,arrival,time):
 	return SelectField(choices=times,default=defaultSelection,id="departTime")
 
 
+# update/insert to webairtt/webairbook
+def updateJourneyTablesFromBookingAir(request,customerIdGend):
+	departure_location = request.form.get('departure_location')
+	arrival_location = request.form.get('arrival_location')
+	departTime = request.form.get('departTime')
+	departDate = request.form.get('departDate')
+	passengerCount = int(request.form.get('passengerCount'))
+	finalBookingPrice =	float(request.form.get('discountedPrice'))
+	bookerFirstName= request.form.get('FirstName')
+	bookerLastName= request.form.get('LastName')
+	customerIdForm = request.form.get('customerID')
+	vessleNumber = str(request.form.get('vessleNumber'))
+
+	if(customerIdForm != 0):
+		customerID = customerIdGend
+	else:
+		customerID = customerIdForm
+	
+	conn = getConnection()   
+	cursor = conn.cursor()	
+
+	# find out the passenger count for this route currently
+	query = "SELECT PassengerCount FROM webairtt WHERE Departure=%s AND Arrival=%s AND DepartureTime=%s"
+	args = (departure_location,arrival_location, departTime)
+	cursor.execute(query,args)
+	passCount = cursor.fetchone()
+	
+	# adjust passenger count
+	query = "UPDATE webairtt SET PassengerCount=%s WHERE Departure=%s AND Arrival=%s AND DepartureTime=%s"
+	newPassCount = passengerCount + passCount[0]
+	args = (newPassCount,departure_location,arrival_location, departTime)
+	cursor.execute(query,args)
+	
+	# insert passenger details into journey booking table
+	entry = [bookerFirstName,bookerLastName,vessleNumber,passengerCount*2,finalBookingPrice,customerID]
+	cursor.execute("""INSERT INTO webairbook 
+		(FirstName,LastName,FlightNum,Bags,Price,Cust_ID)
+		VALUES(%s,%s,%s,%s,%s,%s)""", entry)
+	
+	conn.close()	
+	
+
 # where we can put our template classes for booking forms, will end up populating it based on the current
 # data within the database
 def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date):
@@ -263,8 +305,10 @@ def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart
 		
 		passCnt = passenger_count
 
-
-		passCntMin= 1
+		if(int(passenger_count) > 0):
+			passCntMin= 1
+		else:
+			pasCntMin=0
 
 		
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"

@@ -35,10 +35,26 @@ body{
 
 
 
+
 a{
 	color:#333;
 	font-size:1em;
 }
+
+
+
+input[type="text"] {
+	font-size:2vmin;
+}
+
+input[type="number"] {
+	font-size:2vmin;
+}
+
+select{
+	font-size:2vmin;
+}
+
 
 
 /* Color Scheme*/
@@ -383,7 +399,3 @@ a{
 		color:#fff;
 		border-bottom:1px solid #333;
 	}
-
-
-
-

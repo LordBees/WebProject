@@ -204,15 +204,18 @@
 							
 									<form class="form" action={{ url_for('reciept_page') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
 										<br>
+										<div>First Name: {{bookerFirstName}}</div>
+										<div>Last Name: {{bookerLastName}}</div>
 										<div>travel method: {{travel_method}}</div>
 										<div>departure: {{departure_location}}</div>
 										<div>arrival: {{arrival_location}}</div>
 										<div>depart time: {{departTime}}</div>
 										<div>depart date: {{departDate}}</div>
 										<div>number of passengers: {{passengerCount}}</div>
-										<div>Booking Price: £{{bookingPrice}}</div><br>
-										<div>Discount Price: £{{discountedPrice}}</div><br>
+										<div>Booking Price: £{{discountedPrice}}</div><br>
 										<div>Payment method: {{paymentMethod}}</div><br>
+										<div>Your Customer ID: {{customerID}}</div><br>
+										<div>Booking ID: {{bookingID}}</div><br>
 										<div>Reciept link is: {{recieptLink}}</div><br>
 								
 										<input type="text" name="travel_method" value={{travel_method}} hidden>

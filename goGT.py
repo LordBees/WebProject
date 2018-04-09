@@ -197,7 +197,7 @@ def formatToTravMeth(travel_method=""):
 	#default our variables
 	depart_location="--"
 	arrive_location="--"
-	passenger_count=1
+	passenger_count=0
 	dtime=0
 	depart_date=0
 	
@@ -235,7 +235,7 @@ def formatToTravMeth(travel_method=""):
 def formatToDepartLoc(travel_method="",depart_location="--"):
 	#default our variables
 	arrive_location="--"
-	passenger_count=1
+	passenger_count=0
 	dtime=0
 	depart_date=0
 
@@ -278,7 +278,7 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>') 
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>&Time=<dtime>') 
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>&Time=<dtime>&Date=<depart_date>') 
-def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="--", passenger_count=1,dtime=0,depart_date=0):
+def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="--", passenger_count=0,dtime=0,depart_date=0):
 	if travel_method == "plane":
 		slideImage = "GTplane.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
@@ -332,8 +332,9 @@ def passenger_form():
 	passengerCount = int(request.form['passengerCnt'])
 	departTime=request.form['departTime']
 	departDate=request.form['departDate']
-	bookingPrice = str(request.form.get('bookingPrice'))
-	
+	bookingPrice = int(request.form.get('bookingPrice'))
+	bookingPrice = "{0:.2f}".format(bookingPrice)
+
 	vessleNumber = getVessleId(departure_location,arrival_location,travel_method)
 	vessleNumber=vessleNumber[0].title()
 	vessleNumber=str(vessleNumber)
@@ -409,6 +410,7 @@ def purchase_form():
 	
 	#if(
 	#float(bookingPrice) 
+	finalBookingPrice = "{0:.2f}".format(finalBookingPrice)
 
 	form = createPassengerForm(str(passengerCount))
 
@@ -444,6 +446,9 @@ def reciept_page():
 	bookerLastName= request.form.get('LastName')
 	customerID = request.form.get('customerID')
 	paymentMethod = request.form.get('payMethod')
+	vessleNumber = str(request.form.get('vessleNumber'))
+
+	finalBookingPrice = "{0:.2f}".format(finalBookingPrice)
 
 
 	#generate a random username
@@ -459,7 +464,7 @@ def reciept_page():
 	
 	#generate a receipt/transaction id
 	receiptID = str(getSomeRandomNumberDec(16))
-	
+	bookingID = receiptID
 	# if customerID exists use it - really they should be forced to login
 	if(doesCustomerIdExist(customerID)):
 		addReceiptEntry(receiptID, customerID)
@@ -468,6 +473,11 @@ def reciept_page():
 		customerID = str(getSomeRandomNumberHex(8))
 		addCustomerLoginDetails(username,password,customerID)
 		addReceiptEntry(receiptID, customerID)
+		
+	
+	#update the timetable as well as the booking table for the journey method
+	if(travel_method =="Plane"):
+		updateJourneyTablesFromBookingAir(request,customerID)
 
 	#add this info to the database
 		#update timetable to increment passenger count
@@ -493,6 +503,10 @@ def reciept_page():
 							passengerCount=passengerCount,
 							discountedPrice=finalBookingPrice,
 							recieptLink=recieptLink,
+							customerID=customerID,
+							bookingID=bookingID,			
+							bookerFirstName=bookerFirstName,
+							bookerLastName=bookerLastName,
 							paymentMethod=paymentMethod)
 	
 	

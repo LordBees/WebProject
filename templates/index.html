@@ -11,11 +11,10 @@
     <link rel="stylesheet" href="/static/css/custom.css">
 	<!--<link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">-->
-    <script src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
-	<!--<script type="text/javascript" src="{{ url_for('static', filename='js/datePicker.min.js') }}"></script>
-	-->
+
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
@@ -142,51 +141,53 @@
 		
 		$("#passengerCnt").change(function(e) {
 		
-			// if we already have an arrival in the url but we have changed our mind we still need to process it		
-			if(window.location.href.indexOf("&passCnt=") > -1)
-			{
-			
-				var passCntNew = $('#passengerCnt').val();
-				
-				if(passCntNew != passCnt)
-				{				
-				
-						/*	var originalURL = window.location.href;
-				var replaceWord = '&passCntA='+passCntA;
-							
-				var re = /&passCntA=\d+/g; 
-				var subst = replaceWord;
-				var newURL = originalURL.replace(re, subst);
-			
-
-				console.log("new url:" + newURL);
-
-				window.location.replace(newURL);
-				*/
-					var data=window.location.href+"&passCnt="+passCnt;
-					//console.log("if url:" +window.location);
-					var url = window.location.toString();
-					var prevUrl = url.split("&passCnt");
-					window.location.replace(prevUrl[0]+"&passCnt="+passCntNew, "&passCnt="+passCntNew);
-				}
-
-			}
-			// pages is fresh with no arrivals previously selected so lets process that
-			else
-			{
-				var passCntNew = $('#passengerCnt').val();
-
-				console.log(passCntNew);
-				if(passCntNew != passCnt)
+			passCntInitial = $('#passengerCnt').val();
+				if(passCntInitial > 0){
+				// if we already have an arrival in the url but we have changed our mind we still need to process it		
+				if(window.location.href.indexOf("&passCnt=") > -1)
 				{
+				
+					var passCntNew = $('#passengerCnt').val();
 					
-						var data=window.location+"&passCnt="+passCntNew;
-						window.location.replace(data);
+					if(passCntNew != passCnt)
+					{				
 					
-					
+							/*	var originalURL = window.location.href;
+					var replaceWord = '&passCntA='+passCntA;
+								
+					var re = /&passCntA=\d+/g; 
+					var subst = replaceWord;
+					var newURL = originalURL.replace(re, subst);
+				
+
+					console.log("new url:" + newURL);
+
+					window.location.replace(newURL);
+					*/
+						var data=window.location.href+"&passCnt="+passCnt;
+						//console.log("if url:" +window.location);
+						var url = window.location.toString();
+						var prevUrl = url.split("&passCnt");
+						window.location.replace(prevUrl[0]+"&passCnt="+passCntNew, "&passCnt="+passCntNew);
+					}
+
+				}
+				// pages is fresh with no arrivals previously selected so lets process that
+				else
+				{
+					var passCntNew = $('#passengerCnt').val();
+
+					console.log(passCntNew);
+					if(passCntNew != passCnt)
+					{
+						
+							var data=window.location+"&passCnt="+passCntNew;
+							window.location.replace(data);
+						
+						
+					}
 				}
 			}
-		
 			// important so that this function doesn't just run once
 			if(e.originalEvent) {
 			
@@ -213,7 +214,7 @@
 						//console.log("if url:" +window.location);
 						var url = window.location.toString();
 						var prevUrl = url.split("&Time=");
-					window.location.replace(prevUrl[0]+"&passCnt="+passCntNew+"&Time="+dtimeNew, "&passCnt="+passCnt+"&Time="+dtime);
+						window.location.replace(prevUrl[0]+"&passCnt="+passCntNew+"&Time="+dtimeNew, "&passCnt="+passCnt+"&Time="+dtime);
 								
 					
 					}
@@ -266,21 +267,23 @@
 		var pickedDate = new Date($('#departDate').val());
 		var pickedDate = getFormattedDate(pickedDate);
 		
-		if(window.location.href.indexOf("&Date=") > -1)
+		var dtimeNew = $('#departTime').val();
+		var passCntNew = $('#passengerCnt').val();
+
+		
+			if(window.location.href.indexOf("&Date=") > -1)
 			{
 
-				/*if(dtimeNew != dtime)
-					{*/				
-				var data=window.location.href+"&Date="+pickedDate;
-					//console.log("if url:" +window.location);
+			
+
+				
+					var data=window.location.href+"&Date="+pickedDate;
 					var url = window.location.toString();
 					var prevUrl = url.split("&Date=");
 					window.location.replace(prevUrl[0]+"&Date="+pickedDate, "&Date="+pickedDate);
 				
-											window.location.assign();
+					window.location.assign();
 
-					/*
-					}*/
 			}
 			else if(pickedDate != null)
 			{
@@ -288,11 +291,15 @@
 					//document.getElementById("journeyTime").removeAttribute("hidden");
 						
 
+						var url = window.location.toString();
+						var prevUrl = url.split("&passCnt=");
 						var departDateNew = pickedDate;
-			
-						var data=window.location+"&Date="+pickedDate;
+
+						var data=prevUrl[0]+"&passCnt="+passCntNew+"&Time="+dtimeNew+"&Date="+pickedDate;
+						
 						window.location.replace(data);					
-								window.location.assign();
+						window.location.assign();
+						
 
 			}
 		
@@ -303,51 +310,51 @@
 		
     }
 	
-	
-	// 11/04/2018 in fields
-	// 2018-04-18 in url previously
- 
- var today = new Date();
-$(".selector").datepicker({ 
-	beforeShowDay: checkTravelDayFilter,
-	
-	minDate:0,
-	maxDate:new Date("{{form.departDateMax}}"),
-	defaultDate: new Date("{{form.departDateDefault}}"),
-	  onSelect: function() {
-		  changeDate();
-		  $(this).change();
+		
+		// 11/04/2018 in fields
+		// 2018-04-18 in url previously
+	 
+	 var today = new Date();
+	$(".selector").datepicker({ 
+		beforeShowDay: checkTravelDayFilter,
+		
+		minDate:0,
+		maxDate:new Date("{{form.departDateMax}}"),
+		defaultDate: new Date("{{form.departDateDefault}}"),
+		  onSelect: function() {
+			  changeDate();
+			  $(this).change();
+			}
+		  }).on("change", function() {
+			changeDate();
+		  });
+		 
+
+
+
+	function noSudays(date) {
+			var day = date.getDay();
+			return [(day != 0), ''];
+	}
+
+
+
+	function checkTravelDayFilter(date){
+
+		if(window.location.href.indexOf("Plane") > -1)
+		{
+			return noSudays(date);
 		}
-	  }).on("change", function() {
-		changeDate();
-	  });
-     
+		else if(window.location.href.indexOf("train") > -1)
+		{
+					return noSudays(date); //!!! change
+		}
+		else
+		{
+					return noSudays(date); //!!! change	
+		}
 
-
-
-function noSudays(date) {
-        var day = date.getDay();
-        return [(day != 0), ''];
-}
-
-
-
-function checkTravelDayFilter(date){
-
-	if(window.location.href.indexOf("Plane") > -1)
-	{
-		return noSudays(date);
 	}
-	else if(window.location.href.indexOf("train") > -1)
-	{
-				return noSudays(date); //!!! change
-	}
-	else
-	{
-				return noSudays(date); //!!! change	
-	}
-
-}
 
 
 
@@ -363,41 +370,41 @@ function checkTravelDayFilter(date){
 
 
 									
-					var CssDebug = false; // turn off and on as you please
+						var CssDebug = false; // turn off and on as you please
 
-					if(CssDebug){    
-									//Cache Buster
-						(function (){
-						  var rep = /.*\?.*/,
-							  links = document.getElementsByTagName('link'),
-							  scripts = document.getElementsByTagName('script'),
-							  process_scripts = false;
-						  for (var i=0;i<links.length;i++){
-							var link = links[i],
-								href = link.href;
-							if(rep.test(href)){
-							  link.href = href+'&'+Date.now();
-							}
-							else{
-							  link.href = href+'?'+Date.now();
-							}
+						if(CssDebug){    
+										//Cache Buster
+							(function (){
+							  var rep = /.*\?.*/,
+								  links = document.getElementsByTagName('link'),
+								  scripts = document.getElementsByTagName('script'),
+								  process_scripts = false;
+							  for (var i=0;i<links.length;i++){
+								var link = links[i],
+									href = link.href;
+								if(rep.test(href)){
+								  link.href = href+'&'+Date.now();
+								}
+								else{
+								  link.href = href+'?'+Date.now();
+								}
 
-						  }
-						  if(process_scripts){
-							for (var i=0;i<scripts.length;i++){
-							  var script = scripts[i],
-								  src = script.src;
-							  if(rep.test(src)){
-								script.src = src+'&'+Date.now();
 							  }
-							  else{
-								script.src = src+'?'+Date.now();
-							  }
+							  if(process_scripts){
+								for (var i=0;i<scripts.length;i++){
+								  var script = scripts[i],
+									  src = script.src;
+								  if(rep.test(src)){
+									script.src = src+'&'+Date.now();
+								  }
+								  else{
+									script.src = src+'?'+Date.now();
+								  }
 
-							}
-						  }
-						})();
-					}
+								}
+							  }
+							})();
+						}
 					
 					
 					
@@ -410,58 +417,7 @@ function checkTravelDayFilter(date){
 						var arriveName = $('#arriveLocation').find(":selected").text();
 						var departTimeValueOrig =  $('#departTime').find(":selected").text();
 						var departDateValueOrig =  $('#departDate').find(":selected").text();
-						
-					// basically the goal here was to keep our selections in arrival/departure after the page
-					// currently broken after fixing url changing issues, need to rework this, but its an style thing really so later
-		/*				
-						if(window.location.href.indexOf("Departure=") > -1)
-						{
-							var departDropList = document.getElementById("departLocation")
-							//departDropList.remove(0); 
-							for(var x=0;x < departDropList.length -1 ; x++)
-							{
-							   //if(departName == departDropList.options[x].text)
-							   var url1 = window.location.toString();
-							   var url = url1.split('Departure='); 
-							   if (url[1].search(departDropList.options[x].text) != -1)
-							   {
-									departDropList.selectedIndex = x;
-							   }
-							}
-							
-								if(window.location.href.indexOf("&Arrival=") > -1)
-								{
-								
-									var departDropList = document.getElementById("departLocation")
-									//departDropList.remove(0); 
-									for(var x=0;x < departDropList.length -1 ; x++)
-									{
-									   //if(departName == departDropList.options[x].text)
-									   var url1 = window.location.toString();
-									   var url = url1.split('Departure='); 
-									   if (url[1].search(departDropList.options[x].text) != -1)
-									   {
-											departDropList.selectedIndex = x;
-									   }
-									}
-								
-									var arriveDropList = document.getElementById("arriveLocation")
-									//arriveDropList.remove(0); 
-									for(var x=0;x < arriveDropList.length -1 ; x++)
-									{
-									   //if(departName == arriveDropList.options[x].text)
-									  var url2 = window.location.toString();
-									  var url = url2.split('&Arrival='); 
-									  if (url[1].search(arriveDropList.options[x].text) != -1)
-									  {
-											arriveDropList.selectedIndex = x;
-									  }
-									}
-								}
-						}
 					
-	
-*/
 						// we need to removed the disabled attribute from input fields once we have a depart location
 						// that way we can then calculate times/dates
 						// having these fields open will just make more work for us / make it confusing to the customer
@@ -613,33 +569,52 @@ function checkTravelDayFilter(date){
 			<div class="col w24 h24 slideshowContainer fade">					
 				<div style=" height: 100%">
 					<!-- slideshow 1st image placeholder -->
-					<div style="width: 100%; height: 100%; position: relative; color:white; background-color:black;  border-top: 1px solid #fff;">
+					<div style="width: 100%; height: 100%;   color:white; background-color:black;  border-top: 1px solid #fff;">
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
-							<form class="form" action={{ url_for('passenger_form') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
-								<input name="travelMethod" type="text" value={{slideImage}} hidden>
-					
-								<label for="party">Choose your Departure location:</label><br>	
-									{{ form.departLocation.__call__(**{'class': 'form-control'}) }}<br><br>
+							<form class="form" action={{ url_for('passenger_form') }}  method="POST" style="position: absolute; padding-right:0; padding-left:0; padding-top:5%; width:100%; height:100%; z-index: 1;  ">
 								
-								<!-- greyed out until a departure is selected, too much irrelevant information to process -->
-								<label for="party">Choose your Arrival location:</label><br>	
-									{{ form.arriveLocation.__call__(**{'class': 'form-control'}) }}<br><br>
-								
-								<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
-								<label for="party">How many are traveling:</label><br>
-								<input type="number" name="passengerCnt" id="passengerCnt" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled><br><br>
-								<label for="party">Choose your Departure time:</label><br>
-									{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br><br>
-								<label for="party">Choose your Departure Date:</label><br>
-								<!--<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>-->
-								<input type="text" name="departDate" id="departDate" class="selector" value={{form.departDateDefault}} disabled></p>
-				<!-- our booking confirm button for later that will trigger a model to process payment -->
-								<button id="submitBookingBtn" disabled type=submit>Book!</button>
-								<p id="bookPrice" name="bookPrice" hidden>Booking Price:  £ {{ bookingPrice }}</p>
-								<input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
-								<input type="text" name="bookingPrice" id="bookingPrice" value={{ bookingPrice|default(None, true) }} hidden>
+								<div class="col w5 h24 " style="float:left;"></div>	
+								<div class="col w14	 h24" style="font-size:2.5vmin;">
+										<input name="travelMethod" type="text" value={{slideImage}} hidden>
+									<div class="col w12 h4" >
+										<label for="party">Choose your Departure location:</label><br><br>	
+											{{ form.departLocation.__call__(**{'class': 'form-control col w20 h6'}) }}<br><br><br>
+									</div>
+									<div class="col w12 h4">	
+										<!-- greyed out until a departure is selected, too much irrelevant information to process -->
+										<label for="party">Choose your Arrival location:</label><br><br>	
+											{{ form.arriveLocation.__call__(**{'class': 'form-control col w20 h6'}) }}<br><br><br>
+									</div>
+									<div class="col w12 h4">
+										<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
+										<label for="party">How many are traveling:</label><br><br>
+										<input type="number" class="col w20 h6" style="width: 3ch; height: 5em" name="passengerCnt" id="passengerCnt" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled><br><br><br>
+									</div>	
+									<div class="col w12 h4">
+										<label for="party">Choose your Departure time:</label><br><br>
+											{{ form.departTime.__call__(**{'class': 'form-control col w20 h6'}) }}<br><br><br>
+									</div>
+									<div class="col w12 h4">
+										<label for="party">Choose your Departure Date:</label><br><br>
+										<!--<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>-->
+										<input type="text" name="departDate" id="departDate" class="selector col w20 h6" value={{form.departDateDefault}} disabled><br><br><br>
+										<!-- our booking confirm button for later that will trigger a model to process payment -->
+									</div>
+									<div class="col w12 h4">
+									</div>
+									<div class="col w12 h4">
+										<button id="submitBookingBtn" class="col w10 h6" style="line-height:1; margin:10% 15% 10% 15%;" disabled type=submit>Book!</button>
+									</div>
+									<div class="col w12 h6">
+										<p id="bookPrice" name="bookPrice" hidden>Booking Price:  £ {{ bookingPrice }}</p>
+										<input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
+										<input type="text" name="bookingPrice" id="bookingPrice" value={{ bookingPrice|default(None, true) }} hidden>
+									
+										<p id="journeyTime" hidden>Estimated Journey Time: {{ form.journeyTime }}</p>
+									</div>
+								</div>
+								<div class="col w5 h24 " style="float:right; top:0;"></div>	
 
-								<p id="journeyTime" hidden>Estimated Journey Time: {{ form.journeyTime }}</p>
 							</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.3; padding-bottom: -50%; ">
