@@ -5,14 +5,14 @@ import sys
 import os
 import uuid 
  
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 
 from wtforms import Form, validators, TextField
 from wtforms_components import DateRange, SelectField, IntegerField
 from wtforms.validators import Length, NumberRange, DataRequired, InputRequired
 from wtforms.fields.html5 import DateField
 
-
+from functools import wraps
 
 #import everything from our travel method implementation files
 from webAir import *
@@ -22,6 +22,58 @@ from WebMakeReciept import *
 
 app = Flask(__name__)
 
+def handleMaintenceRequest(travelMethod,departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status):
+
+	tableName = ""
+
+	if(travelMethod == "Plane"):
+		modifyAirTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
+	elif(travelMethod == "Bus"):
+		modifyAirTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
+	elif(travelMethod == "Taxi"):
+		modifyAirTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
+	elif(travelMethod == "Train"):
+		modifyAirTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
+	elif(travelMethod == "Ferry"):
+		modifyAirTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
+
+	
+	
+
+
+ACCESS = {
+    'guest': 0,
+    'user': 1,
+    'admin': 2
+}
+
+def createUser(name,email,password,access):
+	class User():
+		def __init__(self, name, email, password, access=ACCESS['user']):
+			self.name = name
+			self.email = email
+			self.password = password
+			self.access = access
+		
+		def is_admin(self):
+			return self.access == ACCESS['admin']
+		
+		def allowed(self, access_level):
+			return self.access >= access_level
+			
+def requires_access_level(access_level,user):
+	def decorator(f):
+		@wraps(f)
+		def decorated_function(*args, **kwargs):
+			
+			if not session.get('email'):
+				return redirect(url_for('users.login'))
+				
+			elif(not user.allowed(access_level)):
+				return redirect(url_for('users.profile', message="You do not have access to that page. Sorry!"))
+			return f(*args, **kwargs)
+		return decorated_function
+	return decorator
 
 def getVessleId(departure, arrival,travel_method):
 	conn = getConnection()
@@ -57,7 +109,18 @@ def addCustomerLoginDetails(username,password,customerID):
 		conn.rollback()
 	conn.close()
 
-
+def checkAdminPassword(password):
+	conn = getConnection()
+	cursor = conn.cursor()	
+	query = 'SELECT passWord FROM userlogin WHERE userName = %s'
+	args = ("admin",)
+	cursor.execute(query,args)
+	adminPass = cursor.fetchone()
+	conn.close()
+	if password == adminPass[0]:
+		return True
+	else:
+		return False
 	
 def getSomeRandomNumberHex(numCount):
 	random.seed(datetime.now())
@@ -432,6 +495,73 @@ def reciept_page():
 							recieptLink=recieptLink,
 							paymentMethod=paymentMethod)
 	
+	
+	
+@app.route('/login', methods=['GET','POST'])
+def login_check():
+	
+	if(request.method == 'POST'):
+		username = request.form.get('username')
+		password = request.form.get('password')
+			
+		if(username == "admin"):
+			#print("checking password")
+			if(checkAdminPassword(password)):
+				user = createUser(username,"",password,2)
+				# totally unsafe and would in practical use need to be carefully 
+				# transitioned and any access verified before routing, but this works for now	
+				return render_template("admin.html",userName=username, passwd=password) 		
+			else:
+				return redirect("/plane")
+
+	
+	else:
+		return redirect("/plane")
+
+@app.route('/maintenance', methods=['GET','POST'])
+def process_maintenance_request():
+	
+	if(request.method == 'POST'):
+		username = request.form.get('username')
+		password = request.form.get('password')
+		departLocation = request.form.get('departLocation')
+		arriveLocation = request.form.get('arriveLocation')
+		prevDepartTime = request.form.get('prevDepartTime')
+		newDepartTime = request.form.get('newDepartTime')
+		prevArriveTime = request.form.get('prevArriveTime')
+		newArriveTime = request.form.get('newArriveTime')
+		prevVessleNumber = request.form.get('prevVessleNumber')
+		newVessleNumber = request.form.get('newVessleNumber')
+		status = request.form.get('status')
+		price = request.form.get('price')
+		travelMethod = request.form.get('travelMethod')
+			
+		if(username == "admin"):
+			#print("checking password")
+			if(checkAdminPassword(password)):
+				# totally unsafe and would in practical use need to be carefully 
+				# transitioned and any access verified before routing, but this works for now	
+				
+				handleMaintenceRequest(travelMethod,
+										departLocation,
+										arriveLocation,
+										prevDepartTime,
+										newDepartTime,
+										prevArriveTime,
+										newArriveTime,
+										prevVessleNumber,
+										newVessleNumber,
+										price,
+										status
+										)
+				
+				return render_template("admin.html",userName=username, passwd=password) 		
+			else:
+				return redirect("/plane")
+
+	
+	else:
+		return redirect("/plane")		
 	
 # run the flask app (aka. host our website)
 if __name__ == '__main__':
