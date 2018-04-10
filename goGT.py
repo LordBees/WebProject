@@ -515,7 +515,6 @@ def reciept_page():
 
 	recieptLink=""
 	#attempt 2
-    
 	table2use = resolve_tname(travel_method)
 	Xkey = getbookingPrimaryKey(customerID,table2use)
 	recieptLink = WriteReciept(table2use,int(Xkey[0]))
