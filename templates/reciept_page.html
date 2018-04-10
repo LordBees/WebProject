@@ -191,7 +191,7 @@
 			</form>
 		
 		</div> 
-		<div class="col w24 h17 black "><!-- slidshow --> 
+		<div class="col w24 h21 black "><!-- slidshow --> 
 			<!-- div holding left slideshow arrow -->
 			<!--<div class="col w4 h24 black arrow" onclick="backImage()"></div>-->
 			<!-- main slideshow window -->
@@ -202,30 +202,34 @@
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
 						
 							
-									<form class="form" action={{ url_for('reciept_page') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
-										<br>
-										<div>travel method: {{travel_method}}</div>
-										<div>departure: {{departure_location}}</div>
-										<div>arrival: {{arrival_location}}</div>
-										<div>depart time: {{departTime}}</div>
-										<div>depart date: {{departDate}}</div>
-										<div>number of passengers: {{passengerCount}}</div>
-										<div>Booking Price: £{{bookingPrice}}</div><br>
-										<div>Discount Price: £{{discountedPrice}}</div><br>
-										<div>Payment method: {{paymentMethod}}</div><br>
-										<div>Reciept link is: {{recieptLink}}</div><br>
+									<form class="form" action={{ url_for('reciept_page') }} method="POST" style="  position: absolute; padding-top:15%; padding-right:0; width:100%; height:100%; z-index: 1; margin-left:0%; margin-right:0%; ">										
+										<div class="col w9 h24" sytle="float:left;"></div>
+										<div class="col w10 h24">
+											<div class ="bigbh">Booking Reciept</div><br>
+											<div class ="bigbt">SURNAME: {{bookerLastName}}</div>
+											<div class ="bigbt">NAME: {{bookerFirstName}}</div><br>
+											<div class ="bigbt">travel method: {{travel_method}}</div>
+											<div class ="bigbt">departure: {{departure_location}}</div>
+											<div class ="bigbt">arrival: {{arrival_location}}</div>
+											<div class ="bigbt">depart time: {{departTime}}</div>
+											<div class ="bigbt">depart date: {{departDate}}</div>
+											<div class ="bigbt">number of passengers: {{passengerCount}}</div>
+											<div class ="bigbt">Booking Price: £{{discountedPrice}}</div><br>
+											<div class ="bigbt">Payment method: {{paymentMethod}}</div><br>
+											<div class ="bigbt">Reciept link is: <a href="{{recieptLink}}" download>Download Reciept</a></div><br>
+									
+											<input type="text" name="travel_method" value={{travel_method}} hidden>
+											<input type="text" name="departure_location" value={{departure_location}} hidden>
+											<input type="text" name="arrival_location" value={{arrival_location}} hidden>
+											<input type="text" name="departTime" value={{departTime}} hidden>
+											<input type="date" name="departDate" value={{departDate}} hidden>
+											<input type="number" name="passengerCount" value={{passengerCount}} hidden>
+											<input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
+											<input type="number" name="discountedPrice" id="discountedPrice" value={{discountedPrice}} hidden>
+										</div>		
 								
-										<input type="text" name="travel_method" value={{travel_method}} hidden>
-										<input type="text" name="departure_location" value={{departure_location}} hidden>
-										<input type="text" name="arrival_location" value={{arrival_location}} hidden>
-										<input type="text" name="departTime" value={{departTime}} hidden>
-										<input type="date" name="departDate" value={{departDate}} hidden>
-										<input type="number" name="passengerCount" value={{passengerCount}} hidden>
-										<input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
-										<input type="number" name="discountedPrice" id="discountedPrice" value={{discountedPrice}} hidden>
-											
-								
-										
+										<div class="col w5 h24"></div>
+	
 									</form>
 									
 									
@@ -233,7 +237,7 @@
 
 									
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
-						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.5; ">
+						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.3; ">
 					</div>
 
 					<!--<img id="slideshow" src="" />-->

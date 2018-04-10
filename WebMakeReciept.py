@@ -15,7 +15,7 @@ SQLpre = "SELECT * FROM "
 SQLpost = " WHERE ID = %s"
 
 # system path to save reciepts into
-RecieptPath = "reciepts\\"
+RecieptPath = "static\\reciepts\\"
 RecieptExt =  ".txt"
 
 ##debug mode

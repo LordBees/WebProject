@@ -1,0 +1,17 @@
+|<><><><><> <><><><><>|
+| Reciept for booking |
+|_____________________|
+|Booking  ID:44
+|Customer ID:5880aa90
+|---------------------|
+|     booking info    |
+|---------------------|
+|Name: Andrew Belcher
+|you are boarding on: Fl008
+|With 2 Bag(s)
+|---------------------|
+|     cost info       |
+|---------------------|
+|Total cost:
+|£55.0000
+|<><><><><> <><><><><>|
