@@ -208,32 +208,32 @@
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
 						
 							
-									<form class="form" id="paymentForm" action={{ url_for('reciept_page') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
+									<form class="form" id="paymentForm" action={{ url_for('reciept_page') }} method="POST" style="position: absolute; padding:4%; width:100%; height:100%; z-index: 1; margin-left:%; margin-right:%; ">
 										<br>
-										
-										<div>Bookers First Name: {{bookerFirstName}}</div>
-										<div>Bookers Last Name: {{bookerLastName}}</div>
-										<div>travel method: {{travel_method}}</div>
-										<div>departure: {{departure_location}}</div>
-										<div>arrival: {{arrival_location}}</div>
-										<div>depart time: {{departTime}}</div>
-										<div>depart date: {{departDate}}</div>
-										<div>number of passengers: {{passengerCount}}</div>
+										<div class ="bigbh">Booking Confirmation</div><br>
+										<div class ="bigbt">SURNAME: {{bookerFirstName}}</div>
+										<div class ="bigbt">NAME: {{bookerLastName}}</div><br>
+										<div>You're traveling by <span class='bigbt'>{{travel_method}}</span>
+										to <span class='bigbt'>{{departure_location}}</span></div>
+										<div>You're destination is <span class='bigbt'>{{arrival_location}}</span></div><br>
+										<div>You're departing at <span class='bigbt'>{{departTime}}</span></div>
+										<div>on <span class='bigbt'>{{departDate}}</span></div><br>
+										<div> The number of Passengers is <span class='bigbt'>{{passengerCount}}</span></div>
 										<div>{% if travel_method == "Plane" %}
-												Flight number is: {{ vessleNumber }}
+												Your Flight number is <span class='bigbt'>{{ vessleNumber }}</span>
 											{% elif travel_method == "Train" %}	
-												Train number is: {{ vessleNumber }}
+												Your Train number is <span class='bigbt'>{{ vessleNumber }}</span>
 											{% elif travel_method == "Bus" %}
-												Bus number is: {{ vessleNumber }}
+												Your Bus number is <span class='bigbt'>{{ vessleNumber }}</span>
 											{% elif travel_method == "Taxi" %}
-												Taxi number is: {{ vessleNumber }}
+												Your Taxi number is <span class='bigbt'>{{ vessleNumber }}</span>
 											{% else %}
-												Ferry number is: {{ vessleNumber }}
+												Your Ferry number is <span class='bigbt'>{{ vessleNumber }}</span>
 											{% endif %}
 											
-												</div>
-										<div>Booking Price: £{{bookingPrice}}</div><br>
-										<div>Discount Price: £{{discountedPrice}}</div><br>
+												</div><br>
+										<div>Total Fare/Taxes/Charges is  <span class='bigbt'>GBP{{bookingPrice}}</span></div><br>
+										<div>Discount Price <span class='bigbt'>GBP{{discountedPrice}}</span></div><br><br>
 										
 								
 										<input type="text" name="travel_method" value={{travel_method}} hidden>
@@ -251,14 +251,14 @@
 										<input type="text" name="payMethod" id="payMethod" value="" hidden>
 
 
-											
-								
-										<p>Choose your purchase method</p>
-										<p>PayPal</p>
+										
+	
+										<p>Please choose your payment method</p>
+										<p><span class='paypal'>PayPal</span></p>
 
 										<input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynowCC_LG.gif:NonHostedGuest">
-										<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_buynowCC_LG.gif" border="0"  onclick="submitFromPaypal();" alt="PayPal – The safer, easier way to pay online!">
-										<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+										<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_buynowCC_LG.gif" border="0" onclick="submitFromPaypal();" alt="PayPal – The safer, easier way to pay online!">
+										<img alt="" border="" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
 
 									</form>
 									

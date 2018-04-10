@@ -172,9 +172,24 @@ a{
 		
 	}
 
-	.bannerLogo{
-		
-
+	.bigbh{
+		font-size:40px;
+		font-weight:bold;
+	}
+	
+	.bigbt{
+		font-size:18px;
+		font-weight:bold;
+	}
+	
+	.bigbp{
+		font-size:15px;
+		font-weight:bold;
+	}
+	
+	.paypal{
+		font-size:25px;
+		font-weight:bold;
 	}
 
 	.socBar{
