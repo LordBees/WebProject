@@ -74,23 +74,25 @@ def RecieptExists(Ttype,rid):##checks whether reciept exists for a given transpo
 #
 ####
 def resolve_tname(Tmode):
-    returner = "invalid"
+    returner = "invalid choice"
+    Tmode = Tmode.lower()
     ##
     if  (Tmode == "train"):
         returner = "webtrainbook"
-    elif(Tmode == "air"):
+    elif(Tmode == "plane"):
         returner = "webairbook"
     elif(Tmode == "ferry"):
         returner = "webferrybook"
     elif(Tmode == "taxi"):
-        returner = "invalid"
+        returner = "invalidu"
     elif(Tmode == "bus"):
-        returner = "invalid"
+        returner = "invalidu"
     ##
     return returner
 
 #format reciept for printing to file
 def prep_reciept(data):
+    ##data
     BookID =data[0][0]
     PFname =data[0][1]
     PLname =data[0][2]
@@ -98,6 +100,10 @@ def prep_reciept(data):
     Bags   =data[0][4]
     Cost   =data[0][5]
     CustID =data[0][6]
+
+    ##processing
+    #round(Cost, 2)
+    #
     
     #######reciept formatting####
     data2write = []
@@ -152,6 +158,7 @@ def WriteReciept(Table,recieptid):#
 
     ##
     print("written id: ",end = '')
+    print(RecieptPath+Table+"\\"+str(recieptid)+RecieptExt)
     return RecieptPath+Table+"\\"+str(recieptid)+RecieptExt
     #return recieptid
 
