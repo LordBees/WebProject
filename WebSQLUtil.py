@@ -24,3 +24,42 @@ def executequerywithargs(qry,args):
 def executequerywithoutargs(qry):
         args = ()
         executequerywithargs(qry,args)
+
+#universal qry function       
+def internal_SQLexec(md,qry,args = ('',),noargs = True):
+        ##connection
+        conn = getConnection()
+        cursor = conn.cursor()
+
+        ##argument
+        if (not noargs):
+                cursor.execute(qry,args)
+        else:
+                cursor.execute(qry)
+                
+        ##what to return
+        if  (md == 'fetchone'):
+                result = cursor.fetchone()
+        elif(md == 'fetchall'):
+                result = cursor.fetchall()
+        elif(md == 'noreturn'):
+                result = [('NORETRIEVE',)]
+        conn.close()
+
+        #return it
+        return result
+
+def executeSQLFetchOne_args(qry,args):
+        return internal_SQLexec('fetchone',qry,args,)
+def executeSQLFetchOne_noargs(qry):
+        return internal_SQLexec('fetchone',qry,args,False)
+
+def executeSQLFetchAll_args(qry,args):
+        return internal_SQLexec('fetchall',qry,args)
+def executeSQLFetchAll_noargs(qry):
+        return internal_SQLexec('fetchall',qry,args,False)
+
+def executeSQL_args(qry,args):
+        return internal_SQLexec('noreturn',qry,args,)
+def executeSQL_noargs(qry):
+        return internal_SQLexec('noreturn',qry,args,False)
