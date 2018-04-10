@@ -33,9 +33,9 @@ def handleMaintenceRequest(travelMethod,departLocation,	arriveLocation,	prevDepa
 	elif(travelMethod == "Taxi"):
 		modifyAirTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
 	elif(travelMethod == "Train"):
-		modifyAirTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
+		modifyTrainTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
 	elif(travelMethod == "Ferry"):
-		modifyAirTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
+		modifyFerryTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
 
 	
 	
@@ -301,7 +301,12 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 	elif travel_method == "train": # needs changing
 		slideImage = "GTtrain.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
-		return render_template("index.html",form=form,slideImage=slideImage)
+		if(int(passenger_count) <= form.passCntMax):
+			printedPrice = str(int(getPresetPricePlain(depart_location,arrive_location)) * int(passenger_count))
+		else:
+			printedPrice = "not enough seats"
+
+		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice)
 
 	elif travel_method == "bus": # needs changing
 		slideImage = "GTbus.jpg"

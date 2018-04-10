@@ -20,6 +20,34 @@ passwd         = ""
 
 # space for functions
 
+# modify the time table
+def modifyFerryTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status):
+	conn = getConnection()   
+	cursor = conn.cursor()	
+	query = "SELECT COUNT(*) FROM webferrytt WHERE Departure =%s AND Arrival =%s AND DepartureTime = %s AND ArrivalTime =%s"
+	args = (departLocation, arriveLocation, prevDepartTime+":00", prevArriveTime+":00")
+	cursor.execute(query,args)
+	count =  cursor.fetchone()
+	print("count is:"+ str(count[0]))
+	
+	entryCount = count[0]
+	
+	# if the entry exists update it
+	if(entryCount == 1):
+		query = "UPDATE webferrytt SET DepartureTime = %s, ArrivalTime =%s, FlightNum =%s, Price =%s, Status = %s WHERE Departure =%s AND Arrival =%s AND DepartureTime = %s AND ArrivalTime =%s"
+		args = (newDepartTime,newArriveTime,newVessleNumber,price,status,departLocation, arriveLocation, prevDepartTime+":00", prevArriveTime+":00")
+		cursor.execute(query,args)
+	
+	# if it doesnt then make insert it
+	elif(entryCount == 0):
+		entry = [departLocation,newDepartTime,arriveLocation,newArriveTime,newVessleNumber,price,0,status]
+		cursor.execute("""INSERT INTO webferrytt 
+		(Departure,DepartureTime,Arrival,ArrivalTime,FlightNum,Price,PassengerCount,Status)
+		VALUES(%s,%s,%s,%s,%s,%s,%s,%s)""", entry)
+
+	
+	conn.close()
+	
 # create connection to our mysql server
 def getConnection():
 	conn = mysql.connector.connect(user=user,password=passwd,host=host,database=db)
