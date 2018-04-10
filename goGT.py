@@ -494,8 +494,16 @@ def reciept_page():
 		addReceiptEntry(receiptID, customerID)	
 	
 	#update the timetable as well as the booking table for the journey method
-	if(travel_method =="Plane"):
+	if(travel_method =="Ferry"):
+                updateJourneyTablesFromBookingFerry(request,customerID)
+	elif(travel_method == "Train"):
+                updateJourneyTablesFromBookingTrain(request,customerID)
+	elif(travel_method == "Plane"):
                 updateJourneyTablesFromBookingAir(request,customerID)
+        #elif(travel_method == "Train"):
+        #        updateJourneyTablesFromBookingTrain(request,customerID)
+        ##elif(travel_method =="Ferry"):
+        ##        updateJourneyTablesFromBookingFerry(request,customerID)
         #elif(travel_method =="Train"):
         #        pass
         #elif(travel_method =="Ferry"):
