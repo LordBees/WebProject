@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en-gb">
 <head>
@@ -152,7 +151,7 @@
 </script>
 
 </head>
-<body>
+<body class="col w24 h24">
 
 
 <div class="wrapper w24 h24"> <!-- wrapper -->
@@ -192,78 +191,83 @@
 			</form>
 		
 		</div> 
-		<div class="col w24 h22 black "><!-- slideshow --> 
+		<div class="col w24 h21 black " style="background-color:black;"><!-- slideshow --> 
 		
 			<!-- div holding left slideshow arrow -->
 			<!--<div class="col w4 h24 black arrow" onclick="backImage()"></div>-->
 			<!-- main slideshow window -->
 			<div class="col w24 h24 slideshowContainer fade">					
-				<div style=" height: 100%">
+				<div style=" height: 100% background-color:black; ">
+										<!--<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: fixed; z-index:0; opacity: 0.3; ">
+-->
 					<!-- slideshow 1st image placeholder -->
-					<div style="width: 100%; height: 100%; position: relative; color:white; background-color:black;  border-top: 1px solid #fff;">
+					<div class="col w24 h24 " style="width: 100%; height: 100%; z-index:1; position: relative; color:white;   border-top: 1px solid #fff;">
 						
 							
-									<form class="form" action={{ url_for('purchase_form') }} method="POST" style="position: absolute; padding:3%; width:100%; height:100%; z-index: 1; margin-left:%; margin-right:%; ">
-										<br>
+									<form class="form col w24 h24 inner-container" action={{ url_for('purchase_form') }} method="POST" style="  position: absolute; padding-top:3%; padding-right:0; width:100%; height:100%; z-index: 1; margin-left:%; margin-right:%; ">
 										
-										<div class ="bigbh">Booking Confirmation</div><br>
-										
-										You're traveling by <span class="bigbt">{{travel_method}}</span>
-										from <span class="bigbt">{{departure_location}}</span><br>
-										You're destination is <span class="bigbt">{{arrival_location}}</span><br><br>
-										You're departing at <span class="bigbt">{{departTime}}</span>
-										on <span class="bigbt">{{departDate}}</span>
-										<div>{% if travel_method == "Plane" %}
-												Your Flight number is: <span class="bigbt">{{ vessleNumber }}</span>
-											{% elif travel_method == "Train" %}	
-												Your Train number is: <span class="bigbt">{{ vessleNumber }}</span>
-											{% elif travel_method == "Bus" %}
-												Your Bus number is: <span class="bigbt">{{ vessleNumber }}</span>
-											{% elif travel_method == "Taxi" %}
-												Your Taxi number is: <span class="bigbt">{{ vessleNumber }}</span>
-											{% else %}
-												Your Ferry number is: <span class="bigbt">{{ vessleNumber }}</span>
-											{% endif %}
+										<div class="col w7 h24 " style="float:left;"></div>	
+										<div class="col w10 h24" style="">
+											<div class ="bigbh">Booking Confirmation</div><br>
 											
-												</div>
-										The number of passengers is <span class="bigbt">{{passengerCount}}</span><br><br>
-										Total Fare/Taxes/Charges is <span class="bigbt">GBP {{bookingPrice}}</span><br>
+											You're traveling by <span class="bigbt">{{travel_method}}</span>
+											from <span class="bigbt">{{departure_location}}</span><br>
+											You're destination is <span class="bigbt">{{arrival_location}}</span><br><br>
+											You're departing at <span class="bigbt">{{departTime}}</span>
+											on <span class="bigbt">{{departDate}}</span>
+											<div>{% if travel_method == "Plane" %}
+													Your Flight number is: <span class="bigbt">{{ vessleNumber }}</span>
+												{% elif travel_method == "Train" %}	
+													Your Train number is: <span class="bigbt">{{ vessleNumber }}</span>
+												{% elif travel_method == "Bus" %}
+													Your Bus number is: <span class="bigbt">{{ vessleNumber }}</span>
+												{% elif travel_method == "Taxi" %}
+													Your Taxi number is: <span class="bigbt">{{ vessleNumber }}</span>
+												{% else %}
+													Your Ferry number is: <span class="bigbt">{{ vessleNumber }}</span>
+												{% endif %}
+												
+													</div>
+											The number of passengers is <span class="bigbt">{{passengerCount}}</span><br><br>
+											Total Fare/Taxes/Charges is <span class="bigbt">GBP {{bookingPrice}}</span><br>
 
-										<input type="text" name="travel_method" value={{travel_method}} hidden>
-										<input type="text" name="departure_location" value={{departure_location}} hidden>
-										<input type="text" name="arrival_location" value={{arrival_location}} hidden>
-										<input type="text" name="departTime" value={{departTime}} hidden>
-										<input type="text" name="departDate" value={{departDate}} hidden>
-										<input type="number" name="passengerCount" value={{passengerCount}} hidden>										
-										<input type="text" id="vessleNumber" name="vessleNumber" value={{vessleNumber}} hidden>
-										<input type="text" id="vessleNumber" name="vessleNumber" value={{vessleNumber}} hidden>
-										
-										<br>
-										<div class ="bigbp">Please Enter the name of the person(s) booking these tickets:</div><br>
-										<div class ="bigbp">First Name:</div>
-										<input type="text" id="FirstName" name="FirstName" class='form-fields' oninput="doCheck();"><br><br>
-										<div class ="bigbp">Last Name:</div>
-										<input type="text" id="LastName" name="LastName" class='form-fields' oninput="doCheck();"><br><br>
-										<div class ="bigbp">Do you have a Customer Id?:</div>
-										<input type="text" id="customerID" name="customerID" ><br><br>
-										<input type="number" name="bookingPrice" hidden value={{bookingPrice}} >
-												{% for passenger in range(0,passengerCount ) %}
-												    {% if loop.index < 2 %}
+											<input type="text" name="travel_method" value={{travel_method}} hidden>
+											<input type="text" name="departure_location" value={{departure_location}} hidden>
+											<input type="text" name="arrival_location" value={{arrival_location}} hidden>
+											<input type="text" name="departTime" value={{departTime}} hidden>
+											<input type="text" name="departDate" value={{departDate}} hidden>
+											<input type="number" name="passengerCount" value={{passengerCount}} hidden>										
+											<input type="text" id="vessleNumber" name="vessleNumber" value={{vessleNumber}} hidden>
+											<input type="text" id="vessleNumber" name="vessleNumber" value={{vessleNumber}} hidden>
+											
+											<br>
+											<div class ="bigbp">Please Enter the name of the person(s) booking these tickets:</div><br>
+											<div class ="bigbp">First Name:</div>
+											<input type="text" id="FirstName" name="FirstName" class='form-fields' oninput="doCheck();"><br><br>
+											<div class ="bigbp">Last Name:</div>
+											<input type="text" id="LastName" name="LastName" class='form-fields' oninput="doCheck();"><br><br>
+											<div class ="bigbp">Do you have a Customer Id?:</div>
+											<input type="text" id="customerID" name="customerID" ><br><br>
+											<input type="number" name="bookingPrice" hidden value={{bookingPrice}} >
+													{% for passenger in range(0,passengerCount ) %}
+														{% if loop.index < 2 %}
+															<div class ="bigbp">Input passenger {{passenger + 1|int}}'s age:</div>
+															<input type="number" name={{"passengerAge"~(passenger+1)}} id={{"passengerAge"~(passenger+1)}} class='form-fields' onclick="doCheck();" min=12 max=130><br>
+														{% else %}
 														<div class ="bigbp">Input passenger {{passenger + 1|int}}'s age:</div>
-														<input type="number" name={{"passengerAge"~(passenger+1)}} id={{"passengerAge"~(passenger+1)}} class='form-fields' onclick="doCheck();" min=12 max=130><br>
-												    {% else %}
-													<div class ="bigbp">Input passenger {{passenger + 1|int}}'s age:</div>
-														<input type="number" name={{"passengerAge"~(passenger+1)}} id={{"passengerAge"~(passenger+1)}} class='form-fields' onclick="doCheck();" min=1 max=130><br>
-													{% endif %}
-												{% endfor %}
-								
-										<p><div class ="bigbt">Confirm Booking and process payment?</div></p>
-										<button id="submitPassInfoBtn"  disabled type=submit>Submit</button>
-										<input name="slideImage" id="slideImage" hidden value={{slideImage}}>
-
+															<input type="number" name={{"passengerAge"~(passenger+1)}} id={{"passengerAge"~(passenger+1)}} class='form-fields' onclick="doCheck();" min=1 max=130><br>
+														{% endif %}
+													{% endfor %}
+									
+											<p><div class ="bigbt">Confirm Booking and process payment?</div></p>
+											<button id="submitPassInfoBtn"  disabled type=submit>Submit</button>
+											<input name="slideImage" id="slideImage" hidden value={{slideImage}}>
+										</div>
+										<div class="col w7 h24"></div>
+										
 									</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
-						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.3; ">
+						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: relative; z-index:0; opacity: 0.3; ">
 					</div>
 
 					<!--<img id="slideshow" src="" />-->

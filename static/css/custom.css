@@ -11,8 +11,7 @@ html {
    margin: 0px;
    height: 100%;
    max-width: 100%;
-       overflow: hidden;
-}
+  }
 
 body{
 	font-family: Helvetica;
@@ -20,6 +19,7 @@ body{
 	margin:0; 
 	padding:0;
 	color:white;
+	background-color:white;
 
 	/*background-image: url(../assets/background.jpg);
 	background-repeat: repeat-x;
@@ -30,15 +30,47 @@ body{
 	margin-right: 0px;
 	margin-bottom: 0px;
 	margin-left: 0px;
+	-ms-overflow-style:none;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
 
+::-webkit-scrollbar-button {
+  display: none;
+}
 
+.inner-container::-webkit-scrollbar {
+  display: none;
+}
+.outer-container {
 
+  overflow: hidden;
+}
 
 a{
 	color:#333;
 	font-size:1em;
+}
+
+
+
+input[type="text"] {
+	font-size:2vmin;
+}
+
+input[type="number"] {
+	font-size:2vmin;
+}
+
+select{
+	font-size:2vmin;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
 }
 
 
@@ -399,3 +431,4 @@ a{
 		color:#fff;
 		border-bottom:1px solid #333;
 	}
+	
