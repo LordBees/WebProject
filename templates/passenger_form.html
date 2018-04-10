@@ -160,7 +160,7 @@
 		<div class="col w24 h3 "> <!-- banner logo space -->
 		
 			<!-- banner logo -->
-			<div class="col w2 h24 "><img class="bannerLogo" src="{{ url_for('static', filename='assets/grandTravellogo.jpg') }}" height="70%" width="100%" style=" position:absolute; bottom:10%; padding-left:10%; margin-left:5%; margin-right:20%; "></div>
+			<div class="col w2 24 "><img class="bannerLogo" src="{{ url_for('static', filename='assets/grandTravellogo.jpg') }}" height="70%" width="100%" style=" position:absolute; bottom:10%; padding-left:10%; margin-left:5%; margin-right:20%; "></div>
 			<!-- banner text -->
 			<div class="col w18 h14 banner invert white" style="padding:0;">
 				<!--<img class="bannerLogo" style="float:left;">-->
@@ -178,11 +178,11 @@
 					<li class="col w5 h24 white nohover"></a></li>
 				</ul>			
 			</div>
-			<form id="loginForm" action="{{ url_for('login_check') }}" method="POST" class="col w4 h24" style="position:absolute; top:0; padding:0.5%; right:0; font-size:1.5vmin;  z-index:1; color:black;">
+			<form id="loginForm" class="col w4 h24" style="position:absolute; top:0; padding:0.5%; right:0; font-size:1.5vmin;  z-index:1; color:black;">
 				<div class="nav col w24 h3">Login</div>
 				<div class="col w24 h3"></div>
 				<div class="col w8 h4">Username:</div>
-				<input class="col w15 h4" type="text" size=25 name="username" id="username" >
+				<input class="col w15 h4" type="text" size=25 name="username" id="username">
 				<div class="col w24 h1"></div>
 				<div class="col w8 h4">Password:</div>
 				<input class="col w15 h4" type="password" size=25 name="password" id="password">
@@ -191,7 +191,7 @@
 			</form>
 		
 		</div> 
-		<div class="col w24 h21 black "><!-- slideshow --> 
+		<div class="col w24 h22 black "><!-- slideshow --> 
 		
 			<!-- div holding left slideshow arrow -->
 			<!--<div class="col w4 h24 black arrow" onclick="backImage()"></div>-->
@@ -202,55 +202,61 @@
 					<div style="width: 100%; height: 100%; position: relative; color:white; background-color:black;  border-top: 1px solid #fff;">
 						
 							
-									<form class="form" action={{ url_for('purchase_form') }} method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
+									<form class="form" action={{ url_for('purchase_form') }} method="POST" style="position: absolute; padding:4%; width:100%; height:100%; z-index: 1; margin-left:%; margin-right:%; ">
 										<br>
-										<div>travel method: {{travel_method}}</div>
-										<div>departure: {{departure_location}}</div>
-										<div>arrival: {{arrival_location}}</div>
-										<div>depart time: {{departTime}}</div>
-										<div>depart date: {{departDate}}</div>
+										
+										<div class ="bigbh">Booking Confirmation</div><br>
+										
+										You're traveling by <span class="bigbt">{{travel_method}}</span>
+										from <span class="bigbt">{{departure_location}}</span><br>
+										You're destination is <span class="bigbt">{{arrival_location}}</span><br><br>
+										You're departing at <span class="bigbt">{{departTime}}</span>
+										on <span class="bigbt">{{departDate}}</span>
 										<div>{% if travel_method == "Plane" %}
-												Flight number is: {{ vessleNumber }}
+												Your Flight number is: <span class="bigbt">{{ vessleNumber }}</span>
 											{% elif travel_method == "Train" %}	
-												Train number is: {{ vessleNumber }}
+												Your Train number is: <span class="bigbt">{{ vessleNumber }}</span>
 											{% elif travel_method == "Bus" %}
-												Bus number is: {{ vessleNumber }}
+												Your Bus number is: <span class="bigbt">{{ vessleNumber }}</span>
 											{% elif travel_method == "Taxi" %}
-												Taxi number is: {{ vessleNumber }}
+												Your Taxi number is: <span class="bigbt">{{ vessleNumber }}</span>
 											{% else %}
-												Ferry number is: {{ vessleNumber }}
+												Your Ferry number is: <span class="bigbt">{{ vessleNumber }}</span>
 											{% endif %}
 											
 												</div>
-										<div>number of passengers: {{passengerCount}}</div><br>
-										<div>Booking Price: £{{bookingPrice}}</div><br>
+										The number of passengers is <span class="bigbt">{{passengerCount}}</span><br><br>
+										Total Fare/Taxes/Charges is <span class="bigbt">GBP {{bookingPrice}}</span><br>
 
 										<input type="text" name="travel_method" value={{travel_method}} hidden>
 										<input type="text" name="departure_location" value={{departure_location}} hidden>
 										<input type="text" name="arrival_location" value={{arrival_location}} hidden>
 										<input type="text" name="departTime" value={{departTime}} hidden>
 										<input type="text" name="departDate" value={{departDate}} hidden>
-										<input type="number" name="passengerCount" value={{passengerCount}} hidden>										<input type="text" id="vessleNumber" name="vessleNumber" value={{vessleNumber}} hidden>
+										<input type="number" name="passengerCount" value={{passengerCount}} hidden>										
 										<input type="text" id="vessleNumber" name="vessleNumber" value={{vessleNumber}} hidden>
-										Please Enter the name of the person booking these tickets:<br>
-										First Name:
-										<input type="text" id="FirstName" name="FirstName" class='form-fields' oninput="doCheck();"><br>
-										Last Name:
+										<input type="text" id="vessleNumber" name="vessleNumber" value={{vessleNumber}} hidden>
+										
+										<br>
+										<div class ="bigbp">Please Enter the name of the person(s) booking these tickets:</div><br>
+										<div class ="bigbp">First Name:</div>
+										<input type="text" id="FirstName" name="FirstName" class='form-fields' oninput="doCheck();"><br><br>
+										<div class ="bigbp">Last Name:</div>
 										<input type="text" id="LastName" name="LastName" class='form-fields' oninput="doCheck();"><br><br>
-										Do you have a Customer Id?:
+										<div class ="bigbp">Do you have a Customer Id?:</div>
 										<input type="text" id="customerID" name="customerID" ><br><br>
 										<input type="number" name="bookingPrice" hidden value={{bookingPrice}} >
 												{% for passenger in range(0,passengerCount ) %}
 												    {% if loop.index < 2 %}
-														Input passenger {{passenger + 1|int}}'s age :
+														<div class ="bigbp">Input passenger {{passenger + 1|int}}'s age:</div>
 														<input type="number" name={{"passengerAge"~(passenger+1)}} id={{"passengerAge"~(passenger+1)}} class='form-fields' onclick="doCheck();" min=12 max=130><br>
 												    {% else %}
-													Input passenger {{passenger + 1|int}}'s age :
+													<div class ="bigbp">Input passenger {{passenger + 1|int}}'s age:</div>
 														<input type="number" name={{"passengerAge"~(passenger+1)}} id={{"passengerAge"~(passenger+1)}} class='form-fields' onclick="doCheck();" min=1 max=130><br>
 													{% endif %}
 												{% endfor %}
 								
-										<p>Confirm Booking and process payment?</p>
+										<p><div class ="bigbt">Confirm Booking and process payment?</div></p>
 										<button id="submitPassInfoBtn"  disabled type=submit>Submit</button>
 										<input name="slideImage" id="slideImage" hidden value={{slideImage}}>
 

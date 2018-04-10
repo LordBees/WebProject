@@ -1,3 +1,6 @@
+"'meta name='author' content='Luke Clayton'"
+"'meta name='description' content='Grand Travel Web Train Func'"
+
 
 from datetime import datetime, date, timedelta
 
@@ -24,6 +27,32 @@ passwd         = ""
 def getConnection():
 	conn = mysql.connector.connect(user=user,password=passwd,host=host,database=db)
 	return conn
+	
+	
+# modify the time table
+def modifyTrainTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status):
+	conn = getConnection()   
+	cursor = conn.cursor()	
+	query = "SELECT COUNT(*) FROM webtraintt WHERE Departure =%s AND Arrival =%s AND DepartureTime = %s AND ArrivalTime =%s"
+	args = (departLocation, arriveLocation, prevDepartTime+":00", prevArriveTime+":00")
+	cursor.execute(query,args)
+	count =  cursor.fetchone()
+	print("count is:"+ str(count[0]))
+	
+	entryCount = count[0]
+	
+	# if the entry exists update it
+	if(entryCount == 1):
+		query = "UPDATE webtraintt SET DepartureTime = %s, ArrivalTime =%s, FlightNum =%s, Price =%s, Status = %s WHERE Departure =%s AND Arrival =%s AND DepartureTime = %s AND ArrivalTime =%s"
+		args = (newDepartTime,newArriveTime,newVessleNumber,price,status,departLocation, arriveLocation, prevDepartTime+":00", prevArriveTime+":00")
+		cursor.execute(query,args)
+	
+	# if it doesnt then make insert it
+	elif(entryCount == 0):
+		entry = [departLocation,newDepartTime,arriveLocation,newArriveTime,newVessleNumber,price,0,status]
+		cursor.execute("""INSERT INTO webtraintt 
+		(Departure,DepartureTime,Arrival,ArrivalTime,FlightNum,Price,PassengerCount,Status)
+		VALUES(%s,%s,%s,%s,%s,%s,%s,%s)""", entry)
 
 	
 
@@ -82,7 +111,7 @@ def getPresetPriceTrain(departure,arrival):
 	return price[0]		
 
 # returns number of seats left to book for this route
-def getNumOfSeatsLeftAirTrain(departure,arrival):
+def getNumOfSeatsLeftTrain(departure,arrival):
 	conn = getConnection()
 	cursor = conn.cursor()
 	query = 'SELECT *,%s FROM webtraintt WHERE Departure = %s AND Arrival = %s'
@@ -241,7 +270,7 @@ def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart
 		
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--"): 
-			passCntMax = getNumOfSeatsLeftAirTrain(depart_location,arrive_location)
+			passCntMax = getNumOfSeatsLeftTrain(depart_location,arrive_location)
 			
 			
 			# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
