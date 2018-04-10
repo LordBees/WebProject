@@ -11,6 +11,9 @@ from wtforms.fields.html5 import DateField
 # mysql functions
 import mysql.connector
 
+# import my lib
+#import WebSQLUtil as Qman
+
 # MYSQL CONFIG VARIABLES
 host           = "localhost";
 db             = "gt";
@@ -305,7 +308,7 @@ def createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart
 			departDateDefault = 0
 		
 		passCnt = passenger_count
-		passCntMin= 1
+		#passCntMin= 1
 		
 		if(int(passenger_count) > 0):
 			passCntMin= 1

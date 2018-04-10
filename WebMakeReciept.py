@@ -17,7 +17,7 @@ SQLpre = "SELECT * FROM "
 SQLpost = " WHERE ID = %s"
 
 # system path to save reciepts into
-RecieptPath = "reciepts\\"
+RecieptPath = "static\\reciepts\\"
 RecieptExt =  ".txt"
 
 ##debug mode
@@ -52,6 +52,11 @@ def writefilearray(name,data,Table,ext = RecieptExt,fpath=RecieptPath):
 
 #check for folder for each table
 def chk_RF_exists(Ttype):##checks+creates folders for transport types
+    if(not os.path.isdir(RecieptPath)):
+        if(SCRIPT_DEBUG):
+            print("making dir for Reciepts")
+        os.mkdir(RecieptPath)
+        
     if(SCRIPT_DEBUG):
         print("dircheck: "+Ttype)
     if(not os.path.isdir(RecieptPath+Ttype)):
