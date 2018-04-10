@@ -35,26 +35,10 @@ body{
 
 
 
-
 a{
 	color:#333;
 	font-size:1em;
 }
-
-
-
-input[type="text"] {
-	font-size:2vmin;
-}
-
-input[type="number"] {
-	font-size:2vmin;
-}
-
-select{
-	font-size:2vmin;
-}
-
 
 
 /* Color Scheme*/
@@ -188,9 +172,24 @@ select{
 		
 	}
 
-	.bannerLogo{
-		
-
+	.bigbh{
+		font-size:40px;
+		font-weight:bold;
+	}
+	
+	.bigbt{
+		font-size:18px;
+		font-weight:bold;
+	}
+	
+	.bigbp{
+		font-size:15px;
+		font-weight:bold;
+	}
+	
+	.paypal{
+		font-size:25px;
+		font-weight:bold;
 	}
 
 	.socBar{
@@ -399,3 +398,7 @@ select{
 		color:#fff;
 		border-bottom:1px solid #333;
 	}
+
+
+
+
