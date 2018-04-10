@@ -39,6 +39,15 @@ def handleMaintenceRequest(travelMethod,departLocation,	arriveLocation,	prevDepa
 
 	
 	
+def getbookingPrimaryKey(cid,Ttable):
+    conn = getConnection()
+    cursor = conn.cursor()
+    query = 'SELECT ID FROM '+str(Ttable)+' WHERE Cust_ID = %s'
+    args = (cid,)
+    cursor.execute(query,args)
+    result = cursor.fetchone()
+    conn.close()
+    return result
 
 
 ACCESS = {
@@ -307,7 +316,12 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 	elif travel_method == "ferry": # needs changing
 		slideImage = "GTferry.jpg"
 		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date) 
-		return render_template("index.html",form=form,slideImage=slideImage)
+		if(int(passenger_count) <= form.passCntMax):
+			printedPrice = str(int(getPresetPricePlain(depart_location,arrive_location)) * int(passenger_count))
+		else:
+			printedPrice = "not enough seats"
+
+		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice)
 		
 		
 @app.route('/passenger_form', methods=['POST'])
@@ -467,21 +481,32 @@ def reciept_page():
 	bookingID = receiptID
 	# if customerID exists use it - really they should be forced to login
 	if(doesCustomerIdExist(customerID)):
-		addReceiptEntry(receiptID, customerID)
-	# else create one and login details
-	else:
+                addReceiptEntry(receiptID, customerID)
+		
+	else:# else create one and login details
 		customerID = str(getSomeRandomNumberHex(8))
 		addCustomerLoginDetails(username,password,customerID)
-		addReceiptEntry(receiptID, customerID)
-		
+		addReceiptEntry(receiptID, customerID)	
 	
 	#update the timetable as well as the booking table for the journey method
 	if(travel_method =="Plane"):
-		updateJourneyTablesFromBookingAir(request,customerID)
+                updateJourneyTablesFromBookingAir(request,customerID)
+        #elif(travel_method =="Train"):
+        #        pass
+        #elif(travel_method =="Ferry"):
+        #        pass
 
 	#add this info to the database
 		#update timetable to increment passenger count
 		#pull journey info etc and put into the reciept
+
+	recieptLink=""
+	#attempt 2
+    
+	table2use = resolve_tname(travel_method)
+	Xkey = getbookingPrimaryKey(customerID,table2use)
+	recieptLink = WriteReciept(table2use,int(Xkey[0]))
+	##
 	
 	#create receipt and pass it into receipt page
 #	if(travel_method == "Plane"):
@@ -491,8 +516,7 @@ def reciept_page():
 #	if(travel_method == "ferry"):
 #		recieptLink = WriteReciept("webferrybook",receiptID)
 
-	
-	recieptLink=""
+        ##END
 	return render_template("reciept_page.html",
 							slideImage=slideImage,
 							travel_method=travel_method,

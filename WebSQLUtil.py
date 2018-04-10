@@ -2,9 +2,9 @@
 import mysql.connector
 ##SERVER INFO
 #############
-host           = "localhost";
-db             = "gt";
-user           = "root";
+host           = "localhost"
+db             = "gt"
+user           = "root"
 passwd         = ""
 ############
 
