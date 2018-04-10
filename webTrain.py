@@ -29,6 +29,48 @@ def getConnection():
 	return conn
 	
 	
+# update/insert to webtraintt/webtrainbook
+def updateJourneyTablesFromBookingTrain(request,customerIdGend):
+	departure_location = request.form.get('departure_location')
+	arrival_location = request.form.get('arrival_location')
+	departTime = request.form.get('departTime')
+	departDate = request.form.get('departDate')
+	passengerCount = int(request.form.get('passengerCount'))
+	finalBookingPrice =	float(request.form.get('discountedPrice'))
+	bookerFirstName= request.form.get('FirstName')
+	bookerLastName= request.form.get('LastName')
+	customerIdForm = request.form.get('customerID')
+	vessleNumber = str(request.form.get('vessleNumber'))
+
+	if(customerIdForm != 0):
+		customerID = customerIdGend
+	else:
+		customerID = customerIdForm
+	
+	conn = getConnection()   
+	cursor = conn.cursor()	
+
+	# find out the passenger count for this route currently
+	query = "SELECT PassengerCount FROM webtraintt WHERE Departure=%s AND Arrival=%s AND DepartureTime=%s"
+	args = (departure_location,arrival_location, departTime)
+	cursor.execute(query,args)
+	passCount = cursor.fetchone()
+	
+	# adjust passenger count
+	query = "UPDATE webtraintt SET PassengerCount=%s WHERE Departure=%s AND Arrival=%s AND DepartureTime=%s"
+	newPassCount = passengerCount + passCount[0]
+	args = (newPassCount,departure_location,arrival_location, departTime)
+	cursor.execute(query,args)
+	
+	# insert passenger details into journey booking table
+	entry = [bookerFirstName,bookerLastName,vessleNumber,passengerCount*2,finalBookingPrice,customerID]
+	cursor.execute("""INSERT INTO webtrainbook 
+		(FirstName,LastName,TrainNum,Bags,Price,Cust_ID)
+		VALUES(%s,%s,%s,%s,%s,%s)""", entry)
+	
+	conn.close()
+	
+	
 # modify the time table
 def modifyTrainTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status):
 	conn = getConnection()   
@@ -43,7 +85,7 @@ def modifyTrainTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime,
 	
 	# if the entry exists update it
 	if(entryCount == 1):
-		query = "UPDATE webtraintt SET DepartureTime = %s, ArrivalTime =%s, FlightNum =%s, Price =%s, Status = %s WHERE Departure =%s AND Arrival =%s AND DepartureTime = %s AND ArrivalTime =%s"
+		query = "UPDATE webtraintt SET DepartureTime = %s, ArrivalTime =%s, TrainNum =%s, Price =%s, Status = %s WHERE Departure =%s AND Arrival =%s AND DepartureTime = %s AND ArrivalTime =%s"
 		args = (newDepartTime,newArriveTime,newVessleNumber,price,status,departLocation, arriveLocation, prevDepartTime+":00", prevArriveTime+":00")
 		cursor.execute(query,args)
 	
@@ -51,10 +93,10 @@ def modifyTrainTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime,
 	elif(entryCount == 0):
 		entry = [departLocation,newDepartTime,arriveLocation,newArriveTime,newVessleNumber,price,0,status]
 		cursor.execute("""INSERT INTO webtraintt 
-		(Departure,DepartureTime,Arrival,ArrivalTime,FlightNum,Price,PassengerCount,Status)
+		(Departure,DepartureTime,Arrival,ArrivalTime,TrainNum,Price,PassengerCount,Status)
 		VALUES(%s,%s,%s,%s,%s,%s,%s,%s)""", entry)
 
-	
+	conn.close()
 
 # returns a list of departures
 def getListOfDeparturesTrain():
