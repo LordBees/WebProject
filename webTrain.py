@@ -308,10 +308,12 @@ def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart
 		
 		passCnt = passenger_count
 
+		passCntMin=0
 		if(int(passenger_count) > 0):
- 			passCntMin= 1
- 		else:
- 			passCntMin=0
+                        passCntMin = 1
+                #else:
+                #else:
+                #        passCntMin=0
 		
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--"): 
