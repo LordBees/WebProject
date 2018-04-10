@@ -615,33 +615,37 @@ function checkTravelDayFilter(date){
 					<!-- slideshow 1st image placeholder -->
 					<div style="width: 100%; height: 100%; position: relative; color:white; background-color:black;  border-top: 1px solid #fff;">
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
-							<form class="form" action={{ url_for('passenger_form') }} method="POST" style="position: absolute; padding:5%; width:100%; height:100%; z-index: 1; margin-left:%; margin-right:20%; ">
+							<form class="form" action={{ url_for('passenger_form') }} method="POST" style="position: absolute; padding:2%; width:100%; height:100%; z-index: 1; margin-left:%; margin-right:%; ">
 								<input name="travelMethod" type="text" value={{slideImage}} hidden>
 					
-								<div class ="bigbh">Booking Confirmation</div><br>
+								<!--<div>{% if travel_method == "plane" %}
+												Flight Confirmation
+												{% endif %}
+												</div> -->
+								<div class="bigbh">Book your trip</div><br><br>
 					
 								
-								<label for="party">Choose your Departure location:</label><br>	
+								<label for="party"><span class="bigbp">Choose your Departure location:</span></label><br>	
 									{{ form.departLocation.__call__(**{'class': 'form-control'}) }}<br><br>
 								<!-- greyed out until a departure is selected, too much irrelevant information to process -->
-								<label for="party">Choose your Arrival location:</label><br>	
+								<label for="party"><span class="bigbp">Choose your Arrival location:</span></label><br>	
 									{{ form.arriveLocation.__call__(**{'class': 'form-control'}) }}<br><br>
 								
 								<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
-								<label for="party">How many are traveling:</label><br>
+								<label for="party"><span class="bigbp">How many are traveling:</span></label><br>
 								<input type="number" name="passengerCnt" id="passengerCnt" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled><br><br>
-								<label for="party">Choose your Departure time:</label><br>
+								<label for="party"><span class="bigbp">Choose your Departure time:</span></label><br>
 									{{ form.departTime.__call__(**{'class': 'form-control'}) }}<br><br>
-								<label for="party">Choose your Departure Date:</label><br>
+								<label for="party"><span class="bigbp">Choose your Departure Date:</span></label><br>
 								<!--<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>-->
 								<input type="text" name="departDate" id="departDate" class="selector" value={{form.departDateDefault}} disabled></p>
 				<!-- our booking confirm button for later that will trigger a model to process payment -->
 								<button id="submitBookingBtn" disabled type=submit>Book!</button>
-								<p id="bookPrice" name="bookPrice" hidden>Booking Price:  £ {{ bookingPrice }}</p>
+								<p id="bookPrice" name="bookPrice" hidden><span class="bigbp">Booking Price:  <span class="bigbt">GBP {{ bookingPrice }}</span></span></p>
 								<input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
 								<input type="text" name="bookingPrice" id="bookingPrice" value={{ bookingPrice|default(None, true) }} hidden>
 
-								<p id="journeyTime" hidden>Estimated Journey Time: {{ form.journeyTime }}</p>
+								<p id="journeyTime" hidden><span class="bigbp">Estimated Journey Time: <span class="bigbt">{{ form.journeyTime }}</span></span></p>
 							</form>
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 						<img id="slideshow" src="/static/assets/{{ slideImage }}" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.3; padding-bottom: -50%; ">
