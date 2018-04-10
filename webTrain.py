@@ -1,5 +1,5 @@
-"'meta name='author' content='Luke Clayton'"
-"'meta name='description' content='Grand Travel Web Train Func'"
+#"'meta name='author' content='Luke Clayton'"
+#"'meta name='description' content='Grand Travel Web Train Func'"
 
 
 from datetime import datetime, date, timedelta
