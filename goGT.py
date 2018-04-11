@@ -221,7 +221,7 @@ def formatToTravMeth(travel_method=""):
 		slideImage = "GTtrain.jpg"
 		#luke please update your code to now follow the new method here, so create train form with the arguments im using now etc etc..
 		# do so for the 2 other instances of it below as well in other app routes
-		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
+		form = createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 	elif travel_method == "bus": # needs changing
@@ -259,7 +259,7 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 		
 	elif travel_method == "train": # needs changing
 		slideImage = "GTtrain.jpg"
-		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
+		form = createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 	elif travel_method == "bus": # needs changing
@@ -300,9 +300,9 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 		
 	elif travel_method == "train": # needs changing
 		slideImage = "GTtrain.jpg"
-		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
+		form = createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		if(int(passenger_count) <= form.passCntMax):
-			printedPrice = str(int(getPresetPricePlain(depart_location,arrive_location)) * int(passenger_count))
+			printedPrice = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
 		else:
 			printedPrice = "not enough seats"
 
@@ -322,7 +322,7 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 		slideImage = "GTferry.jpg"
 		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date) 
 		if(int(passenger_count) <= form.passCntMax):
-			printedPrice = str(int(getPresetPricePlain(depart_location,arrive_location)) * int(passenger_count))
+			printedPrice = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
 		else:
 			printedPrice = "not enough seats"
 
