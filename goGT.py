@@ -292,7 +292,7 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 		slideImage = "GTplane.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		if(int(passenger_count) <= form.passCntMax):
-			printedPrice = str(int(getPresetPricePlain(depart_location,arrive_location)) * int(passenger_count))
+			printedPrice = str(int(getPresetPriceplane(depart_location,arrive_location)) * int(passenger_count))
 		else:
 			printedPrice = "not enough seats"
 
