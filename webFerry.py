@@ -10,6 +10,7 @@ from wtforms.fields.html5 import DateField
 
 # mysql functions
 import mysql.connector
+import WebSQLUtil as Qman
 
 # import my lib
 #import WebSQLUtil as Qman
@@ -110,63 +111,68 @@ def getListOfDeparturesFerry():
 
 # returns list of arrivals with matched departure
 def getListOfArrivalsFromDepartureFerry(departure):
-	conn = getConnection()
-	cursor = conn.cursor()
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT *, Arrival FROM webferrytt WHERE Departure = %s'
 	args = (departure,)
-	cursor.execute(query,args)
-	arrivals = cursor.fetchall()
-	conn.close()
+	#cursor.execute(query,args)
+	#arrivals = cursor.fetchall()
+	arrivals = Qman.executeSQLFetchAll_args(query,args)
+	#conn.close()
 	return arrivals	
 
 # returns a list of depart times based on matching departure/arrival
 def getListOfDepartureTimesFerry(departure, arrival):
-	conn = getConnection()
-	cursor = conn.cursor()
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT *, Departure Time FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = (departure, arrival)
-	cursor.execute(query,args)
-	departTimes = cursor.fetchall()
-	conn.close()
+	#cursor.execute(query,args)
+	#departTimes = cursor.fetchall()
+	#conn.close()
+	departTimes = Qman.executeSQLFetchAll_args(query,args)
 	return departTimes	
 
 # returns a list of depart times based on matching departure/arrival
 def getListOfArrivalTimesFerry(departure, arrival):
-	conn = getConnection()
-	cursor = conn.cursor()
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT *, Arrival Time FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = (departure, arrival)
-	cursor.execute(query,args)
-	arriveTimes = cursor.fetchall()
-	conn.close()
+	#cursor.execute(query,args)
+	#arriveTimes = cursor.fetchall()
+	#conn.close()
+	arriveTimes = Qman.executeSQLFetchAll_args(query,args)
 	return arriveTimes	
 
 # returns list of arrivals with matched departure
 def getPresetPriceFerry(departure,arrival):
-	conn = getConnection()
-	cursor = conn.cursor()
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT Price FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = (departure,arrival)
-	cursor.execute(query,args)
-	price = cursor.fetchone()
-	#price = "%.2f" %(price)
-	conn.close()
+	#cursor.execute(query,args)
+	#price = cursor.fetchone()
+	##price = "%.2f" %(price)
+	#conn.close()
+	price = Qman.executeSQLFetchOne_args(query,args)
 	return price[0]		
 
 # returns number of seats left to book for this route
 def getNumOfSeatsLeftFerry(departure,arrival):
-	conn = getConnection()
-	cursor = conn.cursor()
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT *,%s FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = ("Passenger Count",departure,arrival)
-	cursor.execute(query,args)
-	passCnt = cursor.fetchone()
+	#cursor.execute(query,args)
+	#passCnt = cursor.fetchone()
+	passCnt = Qman.executeSQLFetchOne_args(query,args)
 	print("passcnt "+ str(passCnt[7]))
 	maxPass = 500 # max number of seats for a gt ferry
 	
 	seatsLeft =  maxPass - int(passCnt[7])
 
-	conn.close()
+	#conn.close()
 	return seatsLeft
 	
 # regular functions	

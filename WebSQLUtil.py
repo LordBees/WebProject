@@ -32,10 +32,10 @@ def internal_SQLexec(md,qry,args = ('',),noargs = True):
         cursor = conn.cursor()
 
         ##argument
-        if (not noargs):
-                cursor.execute(qry,args)
-        else:
+        if (noargs):
                 cursor.execute(qry)
+        else:
+                cursor.execute(qry,args)
                 
         ##what to return
         if  (md == 'fetchone'):
@@ -50,16 +50,16 @@ def internal_SQLexec(md,qry,args = ('',),noargs = True):
         return result
 
 def executeSQLFetchOne_args(qry,args):
-        return internal_SQLexec('fetchone',qry,args,)
+        return internal_SQLexec('fetchone',qry,args,noargs = False)
 def executeSQLFetchOne_noargs(qry):
-        return internal_SQLexec('fetchone',qry,args,False)
+        return internal_SQLexec('fetchone',qry,args)
 
 def executeSQLFetchAll_args(qry,args):
-        return internal_SQLexec('fetchall',qry,args)
+        return internal_SQLexec('fetchall',qry,args,noargs = False)
 def executeSQLFetchAll_noargs(qry):
-        return internal_SQLexec('fetchall',qry,args,False)
+        return internal_SQLexec('fetchall',qry,args)
 
 def executeSQL_args(qry,args):
-        return internal_SQLexec('noreturn',qry,args,)
+        return internal_SQLexec('noreturn',qry,args,noargs = False)
 def executeSQL_noargs(qry):
-        return internal_SQLexec('noreturn',qry,args,False)
+        return internal_SQLexec('noreturn',qry,args)
