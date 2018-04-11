@@ -1,0 +1,17 @@
+|<><><><><> <><><><><>|
+| Reciept for booking |
+|_____________________|
+|Booking  ID:75
+|Customer ID:e70e0bff
+|---------------------|
+|     booking info    |
+|---------------------|
+|Name: Andrew Belcher
+|you are boarding on: Fl001
+|With 4 Bag(s)
+|---------------------|
+|     cost info       |
+|---------------------|
+|Total cost:
+|£105.0000
+|<><><><><> <><><><><>|
