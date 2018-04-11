@@ -72,7 +72,7 @@ def updateJourneyTablesFromBookingTrain(request,customerIdGend):
 	
 	
 # Modifies Train timetable
-def modifyTrainTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status):
+def modifyTrainTT(departLocation, arriveLocation, prevDepartTime, newDepartTime, prevArriveTime, newArriveTime,prevVessleNumber,newVessleNumber,price,status):
 	conn = getConnection()   
 	cursor = conn.cursor()	
 	query = "SELECT COUNT(*) FROM webtraintt WHERE Departure =%s AND Arrival =%s AND DepartureTime = %s AND ArrivalTime =%s"
@@ -110,19 +110,8 @@ def getListOfDeparturesTrain():
 	departures = cursor.fetchall()
 	conn.close()
 	return departures	
-
-# Returns list of 
-def getListOfArrivalsFromDepartureTrain(departure):
-	conn = getConnection()
-	cursor = conn.cursor()
-	query = 'SELECT *, Arrival FROM webtraintt WHERE Departure = %s'
-	args = (departure,)
-	cursor.execute(query,args)
-	arrivals = cursor.fetchall()
-	conn.close()
-	return arrivals	
-
-# returns a list of depart times based on matching departure/arrival
+	
+# Returns list of departure times if matched in DB
 def getListOfDepartureTimesTrain(departure, arrival):
 	conn = getConnection()
 	cursor = conn.cursor()
@@ -133,7 +122,19 @@ def getListOfDepartureTimesTrain(departure, arrival):
 	conn.close()
 	return departTimes	
 
-# returns a list of depart times based on matching departure/arrival
+# Returns list of arrivals
+def getListOfArrivalsFromDepartureTrain(departure):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT *, Arrival FROM webtraintt WHERE Departure = %s'
+	args = (departure,)
+	cursor.execute(query,args)
+	arrivals = cursor.fetchall()
+	conn.close()
+	return arrivals	
+
+
+# Returns list of arrival times if matched in DB
 def getListOfArrivalTimesTrain(departure, arrival):
 	conn = getConnection()
 	cursor = conn.cursor()
@@ -143,20 +144,8 @@ def getListOfArrivalTimesTrain(departure, arrival):
 	arriveTimes = cursor.fetchall()
 	conn.close()
 	return arriveTimes	
-
-# returns list of arrivals with matched departure
-def getPresetPriceTrain(departure,arrival):
-	conn = getConnection()
-	cursor = conn.cursor()
-	query = 'SELECT Price FROM webtraintt WHERE Departure = %s AND Arrival = %s'
-	args = (departure,arrival)
-	cursor.execute(query,args)
-	price = cursor.fetchone()
-	#price = "%.2f" %(price)
-	conn.close()
-	return price[0]		
-
-# returns number of seats left to book for this route
+	
+# Returns number of seats left for route
 def getNumOfSeatsLeftTrain(departure,arrival):
 	conn = getConnection()
 	cursor = conn.cursor()
@@ -171,22 +160,32 @@ def getNumOfSeatsLeftTrain(departure,arrival):
 
 	conn.close()
 	return seatsLeft
+
+# Returns matching departures in DB
+def getPresetPriceTrain(departure,arrival):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT Price FROM webtraintt WHERE Departure = %s AND Arrival = %s'
+	args = (departure,arrival)
+	cursor.execute(query,args)
+	price = cursor.fetchone()
+	#price = "%.2f" %(price)
+	conn.close()
+	return price[0]		
+
+
 	
 ####################
 #BUILD LISTS
 
-
-# builds arrival select field for departure location
+# Populates arrival field based on departure
 def buildArrivalsFieldTrain(departure,arrival):
 
 	arrivals = getListOfArrivalsFromDepartureTrain(departure)
 	members = []
 	arriveNames = []	
-	default_selection = 0
-	
-		
+	default_selection = 0	
 	i = 0
-
 	members.append(None)
 	arriveNames.append('--')
 	i=i+1		
@@ -214,21 +213,17 @@ def buildArrivalsFieldTrain(departure,arrival):
 		defaultSelection = arriveNames[default_selection]
 	else:
 		defaultSelection = 0
-	
+		
 	return SelectField(choices=arrivals, default = defaultSelection,id="arriveLocation")
 	
-	
 
-# builds departure select field
+# Populates departure field
 def buildDeparturesFieldTrain(departure):
 	departures = getListOfDeparturesTrain()
 	members = []
 	departNames = []	
-	default_selection = 0
-	
-		
+	default_selection = 0	
 	i = 0
-
 	members.append(None)
 	departNames.append('--')
 	i=i+1		
@@ -258,15 +253,13 @@ def buildDeparturesFieldTrain(departure):
 	
 	return SelectField(choices=departs, default = defaultSelection,id="departLocation")
 
-# builds departures time field based on depart/arrive location
+# Populate departure field matching times in DB
 def buildDepartTimesFieldTrain(departure,arrival,time):
 	times = getListOfDepartureTimesTrain(departure,arrival)
 	members = []
 	departTimes = []
 	default_selection = 0
-	
 	i = 0
-
 	members.append(None)
 	departTimes.append('--')
 	i=i+1	
@@ -277,13 +270,12 @@ def buildDepartTimesFieldTrain(departure,arrival,time):
 			members.append(i)
 			departTimes.append(str(row[2]))
 			i=i+1
-
 			
 	departTimes = sorted(set(departTimes), key=departTimes.index)
 	zip(members,departTimes)
 	times = [(value, value) for value in departTimes]
-	
 	d = 0
+	
 	for t in departTimes:
 		if(time == t):
 			default_selection = d
@@ -297,8 +289,7 @@ def buildDepartTimesFieldTrain(departure,arrival,time):
 	return SelectField(choices=times,default=defaultSelection,id="departTime")
 
 
-# where we can put our template classes for booking forms, will end up populating it based on the current
-# data within the database
+# Database date allows creating of forms. Index calls last so must remain at end
 def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date):
 	class TrainForm(Form):
 		departDateMax = date.today() + timedelta(3*365/12) 
@@ -314,27 +305,21 @@ def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart
 		if(int(passenger_count) > 0):
                         passCntMin = 1
            
-		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--"): 
 			passCntMax = getNumOfSeatsLeftTrain(depart_location,arrive_location)
 			
-			
-			# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
 			arrivalTime = getListOfArrivalTimesTrain(depart_location,arrive_location)
 			departureTime = getListOfDepartureTimesTrain(depart_location,arrive_location)
 
-			#first one we get from list
 			atime = arrivalTime[0]
 			dpttime = departureTime[0]
-			
-			# calculate the difference
+
 			calcTime = atime[4] - dpttime[2]
-			# find out how many hours it is and store the remainder
+
 			hours, remainder = divmod(calcTime.seconds, 3600)			
-			# divide the remainder into seconds/minutes left
+	
 			minutes, seconds = divmod(remainder, 60)
 			
-			#just some general output formatting, when will minutes ever be 1? prob never
 			if(minutes == 0):
 				if(hours > 1):
 					journeyTime = "%d hours" % (hours)
@@ -348,17 +333,13 @@ def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart
 						journeyTime = "%d minutes" % (minutes)
 					else:
 						journeyTime = "%d hour and %d minutes" % (hours,minutes)
-						
-			
+					
 		else:
-			passCntMax = 1 # when the field is grayed out we still need to assign it something
-		
-		# loading our form fields
+			passCntMax = 1 
+
 		departLocation = buildDeparturesFieldTrain(depart_location)
 		arriveLocation = buildArrivalsFieldTrain(depart_location,arrive_location)	
 		departTime = buildDepartTimesFieldTrain(depart_location,arrive_location,dtime)
-		
-		
 
 
 	return TrainForm()
