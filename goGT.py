@@ -284,9 +284,9 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>')
 # here we can map multiple url routes to the same condition! =)
 
-@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>') 
-@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>&Time=<dtime>') 
-@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&passCnt=<passenger_count>&Time=<dtime>&Date=<depart_date>') 
+@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&Time=<dtime>') 
+@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&Time=<dtime>&passCnt=<passenger_count>') 
+@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&Time=<dtime>&passCnt=<passenger_count>&Date=<depart_date>') 
 def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="--", passenger_count=0,dtime=0,depart_date=0):
 	if travel_method == "plane":
 		slideImage = "GTplane.jpg"

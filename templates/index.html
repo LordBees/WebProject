@@ -210,10 +210,9 @@
 				if(dtimeNew != dtime)
 					{				
 						var data=window.location.href+"&Time="+dtimeNew;
-						//console.log("if url:" +window.location);
 						var url = window.location.toString();
 						var prevUrl = url.split("&Time=");
-					window.location.replace(prevUrl[0]+"&passCnt="+passCntNew+"&Time="+dtimeNew, "&passCnt="+passCnt+"&Time="+dtime);
+						window.location.replace(prevUrl[0]+"&Time="+dtimeNew,"&Time="+dtime);
 								
 					
 					}
@@ -225,12 +224,8 @@
 
 						var departTimeNew = $('#departTime').find(":selected").text();
 						
-						var url = window.location.toString();
-
-						var prevUrl = url.split("&passCnt=");
-
-						var data=prevUrl[0]+"&passCnt="+passCntNew+"&Time="+dtimeNew;
-
+						var data=window.location+"&Time="+dtimeNew;
+						
 						window.location.replace(data);					
 				
 			}
@@ -483,9 +478,8 @@ function checkTravelDayFilter(date){
 						// we can enabled depart data/time now loaded with data from the database(in good time)
 						
 						if(location.indexOf("Arrival") > -1) {
-							document.getElementById("departDate").removeAttribute("disabled");
 							document.getElementById("departTime").removeAttribute("disabled");
-							document.getElementById("passengerCnt").removeAttribute("disabled");
+
 							
 							var arrivalsList = document.getElementById("arriveLocation");
 							arrivalsList.remove(0); 
@@ -494,6 +488,8 @@ function checkTravelDayFilter(date){
 						
 						if(location.indexOf("Time") > -1) {
 
+							document.getElementById("passengerCnt").removeAttribute("disabled");
+							document.getElementById("departDate").removeAttribute("disabled");
 							document.getElementById("journeyTime").removeAttribute("hidden");
 
 							var departTimeList = document.getElementById("departTime")
@@ -633,14 +629,15 @@ function checkTravelDayFilter(date){
 											{{ form.arriveLocation.__call__(**{'class': 'form-control col w20 h6'}) }}<br><br><br>
 									</div>
 									<div class="col w12 h4">
+										<label for="party"><span class="bigbp">Choose your Departure time:</span></label><br>
+											{{ form.departTime.__call__(**{'class': 'form-control col w20 h6'}) }}<br><br><br>
+									</div>
+									<div class="col w12 h4">
 										<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
 										<label for="party"><span class="bigbp">How many are traveling:</span></label><br>
 										<input type="number" class="col w20 h6" style="width: 3ch; height: 5em" name="passengerCnt" id="passengerCnt" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled><br><br><br>
 									</div>	
-									<div class="col w12 h4">
-										<label for="party"><span class="bigbp">Choose your Departure time:</span></label><br>
-											{{ form.departTime.__call__(**{'class': 'form-control col w20 h6'}) }}<br><br><br>
-									</div>
+
 									<div class="col w12 h4">
 										<label for="party"><span class="bigbp">Choose your Departure Date:</span></label><br>
 										<!--<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>-->

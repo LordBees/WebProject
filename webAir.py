@@ -108,11 +108,11 @@ def getPresetPricePlane(departure,arrival):
 	return price[0]		
 
 # returns number of seats left to book for this route
-def getNumOfSeatsLeftAirPlane(departure,arrival):
+def getNumOfSeatsLeftAirPlane(departure,arrival,departure_time):
 	conn = getConnection()
 	cursor = conn.cursor()
-	query = 'SELECT *,%s FROM webairtt WHERE Departure = %s AND Arrival = %s'
-	args = ("Passenger Count",departure,arrival)
+	query = 'SELECT *,%s FROM webairtt WHERE Departure = %s AND Arrival = %s AND DepartureTime =%s'
+	args = ("Passenger Count",departure,arrival,departure_time)
 	cursor.execute(query,args)
 	passCnt = cursor.fetchone()
 	print("passcnt "+ str(passCnt[7]))
@@ -247,7 +247,28 @@ def buildDepartTimesFieldPlane(departure,arrival,time):
 	
 	return SelectField(choices=times,default=defaultSelection,id="departTime")
 
-
+	
+#def doesRouteExist(departure,arrival,departTime,arriveTime):
+#	conn = getConnection()
+#	cursor = conn.cursor()
+#	query = 'SELECT customerID, COUNT(*) FROM receipts WHERE customerID = %s'
+#	args = (customerID,)	
+#	cursor.execute(query,args)
+#	idCount = cursor.rowcount
+#	conn.close()
+#	if idCount > 0:
+#		return True
+#	else:
+#		return False		
+	
+#def checkIfPlaneRouteExists(departure,arrival,departTime,arriveTime,passengersNeeded):
+#	
+#	# first check if we have available seats
+#	if(getNumOfSeatsLeftAirPlane(departure,arrival) >= passengersNeeded):
+#		
+#	else:
+#		return -1
+	
 # update/insert to webairtt/webairbook
 def updateJourneyTablesFromBookingAir(request,customerIdGend):
 	departure_location = request.form.get('departure_location')
@@ -310,12 +331,8 @@ def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart
 		else:
 			passCntMin=0
 
-		
-		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
-		if(depart_location != "--" and arrive_location != "--"): 
-			passCntMax = getNumOfSeatsLeftAirPlane(depart_location,arrive_location)
 			
-			
+		if(depart_location != "--" and arrive_location != "--"):
 			# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
 			arrivalTime = getListOfArrivalTimesPlane(depart_location,arrive_location)
 			departureTime = getListOfDepartureTimesPlane(depart_location,arrive_location)
@@ -344,11 +361,21 @@ def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart
 					if(hours == 0):
 						journeyTime = "%d minutes" % (minutes)
 					else:
-						journeyTime = "%d hour and %d minutes" % (hours,minutes)
-						
+						journeyTime = "%d hour and %d minutes" % (hours,minutes)	
+		
 			
+		
+		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
+		if(depart_location != "--" and arrive_location != "--" and dtime != 0): 
+			passCntMax = getNumOfSeatsLeftAirPlane(depart_location,arrive_location,dtime)
+		
 		else:
 			passCntMax = 1 # when the field is grayed out we still need to assign it something
+			
+
+						
+			
+
 		
 		# loading our form fields
 		departLocation = buildDeparturesFieldPlane(depart_location)
