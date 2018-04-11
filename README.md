@@ -1,5 +1,5 @@
 # WebProject
-web programming assignemt
+web programming assignmet
 
 #instructions
 
@@ -24,3 +24,5 @@ to run the flask app (i.e host the website)
 
 *also guys seems like python flask + jinja2 is the way to go for a dynamic page from one main index
 still need to do database queries to populate the form tho but i have a good handle on how we can do that now
+
+
