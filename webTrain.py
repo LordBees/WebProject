@@ -29,7 +29,7 @@ def getConnection():
 	return conn
 	
 	
-# update/insert to webtraintt/webtrainbook
+# Updates to webtraintt/webtrainbook
 def updateJourneyTablesFromBookingTrain(request,customerIdGend):
 	departure_location = request.form.get('departure_location')
 	arrival_location = request.form.get('arrival_location')
@@ -50,19 +50,19 @@ def updateJourneyTablesFromBookingTrain(request,customerIdGend):
 	conn = getConnection()   
 	cursor = conn.cursor()	
 
-	# find out the passenger count for this route currently
+	# Calculates passenger count for form
 	query = "SELECT PassengerCount FROM webtraintt WHERE Departure=%s AND Arrival=%s AND DepartureTime=%s"
 	args = (departure_location,arrival_location, departTime)
 	cursor.execute(query,args)
 	passCount = cursor.fetchone()
 	
-	# adjust passenger count
+	# Modifies passenger count
 	query = "UPDATE webtraintt SET PassengerCount=%s WHERE Departure=%s AND Arrival=%s AND DepartureTime=%s"
 	newPassCount = passengerCount + passCount[0]
 	args = (newPassCount,departure_location,arrival_location, departTime)
 	cursor.execute(query,args)
 	
-	# insert passenger details into journey booking table
+	# Insert passenger details 
 	entry = [bookerFirstName,bookerLastName,vessleNumber,passengerCount*2,finalBookingPrice,customerID]
 	cursor.execute("""INSERT INTO webtrainbook 
 		(FirstName,LastName,TrainNum,Bags,Price,Cust_ID)
@@ -71,7 +71,7 @@ def updateJourneyTablesFromBookingTrain(request,customerIdGend):
 	conn.close()
 	
 	
-# modify the time table
+# Modifies Train timetable
 def modifyTrainTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status):
 	conn = getConnection()   
 	cursor = conn.cursor()	
@@ -83,13 +83,13 @@ def modifyTrainTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime,
 	
 	entryCount = count[0]
 	
-	# if the entry exists update it
+	# Update entry if record exists
 	if(entryCount == 1):
 		query = "UPDATE webtraintt SET DepartureTime = %s, ArrivalTime =%s, TrainNum =%s, Price =%s, Status = %s WHERE Departure =%s AND Arrival =%s AND DepartureTime = %s AND ArrivalTime =%s"
 		args = (newDepartTime,newArriveTime,newVessleNumber,price,status,departLocation, arriveLocation, prevDepartTime+":00", prevArriveTime+":00")
 		cursor.execute(query,args)
 	
-	# if it doesnt then make insert it
+	# Create entry if record does not exist
 	elif(entryCount == 0):
 		entry = [departLocation,newDepartTime,arriveLocation,newArriveTime,newVessleNumber,price,0,status]
 		cursor.execute("""INSERT INTO webtraintt 
@@ -98,7 +98,11 @@ def modifyTrainTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime,
 
 	conn.close()
 
-# returns a list of departures
+
+####################
+#GET LISTS	
+
+# Returns list of departures
 def getListOfDeparturesTrain():
 	conn = getConnection()   
 	cursor = conn.cursor()
@@ -107,7 +111,7 @@ def getListOfDeparturesTrain():
 	conn.close()
 	return departures	
 
-# returns list of arrivals with matched departure
+# Returns list of 
 def getListOfArrivalsFromDepartureTrain(departure):
 	conn = getConnection()
 	cursor = conn.cursor()
@@ -168,7 +172,10 @@ def getNumOfSeatsLeftTrain(departure,arrival):
 	conn.close()
 	return seatsLeft
 	
-# regular functions	
+####################
+#BUILD LISTS
+
+
 # builds arrival select field for departure location
 def buildArrivalsFieldTrain(departure,arrival):
 
@@ -227,16 +234,13 @@ def buildDeparturesFieldTrain(departure):
 	i=i+1		
 	
 	for row in departures:
-		#print(str(row[1]))
-	
-		#if(str(row[1]) != 'None' and i > 0):
+		
 		if(i > 0):
 			members.append(i)
 			departNames.append(str(row[1]))
 			print("departure="+departure+"depart from mysql="+str(row[1]))
 			i=i+1
-		
-	#departNames = set(departNames) # this changed the order after removing duplicates
+
 	departNames = sorted(set(departNames), key=departNames.index)
 	zip(members,departNames)
 	departs = [(value, value) for value in departNames]
@@ -268,7 +272,7 @@ def buildDepartTimesFieldTrain(departure,arrival,time):
 	i=i+1	
 			
 	for row in times:
-		#print(str(row[1]))
+		
 		if(str(row[2]) != 'None'):
 			members.append(i)
 			departTimes.append(str(row[2]))
@@ -297,8 +301,6 @@ def buildDepartTimesFieldTrain(departure,arrival,time):
 # data within the database
 def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date):
 	class TrainForm(Form):
-		# restricting html5 embedded calendar field
-		# here we are restricting bookable dates to 3 months at a time(months displayed * days in year/ months in year)		
 		departDateMax = date.today() + timedelta(3*365/12) 
 		departDateMin = date.today()
 		if(depart_date != 0):
@@ -311,10 +313,7 @@ def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart
 		passCntMin=0
 		if(int(passenger_count) > 0):
                         passCntMin = 1
-                #else:
-                #else:
-                #        passCntMin=0
-		
+           
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--"): 
 			passCntMax = getNumOfSeatsLeftTrain(depart_location,arrive_location)
