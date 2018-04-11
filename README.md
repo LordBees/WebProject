@@ -1,5 +1,5 @@
 # WebProject
-web programming assignmet
+web programming assignment
 
 #instructions
 
