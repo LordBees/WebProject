@@ -303,10 +303,28 @@ def updateJourneyTablesFromBookingAir(request,customerIdGend):
 	cursor.execute(query,args)
 	
 	# insert passenger details into journey booking table
-	entry = [bookerFirstName,bookerLastName,vessleNumber,passengerCount*2,finalBookingPrice,customerID]
+	entry = [bookerFirstName,bookerLastName,vessleNumber,passengerCount*2,finalBookingPrice,customerID,passengerCount,0]
 	cursor.execute("""INSERT INTO webairbook 
-		(FirstName,LastName,FlightNum,Bags,Price,Cust_ID)
-		VALUES(%s,%s,%s,%s,%s,%s)""", entry)
+		(FirstName,LastName,FlightNum,Bags,Price,Cust_ID,passengers,passengersChecked)
+		VALUES(%s,%s,%s,%s,%s,%s,%s,%s)""", entry)
+	
+	conn.close()	
+
+def checkCustomerInAir(customerID):
+	conn = getConnection()   
+	cursor = conn.cursor()	
+	
+	# find out the passenger count for this route currently
+	query = "SELECT passengers FROM webairbook WHERE Cust_ID=%s"
+	args = (customerID,)
+	cursor.execute(query,args)
+	passCount = cursor.fetchone()
+	
+	passengerCount = passCount[0]
+	
+	# insert passenger details into journey booking table
+	query = "UPDATE webairbook SET passengersChecked=%s WHERE Cust_ID =%s"
+	args = (passengerCount,customerID)
 	
 	conn.close()	
 	

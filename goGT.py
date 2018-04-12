@@ -144,7 +144,47 @@ def checkAdminPassword(password):
 		return True
 	else:
 		return False
-
+		
+def checkUserPassword(username,password):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT passWord FROM userlogin WHERE userName = %s'
+	args = (username,)
+	cursor.execute(query,args)
+	userPass = cursor.fetchone()
+	conn.close()
+	if password == userPass[0]:
+		return True
+	else:
+		return False
+		
+		
+def getCustomerIdFromUserName(username):		
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT customerID FROM userlogin WHERE userName = %s'
+	args = (username,)
+	cursor.execute(query,args)
+	customerID = cursor.fetchone()
+	conn.close()
+	if customerID != None:
+		return customerID[0]
+	else:
+		return None
+		
+def findCustomerTravelMethod(customerId):
+	conn = getConnection()
+	cursor = conn.cursor()
+	query = 'SELECT travelMethod FROM receipts WHERE customerId = %s'
+	args = (customerId,)
+	cursor.execute(query,args)
+	travelMethod = cursor.fetchone()
+	conn.close()
+	if travelMethod != None:
+		return travelMethod[0]
+	else:
+		return None		
+		
 def getSomeRandomNumberHex(numCount):
 	random.seed(datetime.now())
 	number = uuid.uuid4().hex
@@ -169,12 +209,26 @@ def doesCustomerIdExist(customerID):
 		return True
 	else:
 		return False
+		
+def doesCustomerUsernameExist(username):
+	conn = getConnection()
+	cursor = conn.cursor()
+		
+	query = 'SELECT COUNT(*) FROM userlogin WHERE userName = %s'
+	args = (username,)
+	cursor.execute(query,args)
+	idCount = cursor.rowcount
+	conn.close()
+	if idCount != None:
+		return True
+	else:
+		return False		
 
-def addReceiptEntry(receiptID,customerID):
+def addReceiptEntry(receiptID,customerID,travelMethod):
 	conn = getConnection()
 	cursor = conn.cursor()
 	try:
-		cursor.execute("""INSERT INTO receipts VALUES (%s,%s)""",(receiptID,customerID))
+		cursor.execute("""INSERT INTO receipts VALUES (%s,%s,%s)""",(receiptID,customerID,travelMethod))
 		conn.commit()
 	except:
 		conn.rollback()
@@ -572,12 +626,12 @@ def reciept_page():
 	bookingID = receiptID
 	# if customerID exists use it - really they should be forced to login
 	if(doesCustomerIdExist(customerID)):
-                addReceiptEntry(receiptID, customerID)
+                addReceiptEntry(receiptID, customerID,travel_method)
 
 	else:# else create one and login details
 		customerID = str(getSomeRandomNumberHex(8))
 		addCustomerLoginDetails(username,password,customerID)
-		addReceiptEntry(receiptID, customerID)
+		addReceiptEntry(receiptID, customerID,travel_method)
 
 	#update the timetable as well as the booking table for the journey method
 	if(travel_method =="Ferry"):
@@ -650,10 +704,34 @@ def login_check():
 			else:
 				return redirect("/plane")
 
-
+		elif(doesCustomerUsernameExist(username)):
+			if(checkUserPassword(username,password)):
+				return render_template("checkin.html",userName=username, passwd=password)
+		
+		else:
+			return redirect("/plane")
+		
 	else:
 		return redirect("/plane")
 
+
+@app.route('/checkin', methods=['GET','POST'])
+def process_checkin():
+	username = request.form.get('username')
+	password = request.form.get('password')
+
+	customerId = getCustomerIdFromUserName(username)
+	travel_method = findCustomerTravelMethod(customerId)
+	
+	if(travel_method == "Plane"):
+		checkCustomerInAir(customerId)
+	#elif(travel_method == "Train"):
+	# blah	
+	
+	return redirect("/plane")
+			
+		
+		
 @app.route('/maintenance', methods=['GET','POST'])
 def process_maintenance_request():
 

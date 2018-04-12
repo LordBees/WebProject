@@ -1,0 +1,17 @@
+|<><><><><> <><><><><>|
+| Reciept for booking |
+|_____________________|
+|Booking  ID:79
+|Customer ID:a4592408
+|---------------------|
+|     booking info    |
+|---------------------|
+|Name: andy belcher
+|you are boarding on: Fl001
+|With 2 Bag(s)
+|---------------------|
+|     cost info       |
+|---------------------|
+|Total cost:
+|£60.0000
+|<><><><><> <><><><><>|

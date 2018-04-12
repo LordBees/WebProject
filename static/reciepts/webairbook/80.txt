@@ -1,0 +1,17 @@
+|<><><><><> <><><><><>|
+| Reciept for booking |
+|_____________________|
+|Booking  ID:80
+|Customer ID:37af882a
+|---------------------|
+|     booking info    |
+|---------------------|
+|Name: test test
+|you are boarding on: Fl001
+|With 2 Bag(s)
+|---------------------|
+|     cost info       |
+|---------------------|
+|Total cost:
+|£60.0000
+|<><><><><> <><><><><>|

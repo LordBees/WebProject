@@ -1,0 +1,17 @@
+|<><><><><> <><><><><>|
+| Reciept for booking |
+|_____________________|
+|Booking  ID:81
+|Customer ID:11cf5a8c
+|---------------------|
+|     booking info    |
+|---------------------|
+|Name: test test
+|you are boarding on: Fl002
+|With 2 Bag(s)
+|---------------------|
+|     cost info       |
+|---------------------|
+|Total cost:
+|£60.0000
+|<><><><><> <><><><><>|

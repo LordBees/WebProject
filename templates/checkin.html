@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+	<title>Grand Travel</title>
+    <meta name="authors" content="Andrew Belcher, Luke Clayton - 17022390, Robert Painter - 17024721">
+    <meta name="description" content="Grand Travel">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+    <!-- adjustements to make directory structures more freindly with flask/jinja -->
+    <link rel="stylesheet" href="/static/css/master.css">
+    <link rel="stylesheet" href="/static/css/custom.css">
+	<!--<link rel="stylesheet" href="{{ url_for('static', filename='css/master.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">-->
+    <script src="{{ url_for('static', filename='js/jquery-3.1.1.js') }}"></script>
+    <script type="text/javascript">
+	
+
+	<!-- where we want to put jquery code that runs when the pages is loaded -->
+	
+	$(window).on('load', function(){
+
+	
+		
+		initPage(); // important that we run this every time the pages is loaded so we initialize things
+		doCheck();
+		  $('.form-fields').keyup(doCheck);
+		
+			
+
+				
+
+	//
+	});  // End Doc ready
+	
+		// space for our javascript functions below, we will prob move this to its own file when it gets bigger
+			function initPage(){
+
+}
+					
+			// our ui handlers to trigger flask app routing
+			function plane(){
+						window.location.replace("../plane");
+					}
+					
+			function train(){
+						window.location.replace("../train");
+
+					}
+					
+			function bus(){
+						window.location.replace("../bus");
+
+					}
+					
+			function taxi(){
+
+						window.location.replace("../taxi");
+					}
+					
+			function ferry(){
+						window.location.replace("../ferry");
+					}
+	
+			function removeHidden(id)
+			{
+				var x = document.getElementById(id);
+				if (x.style.display === "block") {
+					x.style.display = "none";
+				} else {
+					x.style.display = "block";
+				}
+			}
+			
+				function doCheck() {
+			  var allFilled = true;
+			  $('.form-fields:not(#submitPassInfoBtn)').each(function() {
+				if ($(this).val() == '') {
+				  allFilled = false;
+				}
+			  });
+
+			  $('button[type=submit]').prop('disabled', !allFilled);
+			  if (allFilled) {
+				$('button[type=submit]').removeAttr('disabled');
+			  }
+			}
+		
+	
+</script>
+
+</head>
+<body>
+
+
+<div class="wrapper w24 h24"> <!-- wrapper -->
+	
+	<div class="wrapperCont w24 h24">
+		<!--<div class="col w24 h1 socBar"></div> <!-- social links -->
+		
+		<div class="col w24 h3 "> <!-- banner logo space -->
+		
+			<!-- banner logo -->
+			<div class="col w2 24 "><img class="bannerLogo" src="{{ url_for('static', filename='assets/grandTravellogo.jpg') }}" height="70%" width="100%" style=" position:absolute; bottom:10%; padding-left:10%; margin-left:5%; margin-right:20%; "></div>
+			<!-- banner text -->
+			<div class="col w18 h14 banner invert white" style="padding:0;">
+				<!--<img class="bannerLogo" style="float:left;">-->
+				Grand Travel
+			</div>
+
+			<div class="col w18 h10 nav" style=" position:relative; bottom:0; "><!-- navbar --> 
+				<ul>
+					<li class="col w2 h24 clear nohover"></a></li>
+					<li id="planeButt" class="col w4 h16 gtblue invert navButton" onclick="plane()">PLANE</a></li>
+					<li id="trainButt"class="col w4 h16 gtblue invert navButton" onclick="train()">TRAIN</a></li>
+					<li id="busButt"class="col w4 h16 gtblue invert navButton" onclick="bus()">BUS</a></li>
+					<li id="taxiButt"class="col w4 h16 gtblue invert navButton" onclick="taxi()">TAXI</a></li>
+					<li id="ferryButt"class="col w4 h16 gtblue invert navButton" onclick="ferry()">FERRY</a></li>
+					<li class="col w5 h24 white nohover"></a></li>
+				</ul>			
+			</div>
+		
+		</div> 
+		<div class="col w24 h21 black "><!-- slidshow --> 
+			<!-- div holding left slideshow arrow -->
+			<!--<div class="col w4 h24 black arrow" onclick="backImage()"></div>-->
+			<!-- main slideshow window -->
+			<div class="col w24 h24 slideshowContainer fade">					
+				<div style=" height: 100%">
+					<!-- slideshow 1st image placeholder -->
+					
+					<div style="width: 100%; height: 100%; position: relative; color:white; background-color:black;  border-top: 1px solid #fff;">
+							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
+						
+						<form class="form col w24 h24" action={{ url_for('process_checkin') }}  id="checkinform"  method="POST" style="position: absolute; padding:5%; width:100%; height:100%; z-index: 1; margin-left: %; margin-right:%; ">
+						
+						<div class="col w8 h24"></div>
+						<div class="col w10 h24">
+								<input type="text" name="username" id="username" value={{userName}} hidden >
+								<input type="text" name="password" id="password" value={{passwd}} hidden>
+									<!-- our booking confirm button for later that will trigger a model to process payment -->
+								<h1>Customer Check In</h1>
+								<div class="col w24 h22" style="padding-left:15%;">
+									<button class="buttonbig" id="checkInButton"  disabled type=submit>Checkin</button>
+								</div>
+						</div>
+						<div class="col w6 h24"></div>
+						</form>	
+									
+									
+
+									
+						<!-- dynamically change slideImage passed in as a variable to render our page -->												
+					</div>
+
+					<img id="slideshow" src="/static/assets/GTadmin.png" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.3; ">
+				</div>
+			</div> 					
+			<!-- div holding right slideshow arrow -->
+			<!--<div id="right" class="col w4 h24 black arrow" onclick="slideImage()" style="float:right;"></div> -->	
+		</div><!-- end of slideshow window -->
+		
+		<!-- include bottom navigation -->
+	</div>
+</div> <!-- end of panel wrap -->
+
+<!-- |Hidden Panels below here -->
+
+
+</body>
+</html>
