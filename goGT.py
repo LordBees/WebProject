@@ -724,6 +724,7 @@ def process_checkin():
 	travel_method = findCustomerTravelMethod(customerId)
 	
 	if(travel_method == "Plane"):
+		print("plane checked in")
 		checkCustomerInAir(customerId)
 	#elif(travel_method == "Train"):
 	# blah	

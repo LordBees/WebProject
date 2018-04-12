@@ -321,11 +321,13 @@ def checkCustomerInAir(customerID):
 	passCount = cursor.fetchone()
 	
 	passengerCount = passCount[0]
+	print("passenger count in checkin is" + str(passengerCount))
 	
 	# insert passenger details into journey booking table
 	query = "UPDATE webairbook SET passengersChecked=%s WHERE Cust_ID =%s"
 	args = (passengerCount,customerID)
-	
+	cursor.execute(query,args)
+
 	conn.close()	
 	
 def calcJourneyTimePlane(depart_location,arrive_location):
