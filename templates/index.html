@@ -498,7 +498,9 @@ function checkTravelDayFilter(date){
 						
 						var passengerCount = document.getElementById("passengerCnt").value
 						if((location.indexOf("passCnt") > -1) && passengerCount > 0){
-							document.getElementById("bookPrice").removeAttribute("hidden");
+                            document.getElementById("bookPrice").removeAttribute("hidden");
+                            document.getElementById("bookPrice2").removeAttribute("hidden");
+                            document.getElementById("bookPrice3").removeAttribute("hidden");
 
 							var departDateValue = document.getElementById ("departDate");
 							departDateValue = departDateValue.value;
@@ -649,13 +651,16 @@ function checkTravelDayFilter(date){
 									<div class="col w12 h4">
 										<button id="submitBookingBtn" class="col w10 h6" style="line-height:1; margin:10% 15% 10% 15%;" disabled type=submit>Book!</button>
 									</div>
-									<div class="col w12 h6">
-										<p id="bookPrice" name="bookPrice" hidden>Booking Price:  £ {{ bookingPrice }}</p>
-										<input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
-										<input type="text" name="bookingPrice" id="bookingPrice" value={{ bookingPrice|default(None, true) }} hidden>
-									
-										<p id="journeyTime" hidden><span class="bigbp">Estimated Journey Time: <span class="bigbt">{{ form.journeyTime }}</span></span></p>
-									</div>
+                                    <div class="col w12 h6">
+                                        <p id="bookPrice"  name="bookPrice"  hidden>Estimated Booking Price: £ {{ bookingPrice }}</p>
+                                        <p id="bookPrice2" name="bookPrice2" hidden>Estimated Booking Price: {{ bookingPrice2 }}</p>
+                                        <p id="bookPrice3" name="bookPrice3" hidden>Estimated Booking Price: {{ bookingPrice3 }}</p>
+
+                                        <input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
+                                        <input type="text" name="bookingPrice" id="bookingPrice" value={{ bookingPrice|default(None, true) }} hidden>
+
+                                        <p id="journeyTime" hidden><span class="bigbp">Estimated Journey Time: <span class="bigbt">{{ form.journeyTime }}</span></span></p>
+                                    </div>
 								</div>
 								<div class="col w5 h24 " style="float:right; top:0;"></div>	
 

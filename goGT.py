@@ -3,8 +3,8 @@
 import random
 import sys
 import os
-import uuid 
- 
+import uuid
+
 from flask import Flask, render_template, request, redirect, url_for
 
 from wtforms import Form, validators, TextField
@@ -17,11 +17,13 @@ from functools import wraps
 #import everything from our travel method implementation files
 from webAir import *
 from webTrain import *
-from webFerry import * 
+from webFerry import *
 from WebMakeReciept import *
 
 app = Flask(__name__)
 
+
+#<p id="bookPrice" name="bookPrice" hidden>Booking Price:  £ {{ bookingPrice }}</p>
 def handleMaintenceRequest(travelMethod,departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status):
 
 	tableName = ""
@@ -37,8 +39,8 @@ def handleMaintenceRequest(travelMethod,departLocation,	arriveLocation,	prevDepa
 	elif(travelMethod == "Ferry"):
 		modifyFerryTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
 
-	
-	
+
+
 def getbookingPrimaryKey(cid,Ttable):
     conn = getConnection()
     cursor = conn.cursor()
@@ -49,6 +51,8 @@ def getbookingPrimaryKey(cid,Ttable):
     conn.close()
     return result
 
+def isvalidrouteprice(qry,args):
+        pass
 
 ACCESS = {
     'guest': 0,
@@ -63,21 +67,21 @@ def createUser(name,email,password,access):
 			self.email = email
 			self.password = password
 			self.access = access
-		
+
 		def is_admin(self):
 			return self.access == ACCESS['admin']
-		
+
 		def allowed(self, access_level):
 			return self.access >= access_level
-			
+
 def requires_access_level(access_level,user):
 	def decorator(f):
 		@wraps(f)
 		def decorated_function(*args, **kwargs):
-			
+
 			if not session.get('email'):
 				return redirect(url_for('users.login'))
-				
+
 			elif(not user.allowed(access_level)):
 				return redirect(url_for('users.profile', message="You do not have access to that page. Sorry!"))
 			return f(*args, **kwargs)
@@ -95,19 +99,19 @@ def getVessleId(departure, arrival,travel_method):
 		args = (departure, arrival)
 	if(travel_method == "Bus"):
 		query = 'SELECT BusNum FROM webbustt	WHERE Departure = %s AND Arrival = %s'
-		args = (departure, arrival)	
+		args = (departure, arrival)
 	if(travel_method == "Taxi"):
 		query = 'SELECT TaxiNum FROM webtaxitt	WHERE Departure = %s AND Arrival = %s'
-		args = (departure, arrival)		
+		args = (departure, arrival)
 	if(travel_method == "Ferry"):
 		query = 'SELECT FerryNum FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 		args = (departure, arrival)
-		
+
 	cursor.execute(query,args)
 	vessleNum = cursor.fetchone()
 	conn.close()
-	return vessleNum	
-	
+	return vessleNum
+
 def addCustomerLoginDetails(username,password,customerID):
 	conn = getConnection()
 	cursor = conn.cursor()
@@ -120,7 +124,7 @@ def addCustomerLoginDetails(username,password,customerID):
 
 def checkAdminPassword(password):
 	conn = getConnection()
-	cursor = conn.cursor()	
+	cursor = conn.cursor()
 	query = 'SELECT passWord FROM userlogin WHERE userName = %s'
 	args = ("admin",)
 	cursor.execute(query,args)
@@ -130,32 +134,32 @@ def checkAdminPassword(password):
 		return True
 	else:
 		return False
-	
+
 def getSomeRandomNumberHex(numCount):
 	random.seed(datetime.now())
 	number = uuid.uuid4().hex
 	choppedNumber = number[:numCount]
 	return choppedNumber
-	
+
 def getSomeRandomNumberDec(numCount):
 	random.seed(datetime.now())
 	number = str(uuid.uuid4().int)
 	choppedNumber = number[:numCount]
-	return choppedNumber 
-	
+	return choppedNumber
+
 def doesCustomerIdExist(customerID):
 	conn = getConnection()
 	cursor = conn.cursor()
 	query = 'SELECT customerID, COUNT(*) FROM receipts WHERE customerID = %s'
-	args = (customerID,)	
+	args = (customerID,)
 	cursor.execute(query,args)
 	idCount = cursor.rowcount
 	conn.close()
 	if idCount > 0:
 		return True
 	else:
-		return False	
-		
+		return False
+
 def addReceiptEntry(receiptID,customerID):
 	conn = getConnection()
 	cursor = conn.cursor()
@@ -170,19 +174,19 @@ def addReceiptEntry(receiptID,customerID):
 def isThereAnAdult(form):
 	passengerCount = int(form.get('passengerCount'))
 	i = 1
-	
-	while i <= passengerCount:	
+
+	while i <= passengerCount:
 		passengerAge = int(form.get('passengerAge'+str(i)))
 		#if there is a child, but only discount on children not traveling alone
 		if (passengerAge > 16):
 			return True
-		i=i+1	
-		
+		i=i+1
+
 	return False
 
 def createPassengerForm(passenger_count):
 	class passengerForm(Form):
-		
+
 		testlist = [5]
 		passengerFirstNameFields = []
 		passengerLastNameFields = []
@@ -193,14 +197,14 @@ def createPassengerForm(passenger_count):
 			passengerAgeFields.append(TextField('Age'))
 	return passengerForm()
 
-# basically makes plane travel form the default form that pops up 
+# basically makes plane travel form the default form that pops up
 @app.route("/")
 def root():
 	return redirect("/plane")
-	
+
 # working for static values atm, here we are going to end up calling some functions for database querying
 # so we can build and accurate form
-	
+
 @app.route('/<travel_method>/')
 def formatToTravMeth(travel_method=""):
 	#default our variables
@@ -209,14 +213,14 @@ def formatToTravMeth(travel_method=""):
 	passenger_count=0
 	dtime=0
 	depart_date=0
-	
+
 	if travel_method == "plane":
 		slideImage = "GTplane.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		#form.departLocation(default=None)
 		#form.arriveLocation(default=None)
 		return render_template("index.html",form=form,slideImage=slideImage)
-		
+
 	elif travel_method == "train": # needs changing
 		slideImage = "GTtrain.jpg"
 		#luke please update your code to now follow the new method here, so create train form with the arguments im using now etc etc..
@@ -228,17 +232,17 @@ def formatToTravMeth(travel_method=""):
 		slideImage = "GTbus.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
-		
+
 	elif travel_method == "taxi": # needs changing
 		slideImage = "GTtaxi.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
-	
+
 	elif travel_method == "ferry": # needs changing
 		slideImage = "GTferry.jpg"
-		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date) 
+		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
-	
+
 
 @app.route('/<travel_method>/Departure=<depart_location>')
 def formatToDepartLoc(travel_method="",depart_location="--"):
@@ -248,7 +252,7 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 	dtime=0
 	depart_date=0
 
-	
+
 	if travel_method == "plane":
 		slideImage = "GTplane.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
@@ -256,7 +260,7 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 		#form.arriveLocation = buildArrivalsFeild(depart_location)
 
 		return render_template("index.html",form=form,slideImage=slideImage)
-		
+
 	elif travel_method == "train": # needs changing
 		slideImage = "GTtrain.jpg"
 		form = createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
@@ -266,69 +270,114 @@ def formatToDepartLoc(travel_method="",depart_location="--"):
 		slideImage = "GTbus.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
-		
+
 	elif travel_method == "taxi": # needs changing
 		slideImage = "GTtaxi.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
-	
+
 	elif travel_method == "ferry": # needs changing
 		slideImage = "GTferry.jpg"
-		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date) 
+		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
 
 
-# a bit further ahead atm, i need to get data being pulled from the database to accurately 
+# a bit further ahead atm, i need to get data being pulled from the database to accurately
 # start evaluating travel routes
 # *atm this is just as the previous example so it will look nothing like this in the end
 @app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>')
 # here we can map multiple url routes to the same condition! =)
 
-@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&Time=<dtime>') 
-@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&Time=<dtime>&passCnt=<passenger_count>') 
-@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&Time=<dtime>&passCnt=<passenger_count>&Date=<depart_date>') 
+@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&Time=<dtime>')
+@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&Time=<dtime>&passCnt=<passenger_count>')
+@app.route('/<travel_method>/Departure=<depart_location>&Arrival=<arrive_location>&Time=<dtime>&passCnt=<passenger_count>&Date=<depart_date>')
 def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="--", passenger_count=0,dtime=0,depart_date=0):
+
 	if travel_method == "plane":
 		slideImage = "GTplane.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		if(int(passenger_count) <= form.passCntMax):
-			printedPrice = str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
+                        try:
+                                printedPrice2 = " Ferry £"+str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+                        except:
+                                printedPrice2 = "No Route available"
+                        try:
+                                printedPrice3 = " Train £"+str(int(getPresetPriceTrain(depart_location,arrive_location)) * int(passenger_count))
+                        except:
+                                printedPrice3 = "No Route Available"
+                        printedPrice = str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
+			
+			#try:
+                        #        printedPrice2 = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+                        #except:
+                        #        printedPrice2 = "transport doesnt go here"
+                        #try:
+                        #        printedPrice3 = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+                        #except:
+                        #       printedPrice3 = "transport doesnt go here"
+
+			#if (printedPrice2 is None):
+                        #        printedPrice2 = "transport doesnt go here"
+			#if (printedPrice3 is None):
+                        #        printedPrice3 = "transport doesnt go here"
 		else:
 			printedPrice = "not enough seats"
 
-		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice)
-		
+		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice,
+                                                                                    bookingPrice2=printedPrice2,
+                                                                                    bookingPrice3=printedPrice3)
+
 	elif travel_method == "train": # needs changing
 		slideImage = "GTtrain.jpg"
 		form = createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		if(int(passenger_count) <= form.passCntMax):
-			printedPrice = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+                        try:
+                                printedPrice = " Plane £"+str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
+                        except:
+                                printedPrice = "No Route available"
+                        try:
+                                printedPrice3 = " Ferry £"+str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+                        except:
+                                printedPrice3 = "No Route Available"
+                        printedPrice = str(int(getPresetPriceTrain(depart_location,arrive_location)) * int(passenger_count))
 		else:
 			printedPrice = "not enough seats"
 
-		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice)
+		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice,
+                                                                                    bookingPrice2=printedPrice2,
+                                                                                    bookingPrice3=printedPrice3)
 
 	elif travel_method == "bus": # needs changing
 		slideImage = "GTbus.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
-		
+
 	elif travel_method == "taxi": # needs changing
 		slideImage = "GTtaxi.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		return render_template("index.html",form=form,slideImage=slideImage)
-	
+
 	elif travel_method == "ferry": # needs changing
 		slideImage = "GTferry.jpg"
-		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date) 
+		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		if(int(passenger_count) <= form.passCntMax):
-			printedPrice = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+                        try:
+                                printedPrice3 = " Train £"+str(int(getPresetPriceTrain(depart_location,arrive_location)) * int(passenger_count))
+                        except:
+                                printedPrice3 = "No Route available"
+                        try:
+                                printedPrice2 = " Plane £"+str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
+                        except:
+                                printedPrice2 = "No Route Available"
+                        printedPrice = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
 		else:
 			printedPrice = "not enough seats"
 
-		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice)
-		
-		
+		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice,
+                                                                                    bookingPrice2=printedPrice2,
+                                                                                    bookingPrice3=printedPrice3)
+
+
 @app.route('/passenger_form', methods=['POST'])
 def passenger_form():
 	print("in submitted form")
@@ -345,7 +394,7 @@ def passenger_form():
 		travel_method = "Taxi"
 	if travel_method == "GTferry.jpg":
 		travel_method = "Ferry"
-		
+
 	departure_location=request.form['departLocation']
 	arrival_location=request.form.get('arriveLocation')
 	passengerCount = int(request.form['passengerCnt'])
@@ -358,10 +407,10 @@ def passenger_form():
 	vessleNumber=vessleNumber[0].title()
 	vessleNumber=str(vessleNumber)
 	print("vessleNumber is: "+vessleNumber)
-	
+
 	form = createPassengerForm(str(passengerCount))
 
-	
+
 	print("travel: "+ travel_method)
 	#print("depart: "+ departure_location)
 	#print("arrive: "+ arrival_location)
@@ -369,7 +418,7 @@ def passenger_form():
     #projectpath = request.form['projectFilepath']
     # your code
     # return a response
-	
+
 	return render_template("passenger_form.html",
 							form=form,
 							slideImage=slideImage,
@@ -381,8 +430,8 @@ def passenger_form():
 							passengerCount=passengerCount,
 							bookingPrice=bookingPrice,
 							vessleNumber=vessleNumber)
-		
-		
+
+
 @app.route('/purchase_form', methods=['POST'])
 def purchase_form():
 	print("in purchase form")
@@ -398,7 +447,7 @@ def purchase_form():
 	bookerFirstName= request.form.get('FirstName')
 	bookerLastName= request.form.get('LastName')
 	customerID = request.form.get('customerID')
-	
+
 	print("travel_method = " + travel_method)
 	print("departure_location = " + departure_location)
 	print("arrival_location = " + arrival_location)
@@ -406,16 +455,16 @@ def purchase_form():
 	print("departDate = " + departDate)
 	print("passengerCount = " + str(passengerCount))
 	print("bookingPrice = " + bookingPrice)
-	
+
 	i = 1
 	bookPricePerPassenger = float(bookingPrice) / passengerCount
 	print("bookPricePerPassenger = "+ str(bookPricePerPassenger))
 	finalBookingPrice = 0
-	
-	
+
+
 	while i <= passengerCount:
 		print("i = "+ str(i))
-	
+
 		passengerAge = int(request.form.get('passengerAge'+str(i)))
 		print("passenger "+str(i)+" :"+str(passengerAge))
 		#if there is a child, but only discount on children not traveling alone
@@ -424,11 +473,11 @@ def purchase_form():
 		else:
 			finalBookingPrice += bookPricePerPassenger
 		i=i+1
-		
+
 	print("after")
-	
+
 	#if(
-	#float(bookingPrice) 
+	#float(bookingPrice)
 	finalBookingPrice = "{0:.2f}".format(finalBookingPrice)
 
 	form = createPassengerForm(str(passengerCount))
@@ -477,22 +526,22 @@ def reciept_page():
 	s = "abcdefghijklmnopqrstuvwxyz01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()?"
 	passlen = 8
 	password = "".join(random.sample(s,passlen ))
-	
+
 	print("username is: " + username)
 	print("password is: " + password)
-	
+
 	#generate a receipt/transaction id
 	receiptID = str(getSomeRandomNumberDec(16))
 	bookingID = receiptID
 	# if customerID exists use it - really they should be forced to login
 	if(doesCustomerIdExist(customerID)):
                 addReceiptEntry(receiptID, customerID)
-		
+
 	else:# else create one and login details
 		customerID = str(getSomeRandomNumberHex(8))
 		addCustomerLoginDetails(username,password,customerID)
-		addReceiptEntry(receiptID, customerID)	
-	
+		addReceiptEntry(receiptID, customerID)
+
 	#update the timetable as well as the booking table for the journey method
 	if(travel_method =="Ferry"):
                 updateJourneyTablesFromBookingFerry(request,customerID)
@@ -519,7 +568,7 @@ def reciept_page():
 	Xkey = getbookingPrimaryKey(customerID,table2use)
 	recieptLink = WriteReciept(table2use,int(Xkey[0]))
 	##
-	
+
 	#create receipt and pass it into receipt page
 #	if(travel_method == "Plane"):
 #		recieptLink = WriteReciept("webairbook",receiptID)
@@ -540,37 +589,37 @@ def reciept_page():
 							discountedPrice=finalBookingPrice,
 							recieptLink=recieptLink,
 							customerID=customerID,
-							bookingID=bookingID,			
+							bookingID=bookingID,
 							bookerFirstName=bookerFirstName,
 							bookerLastName=bookerLastName,
 							paymentMethod=paymentMethod)
-	
-	
-	
+
+
+
 @app.route('/login', methods=['GET','POST'])
 def login_check():
-	
+
 	if(request.method == 'POST'):
 		username = request.form.get('username')
 		password = request.form.get('password')
-			
+
 		if(username == "admin"):
 			#print("checking password")
 			if(checkAdminPassword(password)):
 				user = createUser(username,"",password,2)
-				# totally unsafe and would in practical use need to be carefully 
-				# transitioned and any access verified before routing, but this works for now	
-				return render_template("admin.html",userName=username, passwd=password) 		
+				# totally unsafe and would in practical use need to be carefully
+				# transitioned and any access verified before routing, but this works for now
+				return render_template("admin.html",userName=username, passwd=password)
 			else:
 				return redirect("/plane")
 
-	
+
 	else:
 		return redirect("/plane")
 
 @app.route('/maintenance', methods=['GET','POST'])
 def process_maintenance_request():
-	
+
 	if(request.method == 'POST'):
 		username = request.form.get('username')
 		password = request.form.get('password')
@@ -585,13 +634,13 @@ def process_maintenance_request():
 		status = request.form.get('status')
 		price = request.form.get('price')
 		travelMethod = request.form.get('travelMethod')
-			
+
 		if(username == "admin"):
 			#print("checking password")
 			if(checkAdminPassword(password)):
-				# totally unsafe and would in practical use need to be carefully 
-				# transitioned and any access verified before routing, but this works for now	
-				
+				# totally unsafe and would in practical use need to be carefully
+				# transitioned and any access verified before routing, but this works for now
+
 				handleMaintenceRequest(travelMethod,
 										departLocation,
 										arriveLocation,
@@ -604,15 +653,15 @@ def process_maintenance_request():
 										price,
 										status
 										)
-				
-				return render_template("admin.html",userName=username, passwd=password) 		
+
+				return render_template("admin.html",userName=username, passwd=password)
 			else:
 				return redirect("/plane")
 
-	
+
 	else:
-		return redirect("/plane")		
-	
+		return redirect("/plane")
+
 # run the flask app (aka. host our website)
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
