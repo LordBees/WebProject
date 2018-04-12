@@ -193,8 +193,33 @@ def WriteReciept(Table,recieptid):#
     #return recieptid
 
     
+def quickWrite(data):
+    f = open("static\\report.txt",'w')
+    q = []
+    for x in data:
+        for i in x:
+            f.write(str(i)+',')
+        f.write('\n')
+    f.close()##add safety to this
     
+def makeAdminReport():
+    SQLq1 = "SELECT * FROM webairbook"
+    SQLq2 = "SELECT * FROM webferrybook"
+    SQLq3 = "SELECT * FROM webtrainbook"
+    conn = Qman.getConnection()
+    cursor = conn.cursor()
     
+    cursor.execute(SQLq1)
+    result = cursor.fetchall()
+    cursor.execute(SQLq2)
+    result2 = cursor.fetchall()
+    cursor.execute(SQLq3)
+    result3 = cursor.fetchall()
+    conn.close()
+    quickWrite(result)
+    quickWrite(result2)
+    quickWrite(result3)
+    return "static\\report.txt"
 
     
 
