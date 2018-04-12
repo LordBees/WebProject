@@ -1,10 +1,13 @@
 #! C:/Users/wildcard/AppData/Local/Programs/Python35/python.exe
+##main flask app routing
 
+#imports system
 import random
 import sys
 import os
 import uuid
 
+#imports3rdparty
 from flask import Flask, render_template, request, redirect, url_for
 
 from wtforms import Form, validators, TextField
@@ -24,6 +27,8 @@ app = Flask(__name__)
 
 
 #<p id="bookPrice" name="bookPrice" hidden>Booking Price:  £ {{ bookingPrice }}</p>
+
+##modifies the tables used for the status of each route
 def handleMaintenceRequest(travelMethod,departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status):
 
 	tableName = ""
@@ -40,7 +45,7 @@ def handleMaintenceRequest(travelMethod,departLocation,	arriveLocation,	prevDepa
 		modifyFerryTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime, prevArriveTime,	newArriveTime,prevVessleNumber,newVessleNumber,price,status)
 
 
-
+#gets the ID of a given customer id
 def getbookingPrimaryKey(cid,Ttable):
     conn = getConnection()
     cursor = conn.cursor()
@@ -51,15 +56,15 @@ def getbookingPrimaryKey(cid,Ttable):
     conn.close()
     return result
 
-def isvalidrouteprice(qry,args):
-        pass
 
+#access control on site
 ACCESS = {
     'guest': 0,
     'user': 1,
     'admin': 2
 }
 
+#creates the user class to hold customer data once logged in
 def createUser(name,email,password,access):
 	class User():
 		def __init__(self, name, email, password, access=ACCESS['user']):
@@ -74,6 +79,8 @@ def createUser(name,email,password,access):
 		def allowed(self, access_level):
 			return self.access >= access_level
 
+
+#checks if the given users access level matches the given access level
 def requires_access_level(access_level,user):
 	def decorator(f):
 		@wraps(f)
@@ -88,6 +95,8 @@ def requires_access_level(access_level,user):
 		return decorated_function
 	return decorator
 
+
+#gets the id of the transport vessle for a given transport method
 def getVessleId(departure, arrival,travel_method):
 	conn = getConnection()
 	cursor = conn.cursor()
@@ -112,6 +121,7 @@ def getVessleId(departure, arrival,travel_method):
 	conn.close()
 	return vessleNum
 
+#adds customer login details to the table to create a new user
 def addCustomerLoginDetails(username,password,customerID):
 	conn = getConnection()
 	cursor = conn.cursor()
@@ -121,7 +131,7 @@ def addCustomerLoginDetails(username,password,customerID):
 	except:
 		conn.rollback()
 	conn.close()
-
+#
 def checkAdminPassword(password):
 	conn = getConnection()
 	cursor = conn.cursor()
