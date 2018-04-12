@@ -491,6 +491,8 @@ function checkTravelDayFilter(date){
 							document.getElementById("passengerCnt").removeAttribute("disabled");
 							document.getElementById("departDate").removeAttribute("disabled");
 							document.getElementById("journeyTime").removeAttribute("hidden");
+							document.getElementById("journeyTime2").removeAttribute("hidden");
+							document.getElementById("journeyTime3").removeAttribute("hidden");
 
 							var departTimeList = document.getElementById("departTime")
 							departTimeList.remove(0); 	
@@ -614,58 +616,68 @@ function checkTravelDayFilter(date){
 					<!-- slideshow 1st image placeholder -->
 					<div class="col w24 h24" style="color:white; background-color:black;  border-top: 1px solid #fff;">
 					
-					<div class="transbox">
-						<p><span class="bigbt"><span style="margin-left:15px">Start your own Bristol adventure.</span></span> <span class="tab">From glamour to offbeat to bohemian. Find yourself, lose yourself.</span><span class="tab">Fly AirBristol. Pushing service down the isle and scenery past the window. </span></p>
-						</div>
+							<div class="col w24 h2 transbox">
+								<p><span class="bigbt"><span style="margin-left:15px">Start your own Bristol adventure.</span></span> <span class="tab">From glamour to offbeat to bohemian. Find yourself, lose yourself.</span><span class="tab">Fly AirBristol. Pushing service down the isle and scenery past the window. </span></p>
+							</div>
 						
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
-							<form class="form col w24 h24" action={{ url_for('passenger_form') }}  method="POST" style="position: absolute; padding-right:0; padding-left:0; padding-top:5%; width:100%; height:100%; z-index: 1;  ">
+							<form class="form col w24 h22" action={{ url_for('passenger_form') }}  method="POST" style="position: absolute; padding-right:0; padding-left:0; padding-top:7%; width:100%; height:100%; z-index: 1;  ">
 								
 								<div class="col w5 h24 " style="float:left;"></div>	
 								<div class="col w14	 h24" style="font-size:2.5vmin;">
 										<input name="travelMethod" type="text" value={{slideImage}} hidden>
-									<div class="bigbh">Book your trip</div><br><br>
+										<div class="bigbh">Book your trip</div><br><br>
+									<!-- a tale of 2 divs -->
+									<div class="col w12 h24">
+										<div class="col w24 h4" >
+											<label for="party"><span class="bigbp">Choose your Departure location:</span></label><br>	
+											{{ form.departLocation.__call__(**{'class': 'form-control col w20 h8'}) }}<br><br><br>
+										</div>
 
-									<div class="col w12 h4" >
-										<label for="party"><span class="bigbp">Choose your Departure location:</span></label><br>	
-											{{ form.departLocation.__call__(**{'class': 'form-control col w20 h6'}) }}<br><br><br>
-									</div>
-									<div class="col w12 h4">	
-										<!-- greyed out until a departure is selected, too much irrelevant information to process -->
-										<label for="party"><span class="bigbp">Choose your Arrival location:</span></label><br>	
-											{{ form.arriveLocation.__call__(**{'class': 'form-control col w20 h6'}) }}<br><br><br>
-									</div>
-									<div class="col w12 h4">
-										<label for="party"><span class="bigbp">Choose your Departure time:</span></label><br>
-											{{ form.departTime.__call__(**{'class': 'form-control col w20 h6'}) }}<br><br><br>
-									</div>
-									<div class="col w12 h4">
-										<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
-										<label for="party"><span class="bigbp">How many are traveling:</span></label><br>
-										<input type="number" class="col w20 h6" style="width: 3ch; height: 5em" name="passengerCnt" id="passengerCnt" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled><br><br><br>
-									</div>	
+										<div class="col w24 h4">
+											<label for="party"><span class="bigbp">Choose your Departure time:</span></label><br>
+											{{ form.departTime.__call__(**{'class': 'form-control col w20 h8'}) }}<br><br><br>
+										</div>
 
-									<div class="col w12 h4">
-										<label for="party"><span class="bigbp">Choose your Departure Date:</span></label><br>
-										<!--<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>-->
-										<input type="text" name="departDate" id="departDate" class="selector col w20 h6" value={{form.departDateDefault}} disabled><br><br><br>
-										<!-- our booking confirm button for later that will trigger a model to process payment -->
-									</div>
-									<div class="col w12 h4">
-									</div>
-									<div class="col w12 h4">
-										<button id="submitBookingBtn" class="col w14 h10" style="line-height:1; margin:-5% 50% 50% 65%;" disabled type=submit><span style="color:black; font-size:17px">Book!</span></button>
-									</div>
-                                    <div class="col w12 h6">
-                                        <p id="bookPrice"  name="bookPrice"  hidden>Estimated Booking Price: £ {{ bookingPrice }}</p>
-                                        <p id="bookPrice2" name="bookPrice2" hidden>Estimated Booking Price: {{ bookingPrice2 }}</p>
-                                        <p id="bookPrice3" name="bookPrice3" hidden>Estimated Booking Price: {{ bookingPrice3 }}</p>
+										<div class="col w24 h10">
+											<div class="col w24 h12 ">
+												<label for="party"><span class="bigbp">Choose your Departure Date:</span></label><br>
+												<!--<input type="date" name="departDate" id="departDate" min={{form.departDateMin}} max={{form.departDateMax}} value={{form.departDateDefault}} onchange="dateHandler(event);" disabled><br><br>-->
+												<input type="text" name="departDate" id="departDate" class="selector col w20 h6" value={{form.departDateDefault}} disabled><br><br><br>
+												<!-- our booking confirm button for later that will trigger a model to process payment -->
 
-                                        <input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
-                                        <input type="text" name="bookingPrice" id="bookingPrice" value={{ bookingPrice|default(None, true) }} hidden>
+											
+											</div>
+											<div class="col w24 h8" style="float:center; padding-left:15%;">
+												<button id="submitBookingBtn" class="col w12 h13" style="line-height:1; " disabled type=submit><span style="color:black; font-size:17px">Book!</span></button>
+											</div>
+										</div>
+									</div>
+									<!-- second div -->
+									<div class="col w12 h24">
+										<div class="col w24 h4">	
+											<!-- greyed out until a departure is selected, too much irrelevant information to process -->
+											<label for="party"><span class="bigbp">Choose your Arrival location:</span></label><br>	
+												{{ form.arriveLocation.__call__(**{'class': 'form-control col w20 h8'}) }}<br><br><br>
+										</div>
+										<div class="col w24 h4">
+											<!-- after this our form is greyed out until we have both an arrival and departure selected, then our flask app will tell us what options are available-->
+											<label for="party"><span class="bigbp">How many are traveling:</span></label><br>
+											<input type="number" class="col w20 h8" style="width: 3ch; height: 5em" name="passengerCnt" id="passengerCnt" min={{form.passCntMin}} max={{ form.passCntMax }} value={{ form.passCnt}} disabled><br><br><br>
+										</div>
+										<div class="col w24 h10">
+											<div id="bookPrice"  name="bookPrice"  hidden>Estimated Booking Price: £ {{ bookingPrice }}</div><br>
+											<div id="bookPrice2" name="bookPrice2" hidden>Estimated Booking Price: {{ bookingPrice2 }}</div>
+											<div id="bookPrice3" name="bookPrice3" hidden>Estimated Booking Price: {{ bookingPrice3 }}</div><br>
 
-                                        <p id="journeyTime" hidden><span class="bigbp">Estimated Journey Time: <span class="bigbt">{{ form.journeyTime }}</span></span></p>
-                                    </div>
+											<input type="text" name="slideImage" id="slideImage" value={{slideImage}} hidden>
+											<input type="text" name="bookingPrice" id="bookingPrice" value={{ bookingPrice|default(None, true) }} hidden>
+
+											<div id="journeyTime" hidden><span class="bigbp">Estimated Journey Time: <span class="bigbt">{{ form.journeyTime }}</span></span></div><br>
+											<div id="journeyTime2" hidden><span class="bigbp">Estimated Journey Time: <span class="bigbt">{{ journeyTime2 }}</span></span></div>
+											<div id="journeyTime3" hidden><span class="bigbp">Estimated Journey Time: <span class="bigbt">{{ journeyTime3 }}</span></span></div>
+										</div>									
+									</div>									
 								</div>
 								<div class="col w5 h24 " style="float:right; top:0;"></div>	
 

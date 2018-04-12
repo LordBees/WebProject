@@ -310,6 +310,43 @@ def updateJourneyTablesFromBookingAir(request,customerIdGend):
 	
 	conn.close()	
 	
+def calcJourneyTimePlane(depart_location,arrive_location):
+	journeyTime = 0
+	if(depart_location != "--" and arrive_location != "--"):
+
+		# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
+		arrivalTime = getListOfArrivalTimesPlane(depart_location,arrive_location)
+		departureTime = getListOfDepartureTimesPlane(depart_location,arrive_location)
+				
+		#first one we get from list
+		atime = arrivalTime[0]
+		dpttime = departureTime[0]
+				
+		# calculate the difference
+		calcTime = atime[4] - dpttime[2]
+		# find out how many hours it is and store the remainder
+		hours, remainder = divmod(calcTime.seconds, 3600)			
+		# divide the remainder into seconds/minutes left
+		minutes, seconds = divmod(remainder, 60)
+				
+		#just some general output formatting, when will minutes ever be 1? prob never
+		if(minutes == 0):
+			if(hours > 1):
+				journeyTime = "%d hours" % (hours)
+			else:
+				journeyTime = "%d hour" % (hours)					
+				
+		else:
+			if(hours > 1):
+				journeyTime = "%d hours and %d minutes" % (hours,minutes)
+			else:
+				if(hours == 0):
+					journeyTime = "%d minutes" % (minutes)
+				else:
+					journeyTime = "%d hour and %d minutes" % (hours,minutes)	
+
+	return journeyTime
+
 
 # where we can put our template classes for booking forms, will end up populating it based on the current
 # data within the database
@@ -331,39 +368,8 @@ def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart
 		else:
 			passCntMin=0
 
-			
-		if(depart_location != "--" and arrive_location != "--"):
-			# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
-			arrivalTime = getListOfArrivalTimesPlane(depart_location,arrive_location)
-			departureTime = getListOfDepartureTimesPlane(depart_location,arrive_location)
-
-			#first one we get from list
-			atime = arrivalTime[0]
-			dpttime = departureTime[0]
-			
-			# calculate the difference
-			calcTime = atime[4] - dpttime[2]
-			# find out how many hours it is and store the remainder
-			hours, remainder = divmod(calcTime.seconds, 3600)			
-			# divide the remainder into seconds/minutes left
-			minutes, seconds = divmod(remainder, 60)
-			
-			#just some general output formatting, when will minutes ever be 1? prob never
-			if(minutes == 0):
-				if(hours > 1):
-					journeyTime = "%d hours" % (hours)
-				else:
-					journeyTime = "%d hour" % (hours)					
-			else:
-				if(hours > 1):
-					journeyTime = "%d hours and %d minutes" % (hours,minutes)
-				else:
-					if(hours == 0):
-						journeyTime = "%d minutes" % (minutes)
-					else:
-						journeyTime = "%d hour and %d minutes" % (hours,minutes)	
-		
-			
+		#calculate journeyTime			
+		journeyTime = calcJourneyTimePlane(depart_location,arrive_location)
 		
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--" and dtime != 0): 
@@ -371,20 +377,11 @@ def createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart
 		
 		else:
 			passCntMax = 1 # when the field is grayed out we still need to assign it something
-			
-
-						
-			
-
 		
 		# loading our form fields
 		departLocation = buildDeparturesFieldPlane(depart_location)
 		arriveLocation = buildArrivalsFieldPlane(depart_location,arrive_location)	
 		departTime = buildDepartTimesFieldPlane(depart_location,arrive_location,dtime)
 		
-		
-
-
 	return planeForm()
-	
 	

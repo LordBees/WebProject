@@ -288,6 +288,45 @@ def buildDepartTimesFieldTrain(departure,arrival,time):
 	
 	return SelectField(choices=times,default=defaultSelection,id="departTime")
 
+	
+
+def calcJourneyTimeTrain(depart_location,arrive_location):
+	journeyTime = 0
+	if(depart_location != "--" and arrive_location != "--"):
+
+		# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
+		arrivalTime = getListOfArrivalTimesTrain(depart_location,arrive_location)
+		departureTime = getListOfDepartureTimesTrain(depart_location,arrive_location)
+				
+		#first one we get from list
+		atime = arrivalTime[0]
+		dpttime = departureTime[0]
+				
+		# calculate the difference
+		calcTime = atime[4] - dpttime[2]
+		# find out how many hours it is and store the remainder
+		hours, remainder = divmod(calcTime.seconds, 3600)			
+		# divide the remainder into seconds/minutes left
+		minutes, seconds = divmod(remainder, 60)
+				
+		#just some general output formatting, when will minutes ever be 1? prob never
+		if(minutes == 0):
+			if(hours > 1):
+				journeyTime = "%d hours" % (hours)
+			else:
+				journeyTime = "%d hour" % (hours)					
+				
+		else:
+			if(hours > 1):
+				journeyTime = "%d hours and %d minutes" % (hours,minutes)
+			else:
+				if(hours == 0):
+					journeyTime = "%d minutes" % (minutes)
+				else:
+					journeyTime = "%d hour and %d minutes" % (hours,minutes)	
+
+	return journeyTime		
+	
 
 # Database date allows creating of forms. Index calls last so must remain at end
 def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date):
@@ -301,38 +340,17 @@ def createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart
 		
 		passCnt = passenger_count
 
-		passCntMin=0
 		if(int(passenger_count) > 0):
-                        passCntMin = 1
+			passCntMin= 1
+		else:
+			passCntMin=0
+
+		#calculate journeyTime			
+		journeyTime = calcJourneyTimeTrain(depart_location,arrive_location)
+					
            
 		if(depart_location != "--" and arrive_location != "--"): 
 			passCntMax = getNumOfSeatsLeftTrain(depart_location,arrive_location)
-			
-			arrivalTime = getListOfArrivalTimesTrain(depart_location,arrive_location)
-			departureTime = getListOfDepartureTimesTrain(depart_location,arrive_location)
-
-			atime = arrivalTime[0]
-			dpttime = departureTime[0]
-
-			calcTime = atime[4] - dpttime[2]
-
-			hours, remainder = divmod(calcTime.seconds, 3600)			
-	
-			minutes, seconds = divmod(remainder, 60)
-			
-			if(minutes == 0):
-				if(hours > 1):
-					journeyTime = "%d hours" % (hours)
-				else:
-					journeyTime = "%d hour" % (hours)					
-			else:
-				if(hours > 1):
-					journeyTime = "%d hours and %d minutes" % (hours,minutes)
-				else:
-					if(hours == 0):
-						journeyTime = "%d minutes" % (minutes)
-					else:
-						journeyTime = "%d hour and %d minutes" % (hours,minutes)
 					
 		else:
 			passCntMax = 1 

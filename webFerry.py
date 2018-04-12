@@ -89,6 +89,8 @@ def modifyFerryTT(departLocation,	arriveLocation,	prevDepartTime, newDepartTime,
 		cursor.execute("""INSERT INTO webferrytt 
 		(Departure,DepartureTime,Arrival,ArrivalTime,FerryNum,Price,PassengerCount,Status)
 		VALUES(%s,%s,%s,%s,%s,%s,%s,%s)""", entry)
+
+	
 	conn.close()
 	
 # create connection to our mysql server
@@ -109,37 +111,61 @@ def getListOfDeparturesFerry():
 
 # returns list of arrivals with matched departure
 def getListOfArrivalsFromDepartureFerry(departure):
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT *, Arrival FROM webferrytt WHERE Departure = %s'
 	args = (departure,)
+	#cursor.execute(query,args)
+	#arrivals = cursor.fetchall()
 	arrivals = Qman.executeSQLFetchAll_args(query,args)
+	#conn.close()
 	return arrivals	
 
 # returns a list of depart times based on matching departure/arrival
 def getListOfDepartureTimesFerry(departure, arrival):
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT *, Departure Time FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = (departure, arrival)
+	#cursor.execute(query,args)
+	#departTimes = cursor.fetchall()
+	#conn.close()
 	departTimes = Qman.executeSQLFetchAll_args(query,args)
 	return departTimes	
 
 # returns a list of depart times based on matching departure/arrival
 def getListOfArrivalTimesFerry(departure, arrival):
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT *, Arrival Time FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = (departure, arrival)
+	#cursor.execute(query,args)
+	#arriveTimes = cursor.fetchall()
+	#conn.close()
 	arriveTimes = Qman.executeSQLFetchAll_args(query,args)
 	return arriveTimes	
 
 # returns list of arrivals with matched departure
 def getPresetPriceFerry(departure,arrival):
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT Price FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = (departure,arrival)
-	price = Qman.executeSQLFetchOne_args(query,args)
+	#cursor.execute(query,args)
+	#price = cursor.fetchone()
 	##price = "%.2f" %(price)
+	#conn.close()
+	price = Qman.executeSQLFetchOne_args(query,args)
 	return price[0]		
 
 # returns number of seats left to book for this route
 def getNumOfSeatsLeftFerry(departure,arrival):
+	#conn = getConnection()
+	#cursor = conn.cursor()
 	query = 'SELECT *,%s FROM webferrytt WHERE Departure = %s AND Arrival = %s'
 	args = ("Passenger Count",departure,arrival)
+	#cursor.execute(query,args)
+	#passCnt = cursor.fetchone()
 	passCnt = Qman.executeSQLFetchOne_args(query,args)
 	print("passcnt "+ str(passCnt[7]))
 	maxPass = 500 # max number of seats for a gt ferry
@@ -273,6 +299,43 @@ def buildDepartTimesFieldFerry(departure,arrival,time):
 	
 	return SelectField(choices=times,default=defaultSelection)
 
+def calcJourneyTimeFerry(depart_location,arrive_location):
+	journeyTime = 0
+	if(depart_location != "--" and arrive_location != "--"):
+
+		# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
+		arrivalTime = getListOfArrivalTimesFerry(depart_location,arrive_location)
+		departureTime = getListOfDepartureTimesFerry(depart_location,arrive_location)
+				
+		#first one we get from list
+		atime = arrivalTime[0]
+		dpttime = departureTime[0]
+				
+		# calculate the difference
+		calcTime = atime[4] - dpttime[2]
+		# find out how many hours it is and store the remainder
+		hours, remainder = divmod(calcTime.seconds, 3600)			
+		# divide the remainder into seconds/minutes left
+		minutes, seconds = divmod(remainder, 60)
+				
+		#just some general output formatting, when will minutes ever be 1? prob never
+		if(minutes == 0):
+			if(hours > 1):
+				journeyTime = "%d hours" % (hours)
+			else:
+				journeyTime = "%d hour" % (hours)					
+				
+		else:
+			if(hours > 1):
+				journeyTime = "%d hours and %d minutes" % (hours,minutes)
+			else:
+				if(hours == 0):
+					journeyTime = "%d minutes" % (minutes)
+				else:
+					journeyTime = "%d hour and %d minutes" % (hours,minutes)	
+
+	return journeyTime	
+	
 
 # where we can put our template classes for booking forms, will end up populating it based on the current
 # data within the database
@@ -294,41 +357,13 @@ def createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart
 			passCntMin = 1
 		else:
 			passCntMin = 0
-		
+
+		#calculate journeyTime
+		journeyTime = calcJourneyTimeFerry(depart_location,arrive_location)
+			
 		# previous issue here was checking "" when they were sometimes set to "--", its consistent now for "--"
 		if(depart_location != "--" and arrive_location != "--"): 
 			passCntMax = getNumOfSeatsLeftFerry(depart_location,arrive_location)
-			
-			# just grab a departure time, its not a sophisticated time table so anyone for same depart/arrive is the same amount of time
-			arrivalTime = getListOfArrivalTimesFerry(depart_location,arrive_location)
-			departureTime = getListOfDepartureTimesFerry(depart_location,arrive_location)
-
-			#first one we get from list
-			atime = arrivalTime[0]
-			dpttime = departureTime[0]
-			
-			# calculate the difference
-			calcTime = atime[4] - dpttime[2]
-			# find out how many hours it is and store the remainder
-			hours, remainder = divmod(calcTime.seconds, 3600)			
-			# divide the remainder into seconds/minutes left
-			minutes, seconds = divmod(remainder, 60)
-			
-			#just some general output formatting, when will minutes ever be 1? prob never
-			if(minutes == 0):
-				if(hours > 1):
-					journeyTime = "%d hours" % (hours)
-				else:
-					journeyTime = "%d hour" % (hours)					
-			else:
-				if(hours > 1):
-					journeyTime = "%d hours and %d minutes" % (hours,minutes)
-				else:
-					if(hours == 0):
-						journeyTime = "%d minutes" % (minutes)
-					else:
-						journeyTime = "%d hour and %d minutes" % (hours,minutes)
-						
 			
 		else:
 			passCntMax = 1 # when the field is grayed out we still need to assign it something

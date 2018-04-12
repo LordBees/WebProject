@@ -307,55 +307,68 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 		slideImage = "GTplane.jpg"
 		form = createPlaneForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		if(int(passenger_count) <= form.passCntMax):
-                        try:
-                                printedPrice2 = " Ferry £"+str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
-                        except:
-                                printedPrice2 = "No Route available"
-                        try:
-                                printedPrice3 = " Train £"+str(int(getPresetPriceTrain(depart_location,arrive_location)) * int(passenger_count))
-                        except:
-                                printedPrice3 = "No Route Available"
-                        printedPrice = str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
-			
-			#try:
-                        #        printedPrice2 = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
-                        #except:
-                        #        printedPrice2 = "transport doesnt go here"
-                        #try:
-                        #        printedPrice3 = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
-                        #except:
-                        #       printedPrice3 = "transport doesnt go here"
+			try:
+				printedPrice2 = " Ferry £"+str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+			except:
+				printedPrice2 = "No Route available"
+			try:
+				printedPrice3 = " Train £"+str(int(getPresetPriceTrain(depart_location,arrive_location)) * int(passenger_count))
+			except:
+				printedPrice3 = "No Route Available"
 
-			#if (printedPrice2 is None):
-                        #        printedPrice2 = "transport doesnt go here"
-			#if (printedPrice3 is None):
-                        #        printedPrice3 = "transport doesnt go here"
+			# now for journey times
+			try:
+				journeyTime2 = (" Ferry - " + calcJourneyTimeFerry(depart_location,arrive_location))
+			except:
+				journeyTime2 = "No Route Available"
+			try:
+				journeyTime3 = (" Train - " + calcJourneyTimeTrain(depart_location,arrive_location))
+			except:
+				journeyTime3 = "No Route available"
+
+			printedPrice = str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
+
 		else:
 			printedPrice = "not enough seats"
 
 		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice,
                                                                                     bookingPrice2=printedPrice2,
-                                                                                    bookingPrice3=printedPrice3)
+                                                                                    bookingPrice3=printedPrice3,
+																					journeyTime2=journeyTime2,
+																					journeyTime3=journeyTime3)
 
 	elif travel_method == "train": # needs changing
 		slideImage = "GTtrain.jpg"
 		form = createTrainForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		if(int(passenger_count) <= form.passCntMax):
-                        try:
-                                printedPrice = " Plane £"+str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
-                        except:
-                                printedPrice = "No Route available"
-                        try:
-                                printedPrice3 = " Ferry £"+str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
-                        except:
-                                printedPrice3 = "No Route Available"
-                        printedPrice = str(int(getPresetPriceTrain(depart_location,arrive_location)) * int(passenger_count))
+			try:
+				printedPrice2 = " Plane £"+str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
+			except:
+				printedPrice2 = "No Route available"
+			try:
+				printedPrice3 = " Ferry £"+str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+			except:
+				printedPrice3 = "No Route Available"
+			
+			# now for journey times
+			try:
+				journeyTime2 = (" Plane - " + calcJourneyTimePlane(depart_location,arrive_location))
+			except:
+				journeyTime2 = "No Route Available"
+			try:
+				journeyTime3 = (" Ferry - " + calcJourneyTimeFerry(depart_location,arrive_location))
+			except:
+				journeyTime3 = "No Route available"
+			
+			printedPrice = str(int(getPresetPriceTrain(depart_location,arrive_location)) * int(passenger_count))
 		else:
 			printedPrice = "not enough seats"
 
 		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice,
                                                                                     bookingPrice2=printedPrice2,
-                                                                                    bookingPrice3=printedPrice3)
+                                                                                    bookingPrice3=printedPrice3,
+																					journeyTime2=journeyTime2,
+																					journeyTime3=journeyTime3)
 
 	elif travel_method == "bus": # needs changing
 		slideImage = "GTbus.jpg"
@@ -371,21 +384,35 @@ def formatToArrivalLoc(travel_method="", depart_location="--",arrive_location="-
 		slideImage = "GTferry.jpg"
 		form = createFerryForm(depart_location,arrive_location,passenger_count,dtime,depart_date)
 		if(int(passenger_count) <= form.passCntMax):
-                        try:
-                                printedPrice3 = " Train £"+str(int(getPresetPriceTrain(depart_location,arrive_location)) * int(passenger_count))
-                        except:
-                                printedPrice3 = "No Route available"
-                        try:
-                                printedPrice2 = " Plane £"+str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
-                        except:
-                                printedPrice2 = "No Route Available"
-                        printedPrice = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+			try:
+				printedPrice3 = " Train £"+str(int(getPresetPriceTrain(depart_location,arrive_location)) * int(passenger_count))
+			except:
+				printedPrice3 = "No Route available"
+			try:
+				printedPrice2 = " Plane £"+str(int(getPresetPricePlane(depart_location,arrive_location)) * int(passenger_count))
+			except:
+				printedPrice2 = "No Route Available"
+				
+			# now for journey times
+			try:
+				journeyTime2 = (" Train - " + calcJourneyTimeTrain(depart_location,arrive_location))
+			except:
+				journeyTime2 = "No Route Available"
+			try:
+				journeyTime3 = (" Plane - " + calcJourneyTimePlane(depart_location,arrive_location))
+			except:
+				journeyTime3 = "No Route available"				
+			
+			printedPrice = str(int(getPresetPriceFerry(depart_location,arrive_location)) * int(passenger_count))
+		
 		else:
 			printedPrice = "not enough seats"
 
 		return render_template("index.html",form=form,slideImage=slideImage,bookingPrice=printedPrice,
                                                                                     bookingPrice2=printedPrice2,
-                                                                                    bookingPrice3=printedPrice3)
+                                                                                    bookingPrice3=printedPrice3,
+																					journeyTime2=journeyTime2,
+																					journeyTime3=journeyTime3)
 
 
 @app.route('/passenger_form', methods=['POST'])
