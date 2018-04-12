@@ -2,7 +2,7 @@
 <html lang="en-gb">
 <head>
 	<title>Grand Travel</title>
-    <meta name="authors" content="Andrew Belcher, Luke Clayton, Robert Painter">
+    <meta name="authors" content="Andrew Belcher, Luke Clayton - 17022390, Robert Painter - 17024721">
     <meta name="description" content="Grand Travel">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
@@ -169,12 +169,12 @@
 
 			<div class="col w18 h10 nav" style=" position:relative; bottom:0; "><!-- navbar --> 
 				<ul>
-					<li class="col w4 h24 clear nohover"></a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="plane()">PLANE</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="train()">TRAIN</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="bus()">BUS</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="taxi()">TAXI</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="ferry()">FERRY</a></li>
+					<li class="col w2 h24 clear nohover"></a></li>
+					<li id="planeButt" class="col w4 h16 gtblue invert navButton" onclick="plane()">PLANE</a></li>
+					<li id="trainButt"class="col w4 h16 gtblue invert navButton" onclick="train()">TRAIN</a></li>
+					<li id="busButt"class="col w4 h16 gtblue invert navButton" onclick="bus()">BUS</a></li>
+					<li id="taxiButt"class="col w4 h16 gtblue invert navButton" onclick="taxi()">TAXI</a></li>
+					<li id="ferryButt"class="col w4 h16 gtblue invert navButton" onclick="ferry()">FERRY</a></li>
 					<li class="col w5 h24 white nohover"></a></li>
 				</ul>			
 			</div>
@@ -202,21 +202,21 @@
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
 						
 							
-									<form class="form" action={{ url_for('reciept_page') }} method="POST" style="  position: absolute; padding-top:15%; padding-right:0; width:100%; height:100%; z-index: 1; margin-left:0%; margin-right:0%; ">										
+									<form class="form" action={{ url_for('reciept_page') }} method="POST" style="  position: absolute; padding-top:8%; padding-right:0; width:100%; height:100%; z-index: 1; margin-left:0%; margin-right:0%; ">										
 										<div class="col w9 h24" sytle="float:left;"></div>
 										<div class="col w10 h24">
 											<div class ="bigbh">Booking Reciept</div><br>
 											<div class ="bigbt">SURNAME: {{bookerLastName}}</div>
 											<div class ="bigbt">NAME: {{bookerFirstName}}</div><br>
-											<div class ="bigbt">travel method: {{travel_method}}</div>
-											<div class ="bigbt">departure: {{departure_location}}</div>
-											<div class ="bigbt">arrival: {{arrival_location}}</div>
-											<div class ="bigbt">depart time: {{departTime}}</div>
-											<div class ="bigbt">depart date: {{departDate}}</div>
-											<div class ="bigbt">number of passengers: {{passengerCount}}</div>
-											<div class ="bigbt">Booking Price: £{{discountedPrice}}</div><br>
-											<div class ="bigbt">Payment method: {{paymentMethod}}</div><br>
-											<div class ="bigbt">Reciept link is: <a href="{{recieptLink}}" download>Download Reciept</a></div><br>
+											<div class ="bigbp">Travel Method: <span class="bigbt">{{travel_method}}</span></div>
+											<div class ="bigbp">Departure: <span class="bigbt">{{departure_location}}</span></div>
+											<div class ="bigbp">Date of Departure: <span class="bigbt">{{departDate}}</span></div>
+											<div class ="bigbp">Departure Time: <span class="bigbt">{{departTime}}</span></div><br>
+											<div class ="bigbp">Destination: <span class="bigbt">{{arrival_location}}</span></div>
+											<div class ="bigbp">Number of Passengers: <span class="bigbt">{{passengerCount}}</span></div><br>
+											<div class ="bigbp">Booking Price: <span class="bigbt">£{{discountedPrice}}</span></div>
+											<div class ="bigbp">Payment Method: <span class="bigbt">Paypal</span></div><br>
+											<div class ="bigbp">Receipt link is: <a href="{{recieptLink}}" download><span style="color:white"><span class="bigbt">Download Reciept</span></span></a></div><br>
 									
 											<input type="text" name="travel_method" value={{travel_method}} hidden>
 											<input type="text" name="departure_location" value={{departure_location}} hidden>

@@ -582,12 +582,12 @@ function checkTravelDayFilter(date){
 
 			<div class="col w18 h10 nav" style=" position:relative; bottom:0; "><!-- navbar --> 
 				<ul>
-					<li class="col w4 h24 clear nohover"></a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="plane()">PLANE</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="train()">TRAIN</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="bus()">BUS</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="taxi()">TAXI</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="ferry()">FERRY</a></li>
+					<li class="col w2 h24 clear nohover"></a></li>
+					<li id="planeButt" class="col w4 h16 gtblue invert navButton" onclick="plane()">PLANE</a></li>
+					<li id="trainButt"class="col w4 h16 gtblue invert navButton" onclick="train()">TRAIN</a></li>
+					<li id="busButt"class="col w4 h16 gtblue invert navButton" onclick="bus()">BUS</a></li>
+					<li id="taxiButt"class="col w4 h16 gtblue invert navButton" onclick="taxi()">TAXI</a></li>
+					<li id="ferryButt"class="col w4 h16 gtblue invert navButton" onclick="ferry()">FERRY</a></li>
 					<li class="col w5 h24 white nohover"></a></li>
 				</ul>			
 			</div>
@@ -613,6 +613,11 @@ function checkTravelDayFilter(date){
 				<div style=" height: 100%">
 					<!-- slideshow 1st image placeholder -->
 					<div class="col w24 h24" style="color:white; background-color:black;  border-top: 1px solid #fff;">
+					
+					<div class="transbox">
+						<p><span class="bigbt"><span style="margin-left:15px">Start your own Bristol adventure.</span></span> <span class="tab">From glamour to offbeat to bohemian. Find yourself, lose yourself.</span><span class="tab">Fly AirBristol. Pushing service down the isle and scenery past the window. </span></p>
+						</div>
+						
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
 							<form class="form col w24 h24" action={{ url_for('passenger_form') }}  method="POST" style="position: absolute; padding-right:0; padding-left:0; padding-top:5%; width:100%; height:100%; z-index: 1;  ">
 								
@@ -649,7 +654,7 @@ function checkTravelDayFilter(date){
 									<div class="col w12 h4">
 									</div>
 									<div class="col w12 h4">
-										<button id="submitBookingBtn" class="col w10 h6" style="line-height:1; margin:10% 15% 10% 15%;" disabled type=submit>Book!</button>
+										<button id="submitBookingBtn" class="col w14 h10" style="line-height:1; margin:-5% 50% 50% 65%;" disabled type=submit><span style="color:black; font-size:17px">Book!</span></button>
 									</div>
                                     <div class="col w12 h6">
                                         <p id="bookPrice"  name="bookPrice"  hidden>Estimated Booking Price: £ {{ bookingPrice }}</p>

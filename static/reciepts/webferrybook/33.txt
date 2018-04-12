@@ -1,0 +1,17 @@
+|<><><><><> <><><><><>|
+| Reciept for booking |
+|_____________________|
+|Booking  ID:33
+|Customer ID:353befdc
+|---------------------|
+|     booking info    |
+|---------------------|
+|Name: Ollie SNEK
+|you are boarding on: Fer04
+|With 6 Bag(s)
+|---------------------|
+|     cost info       |
+|---------------------|
+|Total cost:
+|£600.0000
+|<><><><><> <><><><><>|

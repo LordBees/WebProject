@@ -103,8 +103,10 @@
 
 
 <div class="wrapper w24 h24"> <!-- wrapper -->
+	
 	<div class="wrapperCont w24 h24">
 		<!--<div class="col w24 h1 socBar"></div> <!-- social links -->
+		
 		<div class="col w24 h3 "> <!-- banner logo space -->
 		
 			<!-- banner logo -->
@@ -117,12 +119,12 @@
 
 			<div class="col w18 h10 nav" style=" position:relative; bottom:0; "><!-- navbar --> 
 				<ul>
-					<li class="col w4 h24 clear nohover"></a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="plane()">PLANE</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="train()">TRAIN</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="bus()">BUS</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="taxi()">TAXI</a></li>
-					<li class="col w3 h15 gtblue invert navButton" onclick="ferry()">FERRY</a></li>
+					<li class="col w2 h24 clear nohover"></a></li>
+					<li id="planeButt" class="col w4 h16 gtblue invert navButton" onclick="plane()">PLANE</a></li>
+					<li id="trainButt"class="col w4 h16 gtblue invert navButton" onclick="train()">TRAIN</a></li>
+					<li id="busButt"class="col w4 h16 gtblue invert navButton" onclick="bus()">BUS</a></li>
+					<li id="taxiButt"class="col w4 h16 gtblue invert navButton" onclick="taxi()">TAXI</a></li>
+					<li id="ferryButt"class="col w4 h16 gtblue invert navButton" onclick="ferry()">FERRY</a></li>
 					<li class="col w5 h24 white nohover"></a></li>
 				</ul>			
 			</div>
@@ -135,13 +137,20 @@
 			<div class="col w24 h24 slideshowContainer fade">					
 				<div style=" height: 100%">
 					<!-- slideshow 1st image placeholder -->
+					
 					<div style="width: 100%; height: 100%; position: relative; color:white; background-color:black;  border-top: 1px solid #fff;">
 							<!-- working area for dynamic forms based on the database data using jinja to pull and flask to feed -->
 						
-						<form class="form" action={{ url_for('process_maintenance_request') }}  id="paymentForm"  method="POST" style="position: absolute; padding:10%; width:100%; height:100%; z-index: 1; margin-left: 20%; margin-right:20%; ">
+						<form class="form" action={{ url_for('process_maintenance_request') }}  id="paymentForm"  method="POST" style="position: absolute; padding:5%; width:100%; height:100%; z-index: 1; margin-left: %; margin-right:%; ">
 						
-							<div>Admin maintenance page</div><br>
-							<div>Travel Method you wish to change:</div>
+						<div class="col w6 h24 " style="float:left;"></div>	
+						<div class="col w14 h24" style="font-size:2.0vmin;">
+									
+						
+							<div class="bigbh">Admin maintenance page</div><br><br>
+							
+							<div class="col w12 h3">
+							<span class="bigbp">Travel Method you wish to change:</span><br>
 								<select name="travelMethod" id="travelMethod">
 								  <option value="Plane">Plane</option>
 								  <option value="Train">Train</option>
@@ -149,8 +158,10 @@
 								  <option value="Bus">Bus</option>
 								  <option value="Taxi">Taxi</option>
 								</select> 
+								</div>
 								
-								<div>Depart Location you wish to change:</div>					
+								<div class="col w12 h3">
+								<div class="bigbp">Depart Location you wish to change:</div>					
 								<select name="departLocation" id="departLocation">
 								  <option value="Newcastle">Newcastle</option>
 								  <option value="Bristol">Bristol</option>
@@ -164,11 +175,21 @@
 								  <option value="Southhampton">Southhampton</option>
 								  <option value="Birmingham">Birmingham</option>
 								</select> 
-								<div>Previous Depart time:</div>					
+								</div>
+								
+								
+								<div class="col w12 h3">
+								<div class="bigbp">Previous Departure time:</div>					
 								<input type="time" name="prevDepartTime" id="prevDepartTime">
-								<div>New Depart time:</div>					
-								<input type="time" name="newDepartTime" id="newDepartTime">								
-								<div>Arrive location you wish to change:</div>					
+								</div>
+								
+								<div class="col w12 h3">
+								<div class="bigbp">New Departure time:</div>					
+								<input type="time" name="newDepartTime" id="newDepartTime">	
+								</div>
+								
+								<div class="col w12 h3">
+								<div class="bigbp">Arrive location:</div>					
 								<select name="arriveLocation" id="arriveLocation">
 								  <option value="Newcastle">Newcastle</option>
 								  <option value="Bristol">Bristol</option>
@@ -181,25 +202,45 @@
 								  <option value="Edinburgh">Edinburgh</option>
 								  <option value="Southhampton">Southhampton</option>
 								  <option value="Birmingham">Birmingham</option>
-								</select> 								
-								<div>Previous arrive time:</div>					
+								</select> 		
+								</div>
+								
+								<div class="col w12 h3">
+								<div class="bigbp">Previous arrival time:</div>					
 								<input type="time" name="prevArriveTime" id="prevArriveTime">
-								<div>new arrive time:</div>					
+								</div>
+								
+								<div class="col w12 h3">
+								<div class="bigbp">New arrival time:</div>					
 								<input type="time" name="newArriveTime" id="newArriveTime">
-								<div>Previous Vessle id:</div>					
+								</div>
+								
+								<div class="col w12 h3">
+								<div class="bigbp">Previous Vessle ID:</div>					
 								<input type="text" name="prevVessleNumber" id="prevVessleNumber">
-								<div>New Vessle id:</div>					
+								</div>
+								
+								<div class="col w12 h3">
+								<div class="bigbp">New Vessle ID:</div>					
 								<input type="text" name="newVessleNumber" id="newVessleNumber">
-								<div>Status you wish to set for this route:</div>					
+								</div>
+								
+								<div class="col w12 h3">
+								<div class="bigbp">Status you wish to set for this route:</div>					
 								<input type="text" name="status" id="status">
-								<div>Price you wish to set for this route:</div>					
-								<input type="number" name="price" id="price">
+								</div>
+								
+								<div class="col w12 h3">
+								<div class="bigbp">Price you wish to set for this route:</div>					
+								<input type="number" name="price" id="price"><br><br>
+								</div>
 														
 								<input type="text" name="username" id="username" value={{userName}} hidden >
 								<input type="text" name="password" id="password" value={{passwd}} hidden>
+							
 								
 									<!-- our booking confirm button for later that will trigger a model to process payment -->
-								<button id="submitBookingBtn" disabled type=submit>Change route</button>
+								<button class="buttonbig" id="submitBookingBtn" disabled type=submit>Commit Changes</button>
 
 						</form>	
 									
@@ -209,7 +250,7 @@
 						<!-- dynamically change slideImage passed in as a variable to render our page -->												
 					</div>
 
-					<!--<img id="slideshow" src="" />-->
+					<img id="slideshow" src="/static/assets/GTadmin.png" width="100%" height="100%" style="position: absolute; z-index:0; opacity: 0.3; ">
 				</div>
 			</div> 					
 			<!-- div holding right slideshow arrow -->
