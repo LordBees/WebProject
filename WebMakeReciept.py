@@ -41,6 +41,17 @@ SCRIPT_DEBUG = True
 ####
 
 ##functions/procs
+#gets username by custid
+def getUnameByID(CustID):
+    SQLq = "SELECT userName FROM userlogin WHERE customerID = %s"
+    args = (CustID,)
+    return Qman.executequerywithargs(SQLq,args)
+
+#gets pwd by custid
+def getPwdByID(CustID):
+    SQLq = "SELECT PassWord FROM userlogin WHERE customerID = %s"
+    args = (CustID,)
+    return Qman.executequerywithargs(SQLq,args)
 
 #writes file array each entry is a new line
 def writefilearray(name,data,Table,ext = RecieptExt,fpath=RecieptPath):
@@ -105,9 +116,12 @@ def prep_reciept(data):
     Bags   =data[0][4]
     Cost   =data[0][5]
     CustID =data[0][6]
-
+    Cust_Uname = getUnameByID(CustID)[0][0]
+    Cust_Pwd = getPwdByID(CustID)[0][0]
     ##processing of data
     #round(Cost, 2)
+    ##Cust_Uname = Cust_Uname[0][0]
+    ##Cust_Pwd = Cust_Pwd[0][0]
     
     
     #######reciept formatting####
@@ -128,7 +142,15 @@ def prep_reciept(data):
     data2write.append("|---------------------|")
     data2write.append("|Total cost:")
     data2write.append("|£"+str(Cost)+"")
+    data2write.append("|_____________________|")
+    data2write.append("|                     |")
+    data2write.append("|    extra addition   |")
+    data2write.append("|  username/password  |")
+    data2write.append("|username: "+str(Cust_Uname))
+    data2write.append("|password: "+str(Cust_Pwd))
     data2write.append("|<><><><><> <><><><><>|")
+    
+    
     ##########end reciept############
 
     #return receipt as an array
